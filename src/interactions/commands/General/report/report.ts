@@ -1,6 +1,4 @@
 import {
-    GuildMember,
-    EmbedBuilder,
     TextChannel,
     PermissionsBitField,
     roleMention,
@@ -19,7 +17,7 @@ import { ReportLocalization } from "@alice-localization/interactions/commands/Ge
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: ReportLocalization = new ReportLocalization(
+    const localization = new ReportLocalization(
         CommandHelper.getLocale(interaction),
     );
 
@@ -38,8 +36,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const toReport: GuildMember | null = await interaction
-        .guild!.members.fetch(interaction.options.getUser("user", true))
+    const toReport = await interaction.guild.members
+        .fetch(interaction.options.getUser("user", true))
         .catch(() => null);
 
     if (!toReport) {
@@ -69,9 +67,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const reason: string = interaction.options.getString("reason")!;
+    const reason = interaction.options.getString("reason")!;
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: interaction.member.displayColor,
         timestamp: true,
@@ -89,10 +87,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 `${bold(localization.getTranslation("reason"))}: ${reason}`,
         );
 
-    const reportChannel: TextChannel = <TextChannel>(
-        interaction.guild!.channels.cache.find(
-            (c) => c.name === Config.reportChannel,
-        )
+    const reportChannel = <TextChannel>(
+        interaction.guild.channels.cache.get(Constants.reportChannel)
     );
 
     reportChannel.send({
@@ -104,7 +100,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         embeds: [embed],
     });
 
-    const replyEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const replyEmbed = EmbedCreator.createNormalEmbed({
         color: "#527ea3",
         timestamp: true,
     });

@@ -41,8 +41,6 @@ export abstract class Config {
         "635549568854917150",
     ] as readonly Snowflake[];
 
-    static readonly reportChannel = "reports";
-
     static readonly activityList = [
         ["Underworld Console", ActivityType.Playing],
         ["Rulid Village", ActivityType.Watching],

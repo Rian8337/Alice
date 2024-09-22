@@ -1,4 +1,5 @@
 import { Config } from "@alice-core/Config";
+import { Constants } from "@alice-core/Constants";
 import { ReportMessageLocalization } from "@alice-localization/interactions/contextmenus/message/reportMessage/ReportMessageLocalization";
 import { MessageContextMenuCommand } from "@alice-structures/core/MessageContextMenuCommand";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
@@ -7,8 +8,6 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 import {
-    EmbedBuilder,
-    GuildMember,
     PermissionsBitField,
     TextChannel,
     bold,
@@ -16,17 +15,18 @@ import {
     roleMention,
 } from "discord.js";
 
-export const run: MessageContextMenuCommand["run"] = async (
-    client,
-    interaction,
-) => {
-    const localization: ReportMessageLocalization =
-        new ReportMessageLocalization(CommandHelper.getLocale(interaction));
+export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
 
-    const toReport: GuildMember | null =
-        (await interaction.guild?.members
-            .fetch(interaction.targetMessage.author)
-            .catch(() => null)) ?? null;
+    const localization = new ReportMessageLocalization(
+        CommandHelper.getLocale(interaction),
+    );
+
+    const toReport = await interaction.guild.members
+        .fetch(interaction.targetMessage.author)
+        .catch(() => null);
 
     if (
         !toReport ||
@@ -48,7 +48,7 @@ export const run: MessageContextMenuCommand["run"] = async (
         });
     }
 
-    const confirmation: boolean = await MessageButtonCreator.createConfirmation(
+    const confirmation = await MessageButtonCreator.createConfirmation(
         interaction,
         {
             content: MessageCreator.createWarn(
@@ -64,9 +64,9 @@ export const run: MessageContextMenuCommand["run"] = async (
         return;
     }
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
-        color: (<GuildMember | null>interaction.member)?.displayColor,
+        color: interaction.member.displayColor,
         timestamp: true,
     });
 
@@ -84,10 +84,8 @@ export const run: MessageContextMenuCommand["run"] = async (
                 )})`,
         );
 
-    const reportChannel: TextChannel = <TextChannel>(
-        interaction.guild!.channels.cache.find(
-            (c) => c.name === Config.reportChannel,
-        )
+    const reportChannel = <TextChannel>(
+        interaction.guild.channels.cache.get(Constants.reportChannel)
     );
 
     reportChannel.send({
@@ -99,7 +97,7 @@ export const run: MessageContextMenuCommand["run"] = async (
         embeds: [embed],
     });
 
-    const replyEmbed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const replyEmbed = EmbedCreator.createNormalEmbed({
         color: "#527ea3",
         timestamp: true,
     });

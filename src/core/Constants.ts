@@ -115,4 +115,9 @@ export class Constants {
      */
     static readonly dppProfileDisplayerRole =
         "1082254268691644446" satisfies Snowflake;
+
+    /**
+     * The ID of the report channel in the main server.
+     */
+    static readonly reportChannel = "652902812354609162" satisfies Snowflake;
 }

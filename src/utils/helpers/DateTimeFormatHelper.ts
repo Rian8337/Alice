@@ -13,30 +13,29 @@ export abstract class DateTimeFormatHelper {
      * @returns The formatted date.
      */
     static secondsToDHMS(seconds: number, language: Language = "en"): string {
-        const localization: DateTimeFormatHelperLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         seconds = Math.trunc(seconds);
 
-        const days: number = Math.floor(seconds / 86400);
+        const days = Math.floor(seconds / 86400);
         seconds -= days * 86400;
 
-        const hours: number = Math.floor(seconds / 3600);
+        const hours = Math.floor(seconds / 3600);
         seconds -= hours * 3600;
 
-        const minutes: number = Math.floor(seconds / 60);
+        const minutes = Math.floor(seconds / 60);
         seconds -= minutes * 60;
 
-        const final: string[] = [
+        const final = [
             `${days} ${localization.getTranslation(days > 1 ? "days" : "day")}`,
             `${hours} ${localization.getTranslation(
-                hours > 1 ? "hours" : "hour"
+                hours > 1 ? "hours" : "hour",
             )}`,
             `${minutes} ${localization.getTranslation(
-                minutes > 1 ? "minutes" : "minute"
+                minutes > 1 ? "minutes" : "minute",
             )}`,
             `${seconds} ${localization.getTranslation(
-                seconds > 1 ? "seconds" : "second"
+                seconds > 1 ? "seconds" : "second",
             )}`,
         ];
 
@@ -55,19 +54,16 @@ export abstract class DateTimeFormatHelper {
     static secondsToDDHHMMSS(seconds: number): string {
         seconds = Math.trunc(seconds);
 
-        const days: number = Math.floor(seconds / 86400);
+        const days = Math.floor(seconds / 86400);
         seconds -= days * 86400;
 
-        const hours: number = Math.floor(seconds / 3600);
+        const hours = Math.floor(seconds / 3600);
         seconds -= hours * 3600;
 
-        const minutes: number = Math.floor(seconds / 60);
+        const minutes = Math.floor(seconds / 60);
         seconds -= minutes * 60;
 
-        const final: string[] = [
-            minutes.toString(),
-            seconds.toString().padStart(2, "0"),
-        ];
+        const final = [minutes.toString(), seconds.toString().padStart(2, "0")];
 
         if (hours > 0) {
             final.unshift(hours.toString());
@@ -91,8 +87,8 @@ export abstract class DateTimeFormatHelper {
      * @returns The converted time format in seconds.
      */
     static DHMStoSeconds(dhms: string): number {
-        let time: number = 0;
-        const timeEntry: string[] = dhms.toLowerCase().split(/[dhms:]/g);
+        let time = 0;
+        const timeEntry = dhms.toLowerCase().split(/[dhms:]/g);
 
         if (/[dhms]/g.test(dhms)) {
             // Contains either "d", "h", "m", or "s",
@@ -102,14 +98,14 @@ export abstract class DateTimeFormatHelper {
                 if (isNaN(time)) {
                     break;
                 }
-                const str: string = dhms.charAt(i);
+                const str = dhms.charAt(i);
                 if (/[dhms]/.test(str) && !usedFormats.includes(str)) {
                     if (mark === i) {
                         ++mark;
                         continue;
                     }
                     usedFormats.push(str);
-                    const currentTime: number = parseFloat(dhms.slice(mark, i));
+                    const currentTime = parseFloat(dhms.slice(mark, i));
                     mark = i + 1;
 
                     let multiplier = 1;
@@ -159,9 +155,7 @@ export abstract class DateTimeFormatHelper {
      * @returns The converted string.
      */
     static dateToHumanReadable(date: Date): string {
-        const str: string = date.toUTCString();
-
-        return str.split(" ").slice(1, 4).join(" ");
+        return date.toUTCString().split(" ").slice(1, 4).join(" ");
     }
 
     /**
@@ -188,7 +182,7 @@ export abstract class DateTimeFormatHelper {
      * @returns The formatted date.
      */
     static dateToLocaleString(date: Date, language: Language): string {
-        const localeToConvert: string = LocaleHelper.convertToBCP47(language);
+        const localeToConvert = LocaleHelper.convertToBCP47(language);
 
         return localeToConvert === "en-US"
             ? date.toUTCString()
@@ -205,7 +199,7 @@ export abstract class DateTimeFormatHelper {
      * @param language The language to localize.
      */
     private static getLocalization(
-        language: Language
+        language: Language,
     ): DateTimeFormatHelperLocalization {
         return new DateTimeFormatHelperLocalization(language);
     }
