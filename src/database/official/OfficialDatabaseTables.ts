@@ -8,6 +8,9 @@ config();
 export enum OfficialDatabaseTables {
     user = "user",
     score = "score",
+    bestScore = "score_best",
+    bannedScore = "score_banned",
+    bestBannedScore = "score_best_banned",
 }
 
 /**
@@ -17,7 +20,7 @@ export enum OfficialDatabaseTables {
  * @returns The constructed table name.
  */
 export function constructOfficialDatabaseTable(
-    table: OfficialDatabaseTables
+    table: OfficialDatabaseTables,
 ): string {
     return `${process.env.OFFICIAL_DB_PREFIX}${table}`;
 }
