@@ -38,8 +38,8 @@ export const run: EventUtil["run"] = async (
     const onboardingCompleteDuration = Date.now() - joinedTimestamp;
 
     // Mark the member as a potential alternate account if they complete onboarding within
-    // 1 minute of their join.
-    if (onboardingCompleteDuration > 60000) {
+    // 30 seconds of their join.
+    if (onboardingCompleteDuration > 30000) {
         return;
     }
 
