@@ -2,7 +2,15 @@ import { Constants } from "@alice-core/Constants";
 import { EventUtil } from "@alice-structures/core/EventUtil";
 import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { bold, GuildMember, GuildMemberFlags, userMention } from "discord.js";
+import {
+    ActionRowBuilder,
+    bold,
+    ButtonBuilder,
+    ButtonStyle,
+    GuildMember,
+    GuildMemberFlags,
+    userMention,
+} from "discord.js";
 
 export const run: EventUtil["run"] = async (
     _,
@@ -52,6 +60,18 @@ export const run: EventUtil["run"] = async (
     }
 
     await reportChannel.send({
+        components: [
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`spamAccountKick#${newMember.id}`)
+                    .setStyle(ButtonStyle.Danger)
+                    .setLabel("Kick"),
+                new ButtonBuilder()
+                    .setCustomId(`spamAccountBan#${newMember.id}`)
+                    .setStyle(ButtonStyle.Danger)
+                    .setLabel("Ban"),
+            ),
+        ],
         embeds: [
             EmbedCreator.createNormalEmbed({
                 color: "Red",
