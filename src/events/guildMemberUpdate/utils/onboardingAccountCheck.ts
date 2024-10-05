@@ -38,8 +38,8 @@ export const run: EventUtil["run"] = async (
     const onboardingCompleteDuration = Date.now() - joinedTimestamp;
 
     // Mark the member as a potential alternate account if they complete onboarding within
-    // 30 seconds of their join.
-    if (onboardingCompleteDuration > 30000) {
+    // 20 seconds of their join.
+    if (onboardingCompleteDuration > 15000) {
         return;
     }
 
@@ -61,7 +61,7 @@ export const run: EventUtil["run"] = async (
                 .setTitle("Potential Alternate/Spam Account Detected")
                 .setDescription(
                     `${bold("User")}: ${newMember.user.tag} (${userMention(newMember.user.id)})\n\n` +
-                        `Completed onboarding in ${bold(DateTimeFormatHelper.secondsToDHMS(onboardingCompleteDuration / 1000))} seconds after joining the server.`,
+                        `Completed onboarding in ${bold(DateTimeFormatHelper.secondsToDHMS(onboardingCompleteDuration / 1000))} after joining the server.`,
                 ),
         ],
     });
