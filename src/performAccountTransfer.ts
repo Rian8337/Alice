@@ -4,6 +4,8 @@ import {
     constructOfficialDatabaseTable,
     OfficialDatabaseTables,
 } from "@alice-database/official/OfficialDatabaseTables";
+import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { RowDataPacket } from "mysql2";
 
 Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
     const dbManager = DatabaseManager.aliceDb.collections.accountTransfer;
@@ -53,8 +55,26 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
             valuesArr,
         );
 
+        const topScores = await connection
+            .query<
+                RowDataPacket[]
+            >(`SELECT accuracy FROM ${scoreTable} WHERE uid = ? AND score > 0 ORDER BY pp DESC LIMIT 100`, [transfer.transferUid])
+            .then((res) => res[0] as Pick<OfficialDatabaseScore, "accuracy">[]);
+
+        let accuracy = 0;
+        let accuracyWeight = 0;
+
+        for (let i = 0; i < topScores.length; ++i) {
+            const weight = Math.pow(0.95, i);
+
+            accuracy += topScores[i].accuracy * weight;
+            accuracyWeight += weight;
+        }
+
+        accuracy /= accuracyWeight;
+
         await connection.query(
-            `UPDATE ${userTable} SET accuracy = (SELECT SUM(accuracy) FROM ${scoreTable} WHERE uid = ?) WHERE id = ?`,
+            `UPDATE ${userTable} SET accuracy = ${accuracy} WHERE id = ?`,
             valuesArr,
         );
 
