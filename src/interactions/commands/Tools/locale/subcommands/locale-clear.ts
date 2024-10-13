@@ -9,14 +9,14 @@ import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: LocaleLocalization = new LocaleLocalization(
+    const localization = new LocaleLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const constantsLocalization: ConstantsLocalization =
+    const constantsLocalization =
         new ConstantsLocalization(localization.language);
 
-    const scope: string = interaction.options.getString("scope", true);
+    const scope = interaction.options.getString("scope", true);
 
     let result: OperationResult;
 
