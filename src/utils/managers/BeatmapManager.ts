@@ -810,7 +810,7 @@ export abstract class BeatmapManager extends Manager {
             case 6:
                 return `${bold(
                     "Last Update",
-                )}: ${beatmapInfo.lastUpdate.toUTCString()} | ${bold(
+                )}: <t:${Math.floor(beatmapInfo.lastUpdate.getTime() / 1000)}:F> | ${bold(
                     this.convertStatus(beatmapInfo.approved),
                 )}`;
             case 7:
