@@ -7,4 +7,7 @@ config();
 
 const bot = new Bot();
 
-bot.start();
+bot.start().catch((e) => {
+    console.error(e);
+    process.exit(1);
+});
