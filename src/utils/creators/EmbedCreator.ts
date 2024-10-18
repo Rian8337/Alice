@@ -143,8 +143,6 @@ export abstract class EmbedCreator {
         });
 
         const totalDifficulty = beatmapInfo.totalDifficulty ?? 0;
-        const diffStatOptions =
-            calculationParams?.toDifficultyStatisticsCalculatorOptions();
 
         embed
             .setAuthor({
@@ -152,15 +150,26 @@ export abstract class EmbedCreator {
                 iconURL: `attachment://osu-${totalDifficulty.toFixed(2)}.png`,
             })
             .setTitle(
-                BeatmapManager.showStatistics(beatmapInfo, 0, diffStatOptions),
+                BeatmapManager.showStatistics(
+                    beatmapInfo,
+                    0,
+                    calculationParams?.mods,
+                    calculationParams?.customSpeedMultiplier,
+                ),
             )
             .setDescription(
-                BeatmapManager.showStatistics(beatmapInfo, 1, diffStatOptions) +
+                BeatmapManager.showStatistics(
+                    beatmapInfo,
+                    1,
+                    calculationParams?.mods,
+                    calculationParams?.customSpeedMultiplier,
+                ) +
                     "\n" +
                     BeatmapManager.showStatistics(
                         beatmapInfo,
                         2,
-                        diffStatOptions,
+                        calculationParams?.mods,
+                        calculationParams?.customSpeedMultiplier,
                     ),
             )
             .setURL(beatmapInfo.beatmapLink)
@@ -172,7 +181,8 @@ export abstract class EmbedCreator {
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         3,
-                        diffStatOptions,
+                        calculationParams?.mods,
+                        calculationParams?.customSpeedMultiplier,
                     ),
                 },
                 {
@@ -182,7 +192,8 @@ export abstract class EmbedCreator {
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         4,
-                        diffStatOptions,
+                        calculationParams?.mods,
+                        calculationParams?.customSpeedMultiplier,
                     ),
                 },
                 {
@@ -192,19 +203,22 @@ export abstract class EmbedCreator {
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         5,
-                        diffStatOptions,
+                        calculationParams?.mods,
+                        calculationParams?.customSpeedMultiplier,
                     ),
                 },
                 {
                     name: BeatmapManager.showStatistics(
                         beatmapInfo,
                         6,
-                        diffStatOptions,
+                        calculationParams?.mods,
+                        calculationParams?.customSpeedMultiplier,
                     ),
                     value: BeatmapManager.showStatistics(
                         beatmapInfo,
                         7,
-                        diffStatOptions,
+                        calculationParams?.mods,
+                        calculationParams?.customSpeedMultiplier,
                     ),
                 },
                 {
@@ -370,9 +384,7 @@ export abstract class EmbedCreator {
                 ...calculationParams.accuracy,
                 nobjects: beatmap.objects,
             });
-            const { accuracy } = calculationParams;
-            const diffStatOptions =
-                calculationParams.toDifficultyStatisticsCalculatorOptions();
+            const { accuracy, mods, customSpeedMultiplier } = calculationParams;
 
             embed
                 .setColor(
@@ -388,12 +400,14 @@ export abstract class EmbedCreator {
                         name: BeatmapManager.showStatistics(
                             beatmap,
                             6,
-                            diffStatOptions,
+                            mods,
+                            customSpeedMultiplier,
                         ),
                         value: `${BeatmapManager.showStatistics(
                             beatmap,
                             7,
-                            diffStatOptions,
+                            mods,
+                            customSpeedMultiplier,
                         )}\n${bold(
                             `${localization.getTranslation("result")}`,
                         )}: ${combo}/${droidDiffAttribs.maxCombo}x | ${(

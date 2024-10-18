@@ -21,7 +21,7 @@ import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
 import {
     Accuracy,
-    calculateDroidDifficultyStatistics,
+    BeatmapDifficulty,
     Circle,
     DroidHitWindow,
     IModApplicableToDroid,
@@ -332,27 +332,37 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     // This will be used when comparing accuracy against hit result, as the result was rounded down
     // to the nearest integer, making some hits look like they should receive a 300 but instead they
     // receive a 100. The same can be applied for 100 and 50.
-    const realOD = calculateDroidDifficultyStatistics({
-        overallDifficulty: beatmap.od,
-        // Do not apply speed-changing mods as they will affect the hit window.
-        mods: ModUtil.removeSpeedChangingMods(realMods),
-        convertOverallDifficulty: false,
-    }).overallDifficulty;
+    const realDifficulty = new BeatmapDifficulty();
+    realDifficulty.od = beatmap.od;
 
-    const realHitWindow = new DroidHitWindow(realOD);
+    ModUtil.applyModsToBeatmapDifficulty(
+        realDifficulty,
+        Modes.droid,
+        realMods,
+        realSpeedMultiplier,
+        false,
+        realOldStatistics,
+    );
+
+    const realHitWindow = new DroidHitWindow(realDifficulty.od);
     const realIsPrecise = realMods.some((m) => m instanceof ModPrecise);
 
     const realHitWindow300 = realHitWindow.hitWindowFor300(realIsPrecise);
     const realHitWindow100 = realHitWindow.hitWindowFor100(realIsPrecise);
 
-    const simulatedOD = calculateDroidDifficultyStatistics({
-        overallDifficulty: beatmap.od,
-        // Do not apply speed-changing mods as they will affect the hit window and required spinner rotations.
-        mods: ModUtil.removeSpeedChangingMods(simulatedMods),
-        convertOverallDifficulty: false,
-    }).overallDifficulty;
+    const simulatedDifficulty = new BeatmapDifficulty();
+    simulatedDifficulty.od = beatmap.od;
 
-    const simulatedHitWindow = new DroidHitWindow(simulatedOD);
+    ModUtil.applyModsToBeatmapDifficulty(
+        simulatedDifficulty,
+        Modes.droid,
+        simulatedMods,
+        simulatedSpeedMultiplier,
+        false,
+        realOldStatistics,
+    );
+
+    const simulatedHitWindow = new DroidHitWindow(simulatedDifficulty.od);
     const simulatedIsPrecise = simulatedMods.some(
         (m) => m instanceof ModPrecise,
     );
@@ -364,7 +374,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const simulatedHitWindow50 =
         simulatedHitWindow.hitWindowFor50(simulatedIsPrecise);
 
-    const spinnerRotationsNeeded = 2 + (2 * simulatedOD) / 10;
+    const spinnerRotationsNeeded = 2 + (2 * simulatedDifficulty.od) / 10;
 
     const addSliderNestedResult = (
         object: SliderNestedHitObject,

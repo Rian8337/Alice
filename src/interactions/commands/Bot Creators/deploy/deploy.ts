@@ -29,6 +29,10 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             ApplicationCommandType.ChatInput)
     );
 
+    if (type === ApplicationCommandType.PrimaryEntryPoint) {
+        return;
+    }
+
     if (type === ApplicationCommandType.ChatInput) {
         const command = client.interactions.chatInput.get(commandName);
 

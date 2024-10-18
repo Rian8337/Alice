@@ -1,6 +1,5 @@
 import {
     Beatmap,
-    calculateDroidDifficultyStatistics,
     DroidHitWindow,
     IModApplicableToDroid,
     Interpolation,
@@ -8,6 +7,7 @@ import {
     Modes,
     ModHardRock,
     ModPrecise,
+    ModUtil,
     PlaceableHitObject,
     Spinner,
     Vector2,
@@ -93,10 +93,8 @@ export class MissAnalyzer {
         this.hitWindow = new DroidHitWindow(this.beatmap.difficulty.od);
         this.hitWindow50 = this.hitWindow.hitWindowFor50(this.isPrecise);
 
-        this.overallSpeedMultiplier = calculateDroidDifficultyStatistics({
-            mods: mods,
-            customSpeedMultiplier: customSpeedMultiplier,
-        }).overallSpeedMultiplier;
+        this.overallSpeedMultiplier =
+            ModUtil.calculateRateWithMods(mods) * customSpeedMultiplier;
     }
 
     /**

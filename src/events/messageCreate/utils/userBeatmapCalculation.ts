@@ -6,12 +6,8 @@ import { MessageCreator } from "@alice-utils/creators/MessageCreator";
 import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
 import { StringHelper } from "@alice-utils/helpers/StringHelper";
 import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { Message, EmbedBuilder, bold, underscore } from "discord.js";
-import {
-    MapInfo,
-    Modes,
-    calculateOsuDifficultyStatistics,
-} from "@rian8337/osu-base";
+import { Message, EmbedBuilder, bold, underline } from "discord.js";
+import { MapInfo, Modes, ModUtil } from "@rian8337/osu-base";
 import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
 import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
@@ -175,13 +171,10 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             embedOptions.files = [];
 
             const embed = EmbedBuilder.from(embedOptions.embeds![0]);
+            const { mods, customSpeedMultiplier } = calcParams;
 
-            const difficultyStatisticsCalculatorOptions =
-                calcParams.toDifficultyStatisticsCalculatorOptions();
-
-            const speedMultiplier = calculateOsuDifficultyStatistics(
-                difficultyStatisticsCalculatorOptions,
-            ).overallSpeedMultiplier;
+            const speedMultiplier =
+                ModUtil.calculateRateWithMods(mods) * customSpeedMultiplier;
 
             embed
                 .spliceFields(0, embed.data.fields!.length)
@@ -195,7 +188,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     `${BeatmapManager.showStatistics(
                         firstBeatmap,
                         1,
-                        difficultyStatisticsCalculatorOptions,
+                        mods,
+                        customSpeedMultiplier,
                     )}\n` +
                         `${bold("BPM")}: ${BeatmapManager.convertBPM(
                             firstBeatmap.bpm,
@@ -233,7 +227,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 }
 
                 embed.addFields({
-                    name: `${underscore(
+                    name: `${underline(
                         beatmapInfo.version,
                     )} (${droidDiffAttribs.attributes.starRating.toFixed(2)} ${
                         Symbols.star
@@ -244,17 +238,20 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                         `${BeatmapManager.showStatistics(
                             beatmapInfo,
                             2,
-                            difficultyStatisticsCalculatorOptions,
+                            mods,
+                            customSpeedMultiplier,
                         )}\n` +
                         `${BeatmapManager.showStatistics(
                             beatmapInfo,
                             3,
-                            difficultyStatisticsCalculatorOptions,
+                            mods,
+                            customSpeedMultiplier,
                         )}\n` +
                         `${BeatmapManager.showStatistics(
                             beatmapInfo,
                             4,
-                            difficultyStatisticsCalculatorOptions,
+                            mods,
+                            customSpeedMultiplier,
                         )}\n` +
                         `${bold(
                             droidDiffAttribs.attributes.starRating.toFixed(2),

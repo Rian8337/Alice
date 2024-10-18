@@ -1,13 +1,14 @@
 import {
     Beatmap,
+    BeatmapDifficulty,
     DroidHitWindow,
     Mod,
+    Modes,
     ModPrecise,
     ModUtil,
     RGBColor,
     Slider,
     Spinner,
-    calculateDroidDifficultyStatistics,
 } from "@rian8337/osu-base";
 import {
     HitResult,
@@ -65,13 +66,12 @@ export class TimingDistributionChart {
         this.beatmap = beatmap;
         this.hitObjectData = hitObjectData;
 
-        const od = calculateDroidDifficultyStatistics({
-            overallDifficulty: beatmap.difficulty.od,
-            mods: ModUtil.removeSpeedChangingMods(mods),
-            convertOverallDifficulty: false,
-        }).overallDifficulty;
+        const difficulty = new BeatmapDifficulty();
+        difficulty.od = beatmap.difficulty.od;
 
-        this.hitWindow = new DroidHitWindow(od);
+        ModUtil.applyModsToBeatmapDifficulty(difficulty, Modes.droid, mods);
+
+        this.hitWindow = new DroidHitWindow(difficulty.od);
         this.isPrecise = mods.some((m) => m instanceof ModPrecise);
     }
 

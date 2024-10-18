@@ -1,10 +1,5 @@
 import { CloneableDifficultyCalculationParameters } from "@alice-structures/dpp/CloneableDifficultyCalculationParameters";
-import {
-    DifficultyStatisticsCalculatorOptions,
-    Mod,
-    ModDifficultyAdjust,
-    ModUtil,
-} from "@rian8337/osu-base";
+import { Mod, ModDifficultyAdjust, ModUtil } from "@rian8337/osu-base";
 import {
     DifficultyCalculationOptions,
     DroidDifficultyCalculationOptions,
@@ -159,20 +154,6 @@ export class DifficultyCalculationParameters {
 
         return {
             mods: mods,
-            customSpeedMultiplier: this.customSpeedMultiplier,
-        };
-    }
-
-    /**
-     * Converts this parameter to a `DifficultyStatisticsCalculatorOptions`.
-     */
-    toDifficultyStatisticsCalculatorOptions(): DifficultyStatisticsCalculatorOptions {
-        return {
-            circleSize: this.forceCS,
-            approachRate: this.forceAR,
-            overallDifficulty: this.forceOD,
-            healthDrain: this.forceHP,
-            mods: this.mods,
             customSpeedMultiplier: this.customSpeedMultiplier,
         };
     }

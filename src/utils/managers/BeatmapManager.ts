@@ -9,10 +9,13 @@ import {
     Snowflake,
 } from "discord.js";
 import {
-    calculateDroidDifficultyStatistics,
-    calculateOsuDifficultyStatistics,
-    DifficultyStatisticsCalculatorOptions,
+    BeatmapDifficulty,
+    DroidHitWindow,
     MapInfo,
+    Mod,
+    ModDifficultyAdjust,
+    Modes,
+    ModPrecise,
     ModUtil,
     OsuAPIRequestBuilder,
     OsuAPIResponse,
@@ -422,44 +425,43 @@ export abstract class BeatmapManager extends Manager {
      *
      * @param beatmapInfo The beatmap info to show.
      * @param option The option to pick.
-     * @param customDiffStats Custom difficulty statistics to use.
+     * @param mods The mods to use.
+     * @param customSpeedMultiplier The custom speed multiplier to use.
      */
     static showStatistics(
         beatmapInfo: MapInfo,
         option: number,
-        customDiffStats?: Partial<DifficultyStatisticsCalculatorOptions>,
+        mods: Mod[] = [],
+        customSpeedMultiplier: number = 1,
     ): string {
-        customDiffStats ??= {
-            mods: [],
-            customSpeedMultiplier: 1,
-        };
-
         switch (option) {
             case 0: {
-                let string = `${beatmapInfo.fullTitle}${customDiffStats.mods && customDiffStats.mods.length > 0 ? ` +${ModUtil.modsToOsuString(customDiffStats.mods)}` : ""}`;
+                let string = `${beatmapInfo.fullTitle}${mods.length > 0 ? ` +${ModUtil.modsToOsuString(mods)}` : ""}`;
 
                 const customStats: string[] = [];
 
-                if (customDiffStats.customSpeedMultiplier !== 1) {
-                    customStats.push(
-                        `${customDiffStats.customSpeedMultiplier}x`,
-                    );
+                if (customSpeedMultiplier !== 1) {
+                    customStats.push(`${customSpeedMultiplier}x`);
                 }
 
-                if (customDiffStats.circleSize !== undefined) {
-                    customStats.push(`CS${customDiffStats.circleSize}`);
+                const difficultyAdjust = mods.find(
+                    (m) => m instanceof ModDifficultyAdjust,
+                );
+
+                if (difficultyAdjust?.cs !== undefined) {
+                    customStats.push(`CS${difficultyAdjust.cs}`);
                 }
 
-                if (customDiffStats.approachRate !== undefined) {
-                    customStats.push(`AR${customDiffStats.approachRate}`);
+                if (difficultyAdjust?.ar !== undefined) {
+                    customStats.push(`AR${difficultyAdjust.ar}`);
                 }
 
-                if (customDiffStats.overallDifficulty !== undefined) {
-                    customStats.push(`OD${customDiffStats.overallDifficulty}`);
+                if (difficultyAdjust?.od !== undefined) {
+                    customStats.push(`OD${difficultyAdjust.od}`);
                 }
 
-                if (customDiffStats.healthDrain !== undefined) {
-                    customStats.push(`HP${customDiffStats.healthDrain}`);
+                if (difficultyAdjust?.hp !== undefined) {
+                    customStats.push(`HP${difficultyAdjust.hp}`);
                 }
 
                 if (customStats.length > 0) {
@@ -468,6 +470,7 @@ export abstract class BeatmapManager extends Manager {
 
                 return string;
             }
+
             case 1: {
                 let string = `${
                     beatmapInfo.source
@@ -546,141 +549,54 @@ export abstract class BeatmapManager extends Manager {
                 } ${bold("|")} 🎞️ ${beatmapInfo.videoAvailable ? "✅" : "❎"}`;
                 return string;
             }
+
             case 2:
                 return `${bold("Circles")}: ${beatmapInfo.circles} - ${bold(
                     "Sliders",
                 )}: ${beatmapInfo.sliders} - ${bold("Spinners")}: ${
                     beatmapInfo.spinners
                 }`;
-            case 3: {
-                const droidOriginalStats = calculateDroidDifficultyStatistics({
-                    circleSize: beatmapInfo.cs,
-                    approachRate: beatmapInfo.ar,
-                    overallDifficulty: beatmapInfo.od,
-                    healthDrain: beatmapInfo.hp,
-                });
 
-                const droidModifiedStats = calculateDroidDifficultyStatistics({
-                    circleSize: customDiffStats.circleSize ?? beatmapInfo.cs,
-                    approachRate:
-                        customDiffStats.approachRate ?? beatmapInfo.ar,
-                    overallDifficulty:
-                        customDiffStats.overallDifficulty ?? beatmapInfo.od,
-                    healthDrain: customDiffStats.healthDrain ?? beatmapInfo.hp,
-                    mods: customDiffStats.mods,
-                    customSpeedMultiplier:
-                        customDiffStats.customSpeedMultiplier,
-                });
-
-                const droidOriginalCS = NumberHelper.round(
-                    droidOriginalStats.circleSize,
-                    2,
-                );
-                const droidOriginalAR = NumberHelper.round(
-                    droidOriginalStats.approachRate,
-                    2,
-                );
-                const droidOriginalOD = NumberHelper.round(
-                    droidOriginalStats.overallDifficulty,
-                    2,
-                );
-                const droidOriginalHP = NumberHelper.round(
-                    droidOriginalStats.healthDrain,
-                    2,
-                );
-
-                const droidModifiedCS = NumberHelper.round(
-                    droidModifiedStats.circleSize,
-                    2,
-                );
-
-                const droidModifiedAR = NumberHelper.round(
-                    droidModifiedStats.approachRate,
-                    2,
-                );
-
-                const droidModifiedOD = NumberHelper.round(
-                    droidModifiedStats.overallDifficulty,
-                    2,
-                );
-
-                const droidModifiedHP = NumberHelper.round(
-                    droidModifiedStats.healthDrain,
-                    2,
-                );
-
-                const maxScore =
-                    beatmapInfo.beatmap?.maxDroidScore(
-                        customDiffStats.mods,
-                        customDiffStats.customSpeedMultiplier,
-                    ) ?? 0;
-
-                return `${bold("CS")}: ${droidOriginalCS}${
-                    Precision.almostEqualsNumber(
-                        droidOriginalCS,
-                        droidModifiedCS,
-                    )
-                        ? ""
-                        : ` (${droidModifiedCS})`
-                } - ${bold("AR")}: ${droidOriginalAR}${
-                    Precision.almostEqualsNumber(
-                        droidOriginalAR,
-                        droidModifiedAR,
-                    )
-                        ? ""
-                        : ` (${droidModifiedAR})`
-                } - ${bold("OD")}: ${droidOriginalOD}${
-                    Precision.almostEqualsNumber(
-                        droidOriginalOD,
-                        droidModifiedOD,
-                    )
-                        ? ""
-                        : ` (${droidModifiedOD})`
-                } - ${bold("HP")}: ${droidOriginalOD}${
-                    Precision.almostEqualsNumber(
-                        droidOriginalHP,
-                        droidModifiedHP,
-                    )
-                        ? ""
-                        : ` (${droidModifiedHP})`
-                }${
-                    maxScore > 0
-                        ? `\n${bold("Max Score")}: ${maxScore.toLocaleString()}`
-                        : ""
-                }`;
-            }
+            case 3:
             case 4: {
-                const difficultyStatistics = calculateOsuDifficultyStatistics({
-                    circleSize: customDiffStats.circleSize ?? beatmapInfo.cs,
-                    approachRate:
-                        customDiffStats.approachRate ?? beatmapInfo.ar,
-                    overallDifficulty:
-                        customDiffStats.overallDifficulty ?? beatmapInfo.od,
-                    healthDrain: customDiffStats.healthDrain ?? beatmapInfo.hp,
-                    mods: customDiffStats.mods,
-                    customSpeedMultiplier:
-                        customDiffStats.customSpeedMultiplier,
-                });
+                const modifiedDifficulty = new BeatmapDifficulty();
+                modifiedDifficulty.cs = beatmapInfo.cs;
+                modifiedDifficulty.ar = beatmapInfo.ar;
+                modifiedDifficulty.od = beatmapInfo.od;
+                modifiedDifficulty.hp = beatmapInfo.hp;
 
-                const modifiedCS = NumberHelper.round(
-                    difficultyStatistics.circleSize,
-                    2,
+                ModUtil.applyModsToBeatmapDifficulty(
+                    modifiedDifficulty,
+                    option === 3 ? Modes.droid : Modes.osu,
+                    mods,
+                    customSpeedMultiplier,
+                    true,
                 );
-                const modifiedAR = NumberHelper.round(
-                    difficultyStatistics.approachRate,
-                    2,
-                );
-                const modifiedOD = NumberHelper.round(
-                    difficultyStatistics.overallDifficulty,
-                    2,
-                );
-                const modifiedHP = NumberHelper.round(
-                    difficultyStatistics.healthDrain,
-                    2,
-                );
+
+                if (option === 3 && mods.some((m) => m instanceof ModPrecise)) {
+                    // Special case for OD. The Precise mod changes the hit window and not the OD itself, but we must
+                    // map the hit window back to the original hit window for the user to understand the difficulty
+                    // increase of the mod.
+                    const greatWindow = new DroidHitWindow(
+                        modifiedDifficulty.od,
+                    ).hitWindowFor300(true);
+
+                    modifiedDifficulty.od =
+                        DroidHitWindow.hitWindow300ToOD(greatWindow);
+                }
+
+                const modifiedCS = NumberHelper.round(modifiedDifficulty.cs, 2);
+                const modifiedAR = NumberHelper.round(modifiedDifficulty.ar, 2);
+                const modifiedOD = NumberHelper.round(modifiedDifficulty.od, 2);
+                const modifiedHP = NumberHelper.round(modifiedDifficulty.hp, 2);
 
                 const maxScore =
-                    beatmapInfo.beatmap?.maxOsuScore(customDiffStats.mods) ?? 0;
+                    (option === 3
+                        ? beatmapInfo.beatmap?.maxDroidScore(
+                              mods,
+                              customSpeedMultiplier,
+                          )
+                        : beatmapInfo.beatmap?.maxOsuScore(mods)) ?? 0;
 
                 return `${bold("CS")}: ${beatmapInfo.cs}${
                     Precision.almostEqualsNumber(beatmapInfo.cs, modifiedCS)
@@ -704,13 +620,14 @@ export abstract class BeatmapManager extends Manager {
                         : ""
                 }`;
             }
+
             case 5: {
-                const difficultyStatistics =
-                    calculateOsuDifficultyStatistics(customDiffStats);
+                const speedMultiplier =
+                    ModUtil.calculateRateWithMods(mods) * customSpeedMultiplier;
 
                 const convertedBPM = this.convertBPM(
                     beatmapInfo.bpm,
-                    difficultyStatistics.overallSpeedMultiplier,
+                    speedMultiplier,
                 );
 
                 let string = `${bold("BPM")}: `;
@@ -730,7 +647,7 @@ export abstract class BeatmapManager extends Manager {
                         } - ${bold("Length")}: ${this.convertTime(
                             beatmapInfo.hitLength,
                             beatmapInfo.totalLength,
-                            difficultyStatistics.overallSpeedMultiplier,
+                            speedMultiplier,
                         )} - ${bold("Max Combo")}: ${
                             beatmapInfo.maxCombo !== null
                                 ? `${beatmapInfo.maxCombo}x`
@@ -749,12 +666,10 @@ export abstract class BeatmapManager extends Manager {
                         maxBPM = Math.round(maxBPM);
                         minBPM = Math.round(minBPM);
                         const speedMulMinBPM = Math.round(
-                            minBPM *
-                                difficultyStatistics.overallSpeedMultiplier,
+                            minBPM * speedMultiplier,
                         );
                         const speedMulMaxBPM = Math.round(
-                            maxBPM *
-                                difficultyStatistics.overallSpeedMultiplier,
+                            maxBPM * speedMultiplier,
                         );
 
                         string +=
@@ -790,7 +705,7 @@ export abstract class BeatmapManager extends Manager {
                         string += `- ${bold("Length")}: ${this.convertTime(
                             beatmapInfo.hitLength,
                             beatmapInfo.totalLength,
-                            difficultyStatistics.overallSpeedMultiplier,
+                            speedMultiplier,
                         )} - ${bold("Max Combo")}: ${
                             beatmapInfo.maxCombo !== null
                                 ? `${beatmapInfo.maxCombo}x`
@@ -808,7 +723,7 @@ export abstract class BeatmapManager extends Manager {
                     } - ${bold("Length")}: ${this.convertTime(
                         beatmapInfo.hitLength,
                         beatmapInfo.totalLength,
-                        difficultyStatistics.overallSpeedMultiplier,
+                        speedMultiplier,
                     )} - ${bold("Max Combo")}: ${
                         beatmapInfo.maxCombo !== null
                             ? `${beatmapInfo.maxCombo}x`
@@ -817,16 +732,19 @@ export abstract class BeatmapManager extends Manager {
                 }
                 return string;
             }
+
             case 6:
                 return `${bold(
                     "Last Update",
                 )}: <t:${Math.floor(beatmapInfo.lastUpdate.getTime() / 1000)}:F> | ${bold(
                     this.convertStatus(beatmapInfo.approved),
                 )}`;
+
             case 7:
                 return `❤️ ${bold(
                     beatmapInfo.favorites.toLocaleString(),
                 )} - ▶️ ${bold(beatmapInfo.plays.toLocaleString())}`;
+
             default:
                 throw {
                     name: "NotSupportedError",
