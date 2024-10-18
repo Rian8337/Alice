@@ -732,8 +732,10 @@ export abstract class BeatmapManager extends Manager {
                             beatmapInfo.totalLength,
                             difficultyStatistics.overallSpeedMultiplier,
                         )} - ${bold("Max Combo")}: ${
-                            beatmapInfo.maxCombo ?? "Unknown"
-                        }x`;
+                            beatmapInfo.maxCombo !== null
+                                ? `${beatmapInfo.maxCombo}x`
+                                : "Unknown"
+                        }`;
                     } else {
                         let maxBPM = beatmapInfo.bpm;
                         let minBPM = beatmapInfo.bpm;
@@ -789,7 +791,11 @@ export abstract class BeatmapManager extends Manager {
                             beatmapInfo.hitLength,
                             beatmapInfo.totalLength,
                             difficultyStatistics.overallSpeedMultiplier,
-                        )} - ${bold("Max Combo")}: ${beatmapInfo.maxCombo}x`;
+                        )} - ${bold("Max Combo")}: ${
+                            beatmapInfo.maxCombo !== null
+                                ? `${beatmapInfo.maxCombo}x`
+                                : "Unknown"
+                        }`;
                     }
                 } else {
                     string += `${beatmapInfo.bpm}${
@@ -803,7 +809,11 @@ export abstract class BeatmapManager extends Manager {
                         beatmapInfo.hitLength,
                         beatmapInfo.totalLength,
                         difficultyStatistics.overallSpeedMultiplier,
-                    )} - ${bold("Max Combo")}: ${beatmapInfo.maxCombo}x`;
+                    )} - ${bold("Max Combo")}: ${
+                        beatmapInfo.maxCombo !== null
+                            ? `${beatmapInfo.maxCombo}x`
+                            : "Unknown"
+                    }`;
                 }
                 return string;
             }
