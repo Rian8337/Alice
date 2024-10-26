@@ -21,8 +21,16 @@ export abstract class CacheManager {
     /**
      * The beatmaps that have been cached, mapped by beatmap ID.
      */
-    static readonly beatmapCache = new LimitedCapacityCollection<
+    static readonly beatmapIdCache = new LimitedCapacityCollection<
         number,
+        MapInfo
+    >(150, 600);
+
+    /**
+     * The beatmaps that have been cached, mapped by beatmap hash.
+     */
+    static readonly beatmapHashCache = new LimitedCapacityCollection<
+        string,
         MapInfo
     >(150, 600);
 

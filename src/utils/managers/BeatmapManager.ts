@@ -9,6 +9,7 @@ import {
     Snowflake,
 } from "discord.js";
 import {
+    BeatmapDecoder,
     BeatmapDifficulty,
     DroidHitWindow,
     MapInfo,
@@ -17,8 +18,6 @@ import {
     Modes,
     ModPrecise,
     ModUtil,
-    OsuAPIRequestBuilder,
-    OsuAPIResponse,
     Precision,
     RankedStatus,
 } from "@rian8337/osu-base";
@@ -30,6 +29,7 @@ import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
 import { ScoreRank } from "structures/utils/ScoreRank";
 import { BeatmapRetrievalOptions } from "@alice-structures/utils/BeatmapRetrievalOptions";
 import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { BeatmapProcessorRESTManager } from "./BeatmapProcessorRESTManager";
 
 /**
  * A manager for beatmaps.
@@ -72,30 +72,64 @@ export abstract class BeatmapManager extends Manager {
         beatmapIdOrHash: number | string,
         options?: BeatmapRetrievalOptions & { checkFile?: T },
     ): Promise<MapInfo<T> | null> {
-        const oldCache = CacheManager.beatmapCache.find(
-            (v) =>
-                v.beatmapId === beatmapIdOrHash || v.hash === beatmapIdOrHash,
-        );
+        let oldCache =
+            typeof beatmapIdOrHash === "number"
+                ? CacheManager.beatmapIdCache.get(beatmapIdOrHash)
+                : CacheManager.beatmapHashCache.get(beatmapIdOrHash);
 
         if (oldCache && !options?.forceCheck) {
             if (options?.checkFile !== false) {
-                await oldCache.retrieveBeatmapFile();
+                const beatmapFile =
+                    await BeatmapProcessorRESTManager.getBeatmapFile(
+                        oldCache.beatmapId,
+                    );
+
+                if (!beatmapFile) {
+                    return null;
+                }
+
+                oldCache = MapInfo.from(
+                    oldCache.toAPIResponse(),
+                    new BeatmapDecoder().decode(beatmapFile.toString()).result,
+                );
+
+                CacheManager.beatmapIdCache.set(oldCache.beatmapId, oldCache);
+                CacheManager.beatmapHashCache.set(oldCache.hash, oldCache);
             }
 
             return oldCache;
         }
 
-        const newCache: MapInfo | null = await MapInfo.getInformation(
-            beatmapIdOrHash,
-            options?.checkFile,
-        );
+        const apiBeatmap =
+            await BeatmapProcessorRESTManager.getBeatmap(beatmapIdOrHash);
 
-        if (!newCache) {
+        if (!apiBeatmap) {
             return null;
         }
 
+        let newCache: MapInfo;
+
+        if (options?.checkFile !== false) {
+            const beatmapFile =
+                await BeatmapProcessorRESTManager.getBeatmapFile(
+                    parseInt(apiBeatmap.beatmap_id),
+                );
+
+            if (!beatmapFile) {
+                return null;
+            }
+
+            newCache = MapInfo.from(
+                apiBeatmap,
+                new BeatmapDecoder().decode(beatmapFile.toString()).result,
+            );
+        } else {
+            newCache = MapInfo.from(apiBeatmap);
+        }
+
         if (options?.cacheBeatmap !== false) {
-            CacheManager.beatmapCache.set(newCache.beatmapId, newCache);
+            CacheManager.beatmapIdCache.set(newCache.beatmapId, newCache);
+            CacheManager.beatmapHashCache.set(newCache.hash, newCache);
         }
 
         return newCache;
@@ -112,41 +146,41 @@ export abstract class BeatmapManager extends Manager {
         beatmapsetID: number,
         checkFile: boolean = true,
     ): Promise<MapInfo[]> {
-        const apiRequestBuilder = new OsuAPIRequestBuilder();
+        const apiBeatmaps =
+            await BeatmapProcessorRESTManager.getBeatmapset(beatmapsetID);
 
-        apiRequestBuilder
-            .setEndpoint("get_beatmaps")
-            .addParameter("s", beatmapsetID);
-
-        const result = await apiRequestBuilder.sendRequest();
-
-        if (result.statusCode !== 200) {
-            throw new Error("osu! API request returned a non-200 response");
+        if (apiBeatmaps === null || apiBeatmaps.length === 0) {
+            return [];
         }
 
         const beatmaps: MapInfo[] = [];
 
-        const beatmapsData: OsuAPIResponse[] = JSON.parse(
-            result.data.toString("utf-8"),
-        );
-
-        for (const beatmapData of beatmapsData) {
-            if (beatmapData.mode !== "0") {
+        for (const apiBeatmap of apiBeatmaps) {
+            if (apiBeatmap.mode !== "0") {
                 continue;
             }
 
-            const beatmapInfo = MapInfo.from(beatmapData);
-            if (!beatmapInfo.title) {
-                continue;
-            }
+            let beatmap: MapInfo;
 
             if (checkFile) {
-                await beatmapInfo.retrieveBeatmapFile(true);
+                const beatmapFile =
+                    await BeatmapProcessorRESTManager.getBeatmapFile(
+                        parseInt(apiBeatmap.beatmap_id),
+                    );
+
+                if (!beatmapFile) {
+                    continue;
+                }
+
+                beatmap = MapInfo.from(
+                    apiBeatmap,
+                    new BeatmapDecoder().decode(beatmapFile.toString()).result,
+                );
+            } else {
+                beatmap = MapInfo.from(apiBeatmap);
             }
 
-            beatmaps.push(beatmapInfo);
-
-            CacheManager.beatmapCache.set(beatmapInfo.beatmapId, beatmapInfo);
+            beatmaps.push(beatmap);
         }
 
         return beatmaps;
