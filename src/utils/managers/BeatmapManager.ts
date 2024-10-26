@@ -107,24 +107,10 @@ export abstract class BeatmapManager extends Manager {
             return null;
         }
 
-        let newCache: MapInfo;
+        const newCache = MapInfo.from(apiBeatmap);
 
         if (options?.checkFile !== false) {
-            const beatmapFile =
-                await BeatmapProcessorRESTManager.getBeatmapFile(
-                    parseInt(apiBeatmap.beatmap_id),
-                );
-
-            if (!beatmapFile) {
-                return null;
-            }
-
-            newCache = MapInfo.from(
-                apiBeatmap,
-                new BeatmapDecoder().decode(beatmapFile.toString()).result,
-            );
-        } else {
-            newCache = MapInfo.from(apiBeatmap);
+            await this.downloadBeatmap(newCache);
         }
 
         if (options?.cacheBeatmap !== false) {
@@ -160,30 +146,39 @@ export abstract class BeatmapManager extends Manager {
                 continue;
             }
 
-            let beatmap: MapInfo;
+            const beatmap = MapInfo.from(apiBeatmap);
 
             if (checkFile) {
-                const beatmapFile =
-                    await BeatmapProcessorRESTManager.getBeatmapFile(
-                        parseInt(apiBeatmap.beatmap_id),
-                    );
-
-                if (!beatmapFile) {
-                    continue;
-                }
-
-                beatmap = MapInfo.from(
-                    apiBeatmap,
-                    new BeatmapDecoder().decode(beatmapFile.toString()).result,
-                );
-            } else {
-                beatmap = MapInfo.from(apiBeatmap);
+                await this.downloadBeatmap(beatmap);
             }
 
             beatmaps.push(beatmap);
         }
 
         return beatmaps;
+    }
+
+    /**
+     * Downloads the beatmap of a `MapInfo`.
+     *
+     * @param mapinfo The `MapInfo` whose beatmap will be downloaded.
+     */
+    static async downloadBeatmap(mapinfo: MapInfo<false>) {
+        if (mapinfo.hasDownloadedBeatmap()) {
+            return;
+        }
+
+        const beatmapFile = await BeatmapProcessorRESTManager.getBeatmapFile(
+            mapinfo.beatmapId,
+        );
+
+        if (!beatmapFile) {
+            return;
+        }
+
+        mapinfo.setBeatmap(
+            new BeatmapDecoder().decode(beatmapFile.toString()).result,
+        );
     }
 
     /**

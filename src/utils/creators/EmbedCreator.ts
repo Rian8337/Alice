@@ -722,7 +722,7 @@ export abstract class EmbedCreator {
             const replay = await ReplayHelper.analyzeReplay(score);
             const { data } = replay;
 
-            await beatmap.retrieveBeatmapFile();
+            await BeatmapManager.downloadBeatmap(beatmap);
 
             if (data && beatmap.hasDownloadedBeatmap()) {
                 replay.beatmap ??= beatmap.beatmap!;

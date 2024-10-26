@@ -285,7 +285,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    await beatmap.retrieveBeatmapFile();
+    await BeatmapManager.downloadBeatmap(beatmap);
+
     if (!beatmap.hasDownloadedBeatmap()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(

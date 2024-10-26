@@ -106,7 +106,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         case "score": {
             value = parseInt(value);
 
-            await beatmap.retrieveBeatmapFile();
+            await BeatmapManager.downloadBeatmap(beatmap);
 
             if (!beatmap.hasDownloadedBeatmap()) {
                 return InteractionHelper.reply(interaction, {

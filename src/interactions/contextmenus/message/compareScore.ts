@@ -150,18 +150,12 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         return InteractionHelper.reply(interaction, options);
     }
 
-    await beatmapInfo.retrieveBeatmapFile();
-
-    if (beatmapInfo?.hasDownloadedBeatmap()) {
-        MessageButtonCreator.createRecentScoreButton(
-            interaction,
-            options,
-            beatmapInfo.beatmap,
-            replay.data,
-        );
-    } else {
-        InteractionHelper.reply(interaction, options);
-    }
+    MessageButtonCreator.createRecentScoreButton(
+        interaction,
+        options,
+        beatmapInfo.beatmap,
+        replay.data,
+    );
 };
 
 export const config: MessageContextMenuCommand["config"] = {

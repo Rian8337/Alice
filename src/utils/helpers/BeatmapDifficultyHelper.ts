@@ -899,6 +899,6 @@ export abstract class BeatmapDifficultyHelper<
      * @param beatmap The beatmap.
      */
     private async initBeatmap(beatmap: MapInfo): Promise<void> {
-        await beatmap.retrieveBeatmapFile();
+        await BeatmapManager.downloadBeatmap(beatmap);
     }
 }
