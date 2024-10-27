@@ -43,7 +43,7 @@ export class ClanAuction extends Manager {
     expirydate: number;
 
     /**
-     * The minimum amount of Alice coins required to bid in this auction.
+     * The minimum amount of Mahiru coins required to bid in this auction.
      */
     min_price: number;
 
@@ -83,7 +83,7 @@ export class ClanAuction extends Manager {
      * Bids to the auction.
      *
      * @param clan The clan who bid.
-     * @param amount The amount of Alice coins to bid.
+     * @param amount The amount of Mahiru coins to bid.
      * @returns An object containing information about the operation.
      */
     bid(clan: Clan, amount: number): OperationResult {

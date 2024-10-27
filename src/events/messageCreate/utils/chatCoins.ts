@@ -59,7 +59,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             {
                 projection: {
                     _id: 0,
-                    alicecoins: 1,
+                    coins: 1,
                 },
             },
         );
@@ -73,7 +73,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
 export const config: EventUtil["config"] = {
     description:
-        "Responsible for tracking Alice coins cooldown for users' chat activities.",
+        "Responsible for tracking Mahiru coins cooldown for users' chat activities.",
     togglePermissions: ["BotOwner"],
     toggleScope: ["GLOBAL"],
 };

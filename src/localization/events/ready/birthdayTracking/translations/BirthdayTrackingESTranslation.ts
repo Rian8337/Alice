@@ -7,6 +7,6 @@ import { BirthdayTrackingStrings } from "../BirthdayTrackingLocalization";
 export class BirthdayTrackingESTranslation extends Translation<BirthdayTrackingStrings> {
     override readonly translations: BirthdayTrackingStrings = {
         happyBirthday:
-            "Hey, me gustaría desearte un Feliz Cumpleaños! Espero que tengas un maravilloso día junto a tu familia, amigos y personas queridas. Por favor, acepta este regalo de `1,000` monedas Alice y un rol temporal en el servidor de Discord de parte mia.",
+            "Hey, me gustaría desearte un Feliz Cumpleaños! Espero que tengas un maravilloso día junto a tu familia, amigos y personas queridas. Por favor, acepta este regalo de `1,000` monedas Mahiru y un rol temporal en el servidor de Discord de parte mia.",
     };
 }

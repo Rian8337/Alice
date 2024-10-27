@@ -124,7 +124,7 @@ export class Bot extends Client<true> {
         await this.registerDeployCommands();
 
         consola.success("Discord API connection established");
-        consola.success("Alice Synthesis Thirty is up and running");
+        consola.success("Mahiru Shiina is up and running");
     }
 
     /**

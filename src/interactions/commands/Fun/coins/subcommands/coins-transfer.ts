@@ -77,7 +77,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 projection: {
                     _id: 0,
-                    alicecoins: 1,
+                    coins: 1,
                     transferred: 1,
                 },
             },
@@ -92,11 +92,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     if (
-        !NumberHelper.isNumberInRange(
-            transferAmount,
-            0,
-            userPlayerInfo.alicecoins,
-        )
+        !NumberHelper.isNumberInRange(transferAmount, 0, userPlayerInfo.coins)
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -111,7 +107,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 projection: {
                     _id: 0,
-                    alicecoins: 1,
+                    coins: 1,
                 },
             },
         );
@@ -202,7 +198,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             transferAmount.toLocaleString(BCP47),
             toTransferGuildMember.toString(),
             (limit - transferAmount - transferredAmount).toLocaleString(BCP47),
-            (userPlayerInfo.alicecoins - transferAmount).toLocaleString(BCP47),
+            (userPlayerInfo.coins - transferAmount).toLocaleString(BCP47),
         ),
     });
 };

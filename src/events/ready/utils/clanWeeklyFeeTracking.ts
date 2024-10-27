@@ -121,23 +121,23 @@ export const run: EventUtil["run"] = async (client) => {
                             {
                                 projection: {
                                     _id: 0,
-                                    alicecoins: 1,
+                                    coins: 1,
                                 },
                             },
                         );
 
                     if (!memberPlayerInfo) {
-                        // Clan member doesn't have any Alice coins info, possibly being banned from the server or the game.
+                        // Clan member doesn't have any Mahiru coins info, possibly being banned from the server or the game.
                         // In that case, simply kick.
                         await clan.removeMember(member.id, language);
                         ++kickedCount;
                         continue;
                     }
 
-                    const coins: number = memberPlayerInfo.alicecoins;
+                    const coins: number = memberPlayerInfo.coins;
 
                     if (coins < upkeep) {
-                        // Clan member doesn't have enough Alice coins to pay upkeep.
+                        // Clan member doesn't have enough Mahiru coins to pay upkeep.
                         // If the penalized member is the leader, kick a random member.
                         let userToKick: Snowflake = member.id;
                         let kickedGuildMember: GuildMember | undefined =

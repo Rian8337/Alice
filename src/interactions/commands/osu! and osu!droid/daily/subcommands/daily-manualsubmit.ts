@@ -134,7 +134,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             _id: 0,
             challenges: 1,
             points: 1,
-            alicecoins: 1,
+            coins: 1,
         },
     });
 
@@ -235,7 +235,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                             challengeData.highestLevel,
                     },
                     $inc: {
-                        alicecoins: pointsGained * 2,
+                        coins: pointsGained * 2,
                         points: pointsGained,
                     },
                 },
@@ -255,7 +255,7 @@ export const run: SlashSubcommand<true>["run"] = async (
                         challenges: challengeData,
                     },
                     $inc: {
-                        alicecoins: pointsGained * 2,
+                        coins: pointsGained * 2,
                         points: pointsGained,
                     },
                 },
@@ -271,7 +271,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             username: player.username,
             discordid: interaction.user.id,
             points: pointsGained,
-            alicecoins: pointsGained * 2,
+            coins: pointsGained * 2,
             challenges: [
                 {
                     id: challenge.challengeid,
@@ -302,9 +302,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             pointsGained.toLocaleString(BCP47),
             (pointsGained * 2).toLocaleString(BCP47),
             ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(BCP47),
-            ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString(
-                BCP47,
-            ),
+            ((playerInfo?.coins ?? 0) + pointsGained * 2).toLocaleString(BCP47),
         ),
     });
 };

@@ -124,7 +124,7 @@ export const run: EventUtil["run"] = async (client) => {
 
             await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
                 { discordid: user.id },
-                { $inc: { alicecoins: 1000 } },
+                { $inc: { coins: 1000 } },
             );
         }
     }, 20 * 1000);

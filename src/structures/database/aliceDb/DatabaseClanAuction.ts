@@ -27,7 +27,7 @@ export interface DatabaseClanAuction extends BaseDocument {
     expirydate: number;
 
     /**
-     * The minimum amount of Alice coins required to bid in this auction.
+     * The minimum amount of Mahiru coins required to bid in this auction.
      */
     min_price: number;
 

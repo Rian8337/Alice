@@ -84,7 +84,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     }\n` +
                     `${bold(
                         localization.getTranslation("clanMemberUpkeepValue"),
-                    )}: ${clan.calculateUpkeep(member.id)} Alice coins`,
+                    )}: ${clan.calculateUpkeep(member.id)} Mahiru coins`,
             );
         }
 

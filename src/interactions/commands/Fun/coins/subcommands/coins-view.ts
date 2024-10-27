@@ -16,7 +16,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const playerInfo: PlayerInfo | null =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(user, {
-            projection: { _id: 0, alicecoins: 1 },
+            projection: { _id: 0, coins: 1 },
         });
 
     InteractionHelper.reply(interaction, {
@@ -26,7 +26,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     ? "selfCoinAmountInfo"
                     : "userCoinAmountInfo",
             ),
-            (playerInfo?.alicecoins ?? 0).toLocaleString(
+            (playerInfo?.coins ?? 0).toLocaleString(
                 LocaleHelper.convertToBCP47(language),
             ),
         ),

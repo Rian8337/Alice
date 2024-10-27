@@ -23,7 +23,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                     streak: 1,
-                    alicecoins: 1,
+                    coins: 1,
                     hasClaimedDaily: 1,
                 },
             },
@@ -65,7 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ),
                 dailyCoin.toLocaleString(BCP47),
                 streak.toString(),
-                (playerInfo.alicecoins + dailyCoin).toLocaleString(BCP47),
+                (playerInfo.coins + dailyCoin).toLocaleString(BCP47),
             ),
         });
     } else {
@@ -100,7 +100,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 uid: bindInfo.uid,
                 discordid: interaction.user.id,
                 hasClaimedDaily: true,
-                alicecoins: 50,
+                coins: 50,
                 streak: 1,
             });
 

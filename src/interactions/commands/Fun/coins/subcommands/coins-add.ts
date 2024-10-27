@@ -50,7 +50,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 projection: {
                     _id: 0,
-                    alicecoins: 1,
+                    coins: 1,
                 },
             },
         );
@@ -83,7 +83,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         content: MessageCreator.createAccept(
             localization.getTranslation("addCoinSuccess"),
             addAmount.toLocaleString(BCP47),
-            (playerInfo.alicecoins + addAmount).toLocaleString(BCP47),
+            (playerInfo.coins + addAmount).toLocaleString(BCP47),
         ),
     });
 };

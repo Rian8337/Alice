@@ -97,7 +97,7 @@ export class AliceDBCollection {
 
     /**
      * The database collection for information about Discord users regarding the bot
-     * (amount of Alice coins and its streak, daily/weekly challenges status, profile
+     * (amount of Mahiru coins and its streak, daily/weekly challenges status, profile
      * picture format, etc).
      */
     readonly playerInfo: PlayerInfoCollectionManager;

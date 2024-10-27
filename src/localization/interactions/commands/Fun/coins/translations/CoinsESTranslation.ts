@@ -10,13 +10,13 @@ export class CoinsESTranslation extends Translation<CoinsStrings> {
         userNotInServerForAWeek:
             "Lo siento! No has estado en el server por una semana.",
         dailyClaimFailed:
-            "Lo siento! No pude procesar el reclamo diario de tus monedas Alice: %s",
+            "Lo siento! No pude procesar el reclamo diario de tus monedas Mahiru: %s",
         dailyClaimSuccess:
-            "Has reclamado %s monedas Alice! Tu racha actual es %s. Actualmente tienes %s monedas Alice.",
+            "Has reclamado %s monedas Mahiru! Tu racha actual es %s. Actualmente tienes %s monedas Mahiru.",
         dailyClaimWithStreakSuccess:
-            "Has completado una racha y reclamado %s monedas Alice! Tu racha actual es %s. Ahora tienes %s monedas Alice.",
-        selfCoinAmountInfo: "Tu tienes %s monedas Alice.",
-        userCoinAmountInfo: "Ese usuario tiene %s monedas Alice.",
+            "Has completado una racha y reclamado %s monedas Mahiru! Tu racha actual es %s. Ahora tienes %s monedas Mahiru.",
+        selfCoinAmountInfo: "Tu tienes %s monedas Mahiru.",
+        userCoinAmountInfo: "Ese usuario tiene %s monedas Mahiru.",
         userToTransferNotFound:
             "Lo siento! No puedo encontrar al usuario al cual quieres transferir tus monedas.",
         userToTransferIsBot: "Hey, no puedes transferir monedas a un bot!",
@@ -26,29 +26,29 @@ export class CoinsESTranslation extends Translation<CoinsStrings> {
         userToTransferNotInServerForAWeek:
             "Lo siento! El usuario al que quieres darle tus monedas no ha estado en el server por una semana",
         userDoesntHaveCoinsInfo:
-            "Lo siento! No puedo encontrar información sobre tus monedas Alice!",
+            "Lo siento! No puedo encontrar información sobre tus monedas Mahiru!",
         otherUserDoesntHaveCoinsInfo:
-            "Lo siento! No puedo encontrar informacion sobre las monedas Alice del usuario.",
+            "Lo siento! No puedo encontrar informacion sobre las monedas Mahiru del usuario.",
         cannotFetchPlayerInformation:
             "Lo siento! No puedo encontrar tu perfil de osu!droid.",
         notEnoughCoinsToTransfer: "Lo siento! No tienes suficientes monedas.",
         coinTransferConfirmation:
-            "¿Estas seguro de querer transferir %s monedas Alice a %s?",
+            "¿Estas seguro de querer transferir %s monedas Mahiru a %s?",
         coinTransferFailed:
-            "Lo siento, no puedo transferir tus monedas Alice: %s",
+            "Lo siento, no puedo transferir tus monedas Mahiru: %s",
         coinTransferSuccess:
-            "%s monedas Alice transferidas correctamente a %s. Aun puedes transferir %s monedas Alice hoy. Ahora tienes %s monedas.",
+            "%s monedas Mahiru transferidas correctamente a %s. Aun puedes transferir %s monedas Mahiru hoy. Ahora tienes %s monedas.",
         addAmountInvalid:
             "Hey! Necesito una cantidad valida de monedas para agregar.",
         addCoinSuccess:
-            "%s monedas Alice agregadas correctamente al usuario. El usuario ahora tiene %s monedas Alice.",
+            "%s monedas Mahiru agregadas correctamente al usuario. El usuario ahora tiene %s monedas Mahiru.",
         addCoinFailed:
-            "Lo siento, no pude agregar monedas Alice al usuario: %s.",
+            "Lo siento, no pude agregar monedas Mahiru al usuario: %s.",
         removeAmountInvalid:
             "Hey! Necesito un monto valido de monedas para retirar.",
         removeCoinFailed:
-            "Lo siento, no puedo retirar las monedas Alice del usuario: %s.",
+            "Lo siento, no puedo retirar las monedas Mahiru del usuario: %s.",
         removeCoinSuccess:
-            "%s monedas Alice retiradas del usuario correctamente. El usuario ahora tiene %s monedas.",
+            "%s monedas Mahiru retiradas del usuario correctamente. El usuario ahora tiene %s monedas.",
     };
 }

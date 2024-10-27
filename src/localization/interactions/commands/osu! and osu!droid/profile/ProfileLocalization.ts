@@ -21,7 +21,7 @@ export interface ProfileStrings {
     readonly buyBackgroundConfirmation: string;
     readonly switchBackgroundConfirmation: string;
     readonly switchBackgroundSuccess: string;
-    readonly aliceCoinAmount: string;
+    readonly mahiruCoinAmount: string;
     readonly userDoesntOwnAnyBadge: string;
     readonly badgeIsAlreadyClaimed: string;
     readonly equipBadgeSuccess: string;

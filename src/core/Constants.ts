@@ -77,9 +77,9 @@ export class Constants {
     static readonly uidMaxLimit = 500000;
 
     /**
-     * The ID of the Alice coins emote.
+     * The ID of the Mahiru coins emote.
      */
-    static readonly aliceCoinEmote = "669532330980802561" satisfies Snowflake;
+    static readonly mahiruCoinEmote = "1300036693520289853" satisfies Snowflake;
 
     /**
      * The ID of the channel that is storing tag attachments.

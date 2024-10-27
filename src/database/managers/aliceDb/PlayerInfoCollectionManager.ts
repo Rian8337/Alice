@@ -17,7 +17,7 @@ export class PlayerInfoCollectionManager extends DatabaseCollectionManager<
 
     override get defaultDocument(): DatabasePlayerInfo {
         return {
-            alicecoins: 0,
+            coins: 0,
             challenges: [],
             discordid: "",
             hasClaimedDaily: false,

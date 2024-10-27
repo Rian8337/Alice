@@ -20,7 +20,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         color: (<GuildMember>interaction.member).displayColor,
     });
 
-    const coin: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
+    const coin: GuildEmoji = client.emojis.resolve(Constants.mahiruCoinEmote)!;
 
     embed
         .setTitle(localization.getTranslation("aboutTitle"))

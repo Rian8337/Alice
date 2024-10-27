@@ -175,7 +175,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     await DatabaseManager.aliceDb.collections.clanAuction.insert(partialData);
 
     const coinEmoji: GuildEmoji = client.emojis.cache.get(
-        Constants.aliceCoinEmote,
+        Constants.mahiruCoinEmote,
     )!;
 
     const embed: EmbedBuilder = EmbedCreator.createClanAuctionEmbed(

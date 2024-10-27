@@ -6,7 +6,7 @@ import { HelpKRTranslation } from "./translations/HelpKRTranslation";
 
 export interface HelpStrings {
     readonly noCommandFound: string;
-    readonly aliceHelp: string;
+    readonly mahiruHelp: string;
     readonly creator: string;
     readonly useHelpCommand: string;
     readonly issuesContact: string;

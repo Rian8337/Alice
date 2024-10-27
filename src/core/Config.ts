@@ -42,34 +42,32 @@ export abstract class Config {
     ] as readonly Snowflake[];
 
     static readonly activityList = [
-        ["Underworld Console", ActivityType.Playing],
-        ["Rulid Village", ActivityType.Watching],
         ["/help", ActivityType.Listening],
-        ["Dark Territory", ActivityType.Watching],
-        ["in Axiom church", ActivityType.Playing],
-        ["with Integrity Knights", ActivityType.Playing],
-        ["flowers from my beloved Fragnant Olive", ActivityType.Watching],
-        ["Uncle Bercoulli's orders", ActivityType.Listening],
-        ["Centoria", ActivityType.Watching],
-        ["Human Empire", ActivityType.Watching],
-        ["The Great War of Underworld", ActivityType.Competing],
-    ] as readonly [string, Exclude<ActivityType, ActivityType.Custom>][];
+        ["a sleepyhead Amane-kun", ActivityType.Watching],
+        ["with cooking utensils", ActivityType.Playing],
+        ["exercise tracks", ActivityType.Listening],
+        ["Amane-kun's voice", ActivityType.Listening],
+        ["with Amane-kun", ActivityType.Playing],
+        ["with Amane-kun's hair", ActivityType.Playing],
+        ["with Amane-kun's pampering", ActivityType.Playing],
+        ["Amane-kun exercising", ActivityType.Watching],
+        ["Amane-kun's cooking", ActivityType.Competing],
+        ["with Chitose", ActivityType.Playing],
+        ["with my flaxen hair", ActivityType.Playing],
+        ["with Amane-kun's parents", ActivityType.Playing],
+    ] satisfies [
+        string,
+        Exclude<ActivityType, ActivityType.Custom>,
+    ][] as readonly [string, Exclude<ActivityType, ActivityType.Custom>][];
 
     static readonly avatarList = [
-        "https://i.imgur.com/FAWi2Yl.png",
-        "https://i.imgur.com/Fspbt08.png",
-        "https://i.imgur.com/IXgYLNh.png",
-        "https://i.imgur.com/E7EbgS4.png",
-        "https://i.imgur.com/lFbSoEK.png",
-        "https://i.imgur.com/FJbkaPi.png",
-        "https://i.imgur.com/AaeiXgt.png",
-        "https://i.imgur.com/5yFCD3N.png",
-        "https://i.imgur.com/bXrgwzF.png",
-        "https://i.imgur.com/AYXXNS7.png",
-        "https://i.imgur.com/dtB1jf8.png",
-        "https://i.imgur.com/zSJuARr.png",
-        "https://i.imgur.com/ORVeEIS.jpg",
-        "https://i.imgur.com/luf34Ql.png",
-        "https://i.imgur.com/hAdTeAU.jpg",
-    ] as readonly string[];
+        "https://i.imgur.com/39o5szl.png",
+        "https://i.imgur.com/93s2cua.png",
+        "https://i.imgur.com/H1nAm6w.png",
+        "https://i.imgur.com/q8SOh1v.png",
+        "https://i.imgur.com/NM6UcBA.png",
+        "https://i.imgur.com/Zi8kSsT.png",
+        "https://i.imgur.com/8tOuTpp.png",
+        "https://i.imgur.com/5lcnKcR.png",
+    ] as const;
 }

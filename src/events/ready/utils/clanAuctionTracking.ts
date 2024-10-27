@@ -12,7 +12,7 @@ import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (client) => {
     const coinEmoji: GuildEmoji = client.emojis.cache.get(
-        Constants.aliceCoinEmote,
+        Constants.mahiruCoinEmote,
     )!;
     const notificationChannel: TextChannel = <TextChannel>(
         await client.channels.fetch("696646867567640586")
@@ -80,7 +80,7 @@ export const run: EventUtil["run"] = async (client) => {
 
                 embed.addFields({
                     name: "Winner",
-                    value: `${winnerClan.name} - \`${bidArray[bidIndex].amount}\` Alice coins`,
+                    value: `${winnerClan.name} - \`${bidArray[bidIndex].amount}\` Mahiru coins`,
                 });
 
                 await notificationChannel.send({

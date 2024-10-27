@@ -31,7 +31,7 @@ export class DailyESTranslation extends Translation<DailyStrings> {
         challengeNotCompleted:
             "Lo siento, este desafio no ha sido empezado, o ya ha terminado!",
         challengeCompleted:
-            "Felicitaciones! Has completado el desafio %s con el nivel %s de desafio, obteniendo %s punto(s) y %s monedas Alice! Actualmente tienes %s punto(s) y %s monedas.",
+            "Felicitaciones! Has completado el desafio %s con el nivel %s de desafio, obteniendo %s punto(s) y %s monedas Mahiru! Actualmente tienes %s punto(s) y %s monedas.",
         replayDownloadFail: "Lo siento, no pudo descargar tu replay!",
         replayInvalid:
             "Hey, por favor brinda un link de descarga correcto a tu replay!",
@@ -42,10 +42,10 @@ export class DailyESTranslation extends Translation<DailyStrings> {
             "Por favor, pregunta a algún miembro del staff para que confirme la subida manual!",
         aboutTitle: "Desafios Diarios/Semanales de osu!droid",
         aboutDescription:
-            "Este es un sistema que proporciona desafios tanto diarios como semanales para que puedas completar. Consigue puntos y %smonedas Alice mientras los completas!",
+            "Este es un sistema que proporciona desafios tanto diarios como semanales para que puedas completar. Consigue puntos y %smonedas Mahiru mientras los completas!",
         aboutQuestion1: "Como funciona?",
         aboutAnswer1:
-            "Diariamente, habrán nuevos desafios para completar. Cada desafio otorgará diferentes cantidades de puntos dependiendo de que tan dificil es. Puedes obtener puntos y %s monedas Alice completando el desafio. Tambien habrán ciertos bonus que te permitiran ganar aun más puntos y %smonedas Alice! Cada nivel adicional se convertirá en `2` puntos de desafio, los cuales se convertiran a %s`4` monedas Alice.\n\n El desafio semanal, el cual solo es una vez por semana, da muchos mas puntos y %smonedas Alice, ya que este desafio es considerablemente más dificil que cualquier desafio diario. Es por eso que tienen una semana para completarlo!",
+            "Diariamente, habrán nuevos desafios para completar. Cada desafio otorgará diferentes cantidades de puntos dependiendo de que tan dificil es. Puedes obtener puntos y %s monedas Mahiru completando el desafio. Tambien habrán ciertos bonus que te permitiran ganar aun más puntos y %smonedas Mahiru! Cada nivel adicional se convertirá en `2` puntos de desafio, los cuales se convertiran a %s`4` monedas Mahiru.\n\n El desafio semanal, el cual solo es una vez por semana, da muchos mas puntos y %smonedas Mahiru, ya que este desafio es considerablemente más dificil que cualquier desafio diario. Es por eso que tienen una semana para completarlo!",
         aboutQuestion2: "Como puedo completar los desafios?",
         aboutAnswer2: `Habrá un mapa por separado que podrás descargar en caso ya hayas jugado el mapa original. De hecho, tu ${bold(
             "debes",
@@ -54,11 +54,11 @@ export class DailyESTranslation extends Translation<DailyStrings> {
             "submit",
             "1075209201049153617",
         )} para poder registrarlo.`,
-        aboutQuestion3: "Como puedo usar mis puntos y monedas Alice?",
+        aboutQuestion3: "Como puedo usar mis puntos y monedas Mahiru?",
         aboutAnswer3:
-            "De momento, los puntos no tienen ningun uso. Sin embargo, las %smonedas Alice pueden ser usadas para clanes y customización.",
-        aboutQuestion4: "Hay algun ranking de puntos y monedas Alice?",
-        aboutAnswer4: `No hay ninguna tabla de %sMonedas Alice, sin embargo si hay una para los puntos. Puedes usar ${chatInputApplicationCommandMention(
+            "De momento, los puntos no tienen ningun uso. Sin embargo, las %smonedas Mahiru pueden ser usadas para clanes y customización.",
+        aboutQuestion4: "Hay algun ranking de puntos y monedas Mahiru?",
+        aboutAnswer4: `No hay ninguna tabla de %sMonedas Mahiru, sin embargo si hay una para los puntos. Puedes usar ${chatInputApplicationCommandMention(
             "daily",
             "leaderboard",
             "1075209201049153617",

@@ -73,7 +73,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 projection: {
                     _id: 0,
-                    alicecoins: 1,
+                    coins: 1,
                 },
             },
         );
@@ -81,7 +81,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const price = 7500;
     const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
-    if (!playerInfo || playerInfo.alicecoins < price) {
+    if (!playerInfo || playerInfo.coins < price) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),

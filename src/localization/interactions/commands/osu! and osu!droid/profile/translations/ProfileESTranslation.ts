@@ -28,14 +28,14 @@ export class ProfileESTranslation extends Translation<ProfileStrings> {
         changeInfoBackgroundColorSuccess:
             "%s, cambiaste correctamente el color del fondo de tu perfil a %s.",
         coinsToBuyBackgroundNotEnough:
-            "Lo siento, no tienes suficiente %smonedas Alice para realizar esta accion! Un fondo cuestsa %s`500` monedas. Actualmente tu tienes %s%s monedas Alice.",
+            "Lo siento, no tienes suficiente %smonedas Mahiru para realizar esta accion! Un fondo cuestsa %s`500` monedas. Actualmente tu tienes %s%s monedas Mahiru.",
         buyBackgroundConfirmation:
-            "%s, tu no tienes este fondo aún! Estas seguro que quieres comprar este fondo por %s`500` monedas Alice y cambiar el fondo de tu perfil con esa imagen?",
+            "%s, tu no tienes este fondo aún! Estas seguro que quieres comprar este fondo por %s`500` monedas Mahiru y cambiar el fondo de tu perfil con esa imagen?",
         switchBackgroundConfirmation:
             "%s, estas seguro que quieres cambiar el fondo de tu perfil?",
         switchBackgroundSuccess:
             "%s, se cambió tu fondo de perfil correctamente a %s.",
-        aliceCoinAmount: "Ahora tienes %s%s monedas Alice.",
+        mahiruCoinAmount: "Ahora tienes %s%s monedas Mahiru.",
         userDoesntOwnAnyBadge: "Lo siento, tu no tienes ninguna medalla!",
         badgeIsAlreadyClaimed: "Lo siento, tu ya cuentas con esa medalla!",
         equipBadgeSuccess:

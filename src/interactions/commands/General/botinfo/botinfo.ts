@@ -50,7 +50,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         .setDescription(
             StringHelper.formatString(
                 localization.getTranslation("aboutBot"),
-                "https://github.com/Rian8337/Alice",
+                "https://github.com/Rian8337/Mahiru",
                 "https://github.com/Rian8337",
                 "https://github.com/NeroYuki",
                 "https://osudroid.moe",

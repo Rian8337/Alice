@@ -98,7 +98,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const playerInfo = await playerInfoDbManager.getFromUser(interaction.user, {
         projection: {
             _id: 0,
-            alicecoins: 1,
+            coins: 1,
             points: 1,
             challenges: 1,
         },
@@ -137,7 +137,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                             challengeData.highestLevel,
                     },
                     $inc: {
-                        alicecoins: pointsGained * 2,
+                        coins: pointsGained * 2,
                         points: pointsGained,
                     },
                 },
@@ -157,7 +157,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         challenges: challengeData,
                     },
                     $inc: {
-                        alicecoins: pointsGained * 2,
+                        coins: pointsGained * 2,
                         points: pointsGained,
                     },
                 },
@@ -169,7 +169,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             username: bindInfo.username,
             discordid: interaction.user.id,
             points: pointsGained,
-            alicecoins: pointsGained * 2,
+            coins: pointsGained * 2,
             challenges: [
                 {
                     id: challenge.challengeid,
@@ -200,9 +200,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             pointsGained.toLocaleString(BCP47),
             (pointsGained * 2).toLocaleString(BCP47),
             ((playerInfo?.points ?? 0) + pointsGained).toLocaleString(BCP47),
-            ((playerInfo?.alicecoins ?? 0) + pointsGained * 2).toLocaleString(
-                BCP47,
-            ),
+            ((playerInfo?.coins ?? 0) + pointsGained * 2).toLocaleString(BCP47),
         ),
     });
 };

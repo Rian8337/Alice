@@ -28,14 +28,14 @@ export class ProfileIDTranslation extends Translation<ProfileStrings> {
         changeInfoBackgroundColorSuccess:
             "%s, berhasil mengganti warna latar belakang kotak deskripsi di gambar profilmu ke `%s`.",
         coinsToBuyBackgroundNotEnough:
-            "Maaf, kamu tidak memiliki %skoin Alice yang cukup untuk melakukan aksi ini! Sebuah latar belakang memiliki harga %s`500` koin Alice. Kamu memiliki %s`%s` koin Alice.",
+            "Maaf, kamu tidak memiliki %skoin Mahiru yang cukup untuk melakukan aksi ini! Sebuah latar belakang memiliki harga %s`500` koin Mahiru. Kamu memiliki %s`%s` koin Mahiru.",
         buyBackgroundConfirmation:
-            "%s, kamu belum memiliki latar belakang ini! Apakah kamu ingin membeli latar belakang ini dengan harga %s`500` koin Alice dan mengganti latar belakang gambar profilmu?",
+            "%s, kamu belum memiliki latar belakang ini! Apakah kamu ingin membeli latar belakang ini dengan harga %s`500` koin Mahiru dan mengganti latar belakang gambar profilmu?",
         switchBackgroundConfirmation:
             "%s, apakah kamu ingin mengganti latar belakang gambar profilmu?",
         switchBackgroundSuccess:
             "%s, berhasil menggant latar belakang gambar profilmu ke `%s`.",
-        aliceCoinAmount: "Kamu memiliki %s`%s` koin Alice.",
+        mahiruCoinAmount: "Kamu memiliki %s`%s` koin Mahiru.",
         userDoesntOwnAnyBadge: "Maaf, kamu tidak memiliki lencana apapun!",
         badgeIsAlreadyClaimed: "Maaf, kamu telah mengambil lencana ini!",
         equipBadgeSuccess: "%s, berhasil memakai lencana `%s` di slot %s",

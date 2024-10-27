@@ -60,7 +60,9 @@ export const run: SlashSubcommand<false>["run"] = async (
             { projection: { _id: 0 } },
         );
 
-    const coin: GuildEmoji = client.emojis.cache.get(Constants.aliceCoinEmote)!;
+    const coin: GuildEmoji = client.emojis.cache.get(
+        Constants.mahiruCoinEmote,
+    )!;
 
     const selectMenuInteraction: StringSelectMenuInteraction | null =
         await SelectMenuCreator.createStringSelectMenu(
@@ -95,7 +97,7 @@ export const run: SlashSubcommand<false>["run"] = async (
                 projection: {
                     _id: 0,
                     picture_config: 1,
-                    alicecoins: 1,
+                    coins: 1,
                     points: 1,
                 },
             },
@@ -113,7 +115,7 @@ export const run: SlashSubcommand<false>["run"] = async (
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
 
     if (!isBackgroundOwned) {
-        if ((playerInfo?.alicecoins ?? 0) < 500) {
+        if ((playerInfo?.coins ?? 0) < 500) {
             return InteractionHelper.update(selectMenuInteraction, {
                 content: MessageCreator.createReject(
                     localization.getTranslation(
@@ -122,7 +124,7 @@ export const run: SlashSubcommand<false>["run"] = async (
                     coin.toString(),
                     coin.toString(),
                     coin.toString(),
-                    (playerInfo?.alicecoins ?? 0).toLocaleString(BCP47),
+                    (playerInfo?.coins ?? 0).toLocaleString(BCP47),
                 ),
             });
         }
@@ -183,7 +185,7 @@ export const run: SlashSubcommand<false>["run"] = async (
     }
 
     // Safe to assume that the user already has an entry
-    // in database as we checked if the user has 500 Alice coins earlier.
+    // in database as we checked if the user has 500 Mahiru coins earlier.
     await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: interaction.user.id },
         {
@@ -198,7 +200,7 @@ export const run: SlashSubcommand<false>["run"] = async (
                     ? { id: background.id, name: background.name }
                     : undefined,
             },
-            $inc: { alicecoins: isBackgroundOwned ? 0 : -500 },
+            $inc: { coins: isBackgroundOwned ? 0 : -500 },
         },
     );
 
@@ -208,9 +210,9 @@ export const run: SlashSubcommand<false>["run"] = async (
                 (isBackgroundOwned
                     ? ""
                     : ` ${StringHelper.formatString(
-                          localization.getTranslation("aliceCoinAmount"),
+                          localization.getTranslation("mahiruCoinAmount"),
                           coin.toString(),
-                          playerInfo!.alicecoins.toLocaleString(BCP47),
+                          playerInfo!.coins.toLocaleString(BCP47),
                       )}`),
             interaction.user.toString(),
             background.name,

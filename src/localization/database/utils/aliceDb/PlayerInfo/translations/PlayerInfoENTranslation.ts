@@ -7,9 +7,9 @@ import { PlayerInfoStrings } from "../PlayerInfoLocalization";
 export class PlayerInfoENTranslation extends Translation<PlayerInfoStrings> {
     override readonly translations: PlayerInfoStrings = {
         tooMuchCoinDeduction:
-            "too much coin deduction; can only deduct at most %s Alice coins",
+            "too much coin deduction; can only deduct at most %s Mahiru coins",
         dailyClaimUsed: "daily claim has been used",
         dailyLimitReached:
-            "transferred amount is beyond daily limit—can only transfer %s Alice coins left.",
+            "transferred amount is beyond daily limit—can only transfer %s Mahiru coins left.",
     };
 }

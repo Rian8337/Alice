@@ -89,11 +89,11 @@ export class ClanESTranslation extends Translation<ClanStrings> {
         invalidClanAuctionDuration:
             "Lo siento, las subastas solo pueden durar entre un minuto y un dia!",
         invalidClanAuctionBidAmount:
-            "Hey, por favor ingresar un monto válido de monedas Alice a pujar!",
+            "Hey, por favor ingresar un monto válido de monedas Mahiru a pujar!",
         buyShopItemConfirmation:
-            "Estas seguro de querer comprar un(a) %s por %s monedas Alice?",
+            "Estas seguro de querer comprar un(a) %s por %s monedas Mahiru?",
         createClanConfirmation:
-            "Estas seguro que quieres crear un clan llamado %s con %s monedas Alice?",
+            "Estas seguro que quieres crear un clan llamado %s con %s monedas Mahiru?",
         leaveClanConfirmation: "Estas seguro que quieres dejar tu clan actual?",
         disbandClanConfirmation: "Estas seguro que quieres disolver el clan?",
         kickMemberConfirmation:
@@ -129,7 +129,7 @@ export class ClanESTranslation extends Translation<ClanStrings> {
         clanNameHasUnicode:
             "Lo siento, el nombre de clan no debe tener ningun caracter Unicode!",
         notEnoughCoins:
-            "Lo siento, no tiene suficientes monedas Alice para %s! Tu necesitas %s monedas!",
+            "Lo siento, no tiene suficientes monedas Mahiru para %s! Tu necesitas %s monedas!",
         clanNameIsTaken:
             "Lo siento, ese nombre ya ha sido tomado por otro clan!",
         clanDoesntExist: "Lo siento, ese clan no existe!",
@@ -148,7 +148,7 @@ export class ClanESTranslation extends Translation<ClanStrings> {
         profileNotFound:
             "Lo siento, no puedo encontrar tu cuenta enlazada de osu!droid!",
         clanUpkeepInformation:
-            "Tu costo de permanencia ronda alrededor de las %s monedas Alice, las cuales serán tomadas de tu cuenta en %s. El coste de permanencia semanal del clan es de %s monedas.",
+            "Tu costo de permanencia ronda alrededor de las %s monedas Mahiru, las cuales serán tomadas de tu cuenta en %s. El coste de permanencia semanal del clan es de %s monedas.",
         clanDescriptionTooLong:
             "Lo siento, la descripción del clan debe de tener menos de 2000 caracteres!",
         createClanSuccessful: "Clan %s creado correctamente.",
@@ -186,7 +186,7 @@ export class ClanESTranslation extends Translation<ClanStrings> {
         buyShopItemFailed:
             "Lo siento, no pude comprarte este objeto de la tienda: %s.",
         buyShopItemSuccessful:
-            "Objeto comprado correctamente por %s monedas Alice.",
+            "Objeto comprado correctamente por %s monedas Mahiru.",
         promoteMemberFailed: "Lo siento, no pude ascender a este usuario: %s.",
         promoteMemberSuccessful: "Usuario ascendido a co-lider correctamente.",
         demoteMemberFailed: "Lo siento, no pude relegar a este usuario: %s.",

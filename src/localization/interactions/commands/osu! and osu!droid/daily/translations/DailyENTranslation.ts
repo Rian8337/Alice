@@ -32,7 +32,7 @@ export class DailyENTranslation extends Translation<DailyStrings> {
         challengeNotCompleted:
             "I'm sorry, you did not complete the ongoing challenge: %s.",
         challengeCompleted:
-            "Congratulations! You have completed challenge `%s` with challenge bonus level `%s`, earning `%s` point(s) and `%s` Alice coins! You now have `%s` point(s) and `%s` Alice coins.",
+            "Congratulations! You have completed challenge `%s` with challenge bonus level `%s`, earning `%s` point(s) and `%s` Mahiru coins! You now have `%s` point(s) and `%s` Mahiru coins.",
         replayDownloadFail: "I'm sorry, I couldn't download your replay!",
         replayInvalid:
             "Hey, please provide the proper download link to your replay!",
@@ -87,10 +87,10 @@ export class DailyENTranslation extends Translation<DailyStrings> {
             "Successfully set the featured user of challenge `%s` to `%s`.",
         aboutTitle: "osu!droid Daily/Weekly Challenges",
         aboutDescription:
-            "This is a system that provides daily and weekly challenges for you to complete. Gain points and %sAlice coins as you complete challenges!",
+            "This is a system that provides daily and weekly challenges for you to complete. Gain points and %sMahiru coins as you complete challenges!",
         aboutQuestion1: "How does it work?",
         aboutAnswer1:
-            "Every day, there will be a new daily challenge to complete. Each challenges grant a different amount of points depending on how hard the challenge is. You can get points and %sAlice coins by passing the challenge. There will be a few bonuses that allows you to gain more points and %sAlice coins, too! Each challenge bonus level converts to 2 challenge points, which also converts to %s`4` Alice coins.\n\nThe weekly bounty challenge, which is only available once per week, grants more points and %sAlice coins as this challenge is considerably harder than any daily challenges. That's also why you have a week to complete it, too!",
+            "Every day, there will be a new daily challenge to complete. Each challenges grant a different amount of points depending on how hard the challenge is. You can get points and %sMahiru coins by passing the challenge. There will be a few bonuses that allows you to gain more points and %sMahiru coins, too! Each challenge bonus level converts to 2 challenge points, which also converts to %s`4` Mahiru coins.\n\nThe weekly bounty challenge, which is only available once per week, grants more points and %sMahiru coins as this challenge is considerably harder than any daily challenges. That's also why you have a week to complete it, too!",
         aboutQuestion2: "How can I submit challenges?",
         aboutAnswer2: `There will be a separate beatmap set for you to download in case you have played the original map. In fact, you ${bold(
             "must",
@@ -99,11 +99,11 @@ export class DailyENTranslation extends Translation<DailyStrings> {
             "submit",
             "1075209201049153617",
         )} command to submit your play.`,
-        aboutQuestion3: "How can I use my points and Alice coins?",
+        aboutQuestion3: "How can I use my points and Mahiru coins?",
         aboutAnswer3:
-            "As of now, there is no use for points. However, %sAlice coins can be used for clans and cosmetics.",
-        aboutQuestion4: "Is there a leaderboard for points and Alice coins?",
-        aboutAnswer4: `There is no leaderboard for %sAlice coins, however there is a leaderboard for points. You can use ${chatInputApplicationCommandMention(
+            "As of now, there is no use for points. However, %sMahiru coins can be used for clans and cosmetics.",
+        aboutQuestion4: "Is there a leaderboard for points and Mahiru coins?",
+        aboutAnswer4: `There is no leaderboard for %sMahiru coins, however there is a leaderboard for points. You can use ${chatInputApplicationCommandMention(
             "daily",
             "leaderboard",
             "1075209201049153617",

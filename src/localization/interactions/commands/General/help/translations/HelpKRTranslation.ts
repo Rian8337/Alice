@@ -8,7 +8,7 @@ import { HelpStrings } from "../HelpLocalization";
 export class HelpKRTranslation extends Translation<HelpStrings> {
     override readonly translations: HelpStrings = {
         noCommandFound: "죄송해요, 그런 명령어를 찾을 수 없어요!",
-        aliceHelp: "Alice Synthesis Thirty 도움말",
+        mahiruHelp: "Mahiru Shiina 도움말",
         creator: `제작자: ${userMention("132783516176875520")}, ${userMention(
             "386742340968120321",
         )}.`,

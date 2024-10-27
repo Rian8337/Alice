@@ -1,7 +1,7 @@
 {
-  "name": "alice",
+  "name": "mahiru",
   "version": "2024.523.0",
-  "description": "A Discord bot for osu!droid.",
+  "description": "A Discord bot.",
   "main": "dist/main.js",
   "scripts": {
     "analyze-code": "npx eslint \"src/**\"",

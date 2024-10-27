@@ -79,7 +79,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                         localization.getTranslation("auctionMinimumBid"),
                     )}: ${auction.min_price.toLocaleString(
                         BCP47,
-                    )} Alice coins\n` +
+                    )} Mahiru coins\n` +
                     `${bold(
                         localization.getTranslation("auctionBidders"),
                     )}: ${auction.bids.size.toLocaleString(BCP47)}`,

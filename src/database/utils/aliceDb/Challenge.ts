@@ -401,7 +401,7 @@ export class Challenge extends Manager {
                     {
                         $inc: {
                             points: this.isWeekly ? 50 : 25,
-                            alicecoins: this.isWeekly ? 100 : 50,
+                            coins: this.isWeekly ? 100 : 50,
                         },
                     },
                 );
@@ -412,7 +412,7 @@ export class Challenge extends Manager {
                 );
 
                 const coinEmoji = this.client.emojis.cache.get(
-                    Constants.aliceCoinEmote,
+                    Constants.mahiruCoinEmote,
                 )!;
 
                 await notificationChannel.send({
@@ -425,7 +425,7 @@ export class Challenge extends Manager {
                             this.isWeekly ? "50" : "25"
                         }\` points and ${coinEmoji}\`${
                             this.isWeekly ? "100" : "50"
-                        }\` Alice coins!`,
+                        }\` Mahiru coins!`,
                     ),
                 });
             }

@@ -5,7 +5,7 @@ import { BaseDocument } from "../BaseDocument";
 
 /**
  * Represents an information about a Discord user regarding the bot
- * (amount of Alice coins and its streak, daily/weekly challenges status, profile
+ * (amount of Mahiru coins and its streak, daily/weekly challenges status, profile
  * picture format, etc).
  */
 export interface DatabasePlayerInfo extends BaseDocument {
@@ -35,9 +35,9 @@ export interface DatabasePlayerInfo extends BaseDocument {
     points: number;
 
     /**
-     * The amount of Alice coins the user has.
+     * The amount of Mahiru coins the user has.
      */
-    alicecoins: number;
+    coins: number;
 
     /**
      * The amount of daily coins claim streak the user has.
@@ -73,7 +73,7 @@ export interface DatabasePlayerInfo extends BaseDocument {
     isBannedFromMapShare: boolean;
 
     /**
-     * The amount of Alice coins the user has transferred to other user.
+     * The amount of Mahiru coins the user has transferred to other user.
      */
     transferred: number;
 }

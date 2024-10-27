@@ -8,7 +8,7 @@ import { BotinfoStrings } from "../BotinfoLocalization";
 export class BotinfoENTranslation extends Translation<BotinfoStrings> {
     override readonly translations: BotinfoStrings = {
         aboutBot: `This is ${hyperlink(
-            "Alice",
+            "Mahiru",
             "%s",
         )}, a multipurpose Discord bot by ${hyperlink(
             "Rian8337",

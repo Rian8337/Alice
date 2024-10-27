@@ -112,7 +112,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
             projection: {
                 _id: 0,
                 picture_config: 1,
-                alicecoins: 1,
+                coins: 1,
                 points: 1,
             },
         },

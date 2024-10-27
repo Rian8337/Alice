@@ -47,7 +47,7 @@ function getResponseType(
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (
-        (!message.content.startsWith("Alice, ") &&
+        (!message.content.startsWith("Mahiru, ") &&
             !(
                 message.author.id === "386742340968120321" &&
                 message.content.startsWith("Dear, ")
@@ -90,6 +90,10 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             answer = ArrayHelper.getRandomArrayElement(res.response);
     }
 
+    if (!Config.botOwners.includes(message.author.id) && Math.random() < 0.1) {
+        answer = "No... you dummy.";
+    }
+
     embed.setDescription(
         `${bold("Q")}: ${message.content}\n${bold("A")}: ${answer}`,
     );
@@ -107,7 +111,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
 export const config: EventUtil["config"] = {
     description:
-        'Responsible for responding to questions prefixed with "Alice, ".',
+        'Responsible for responding to questions prefixed with "Mahiru, ".',
     togglePermissions: ["ManageChannels"],
     toggleScope: ["GLOBAL", "GUILD", "CHANNEL"],
 };

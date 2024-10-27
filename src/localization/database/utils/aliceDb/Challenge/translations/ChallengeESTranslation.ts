@@ -13,7 +13,7 @@ export class ChallengeESTranslation extends Translation<ChallengeStrings> {
         challengeEndSuccess: "Desafio `%s` finalizado correctamente.",
         challengeEmbedGenerationFailed: "",
         firstPlace:
-            "Felicitaciones a %s por conseguir el primer lugar en el desafio %s, ganando %s puntos y %s%s monedas Alice!",
+            "Felicitaciones a %s por conseguir el primer lugar en el desafio %s, ganando %s puntos y %s%s monedas Mahiru!",
         constrainNotFulfilled: "Restricciones no cumplidas",
         eznfhtUsage: "uso de EZ, NF o HT",
         replayNotFound: "Repetición no encontrada",

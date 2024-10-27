@@ -73,7 +73,7 @@ export const config: SlashCommand["config"] = {
                             name: "amount",
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
-                            description: "The amount of Alice coins to bid.",
+                            description: "The amount of Mahiru coins to bid.",
                             minValue: 0,
                         },
                     ],

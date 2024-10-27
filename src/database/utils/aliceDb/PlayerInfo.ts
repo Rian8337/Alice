@@ -17,7 +17,7 @@ import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabase
 import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
- * Represents an information about a Discord user regarding the bot (amount of Alice coins and its streak, daily/weekly challenges status, profile picture format, etc).
+ * Represents an information about a Discord user regarding the bot (amount of Mahiru coins and its streak, daily/weekly challenges status, profile picture format, etc).
  */
 export class PlayerInfo extends Manager {
     /**
@@ -46,9 +46,9 @@ export class PlayerInfo extends Manager {
     points: number;
 
     /**
-     * The amount of Alice coins the user has.
+     * The amount of Mahiru coins the user has.
      */
-    alicecoins: number;
+    coins: number;
 
     /**
      * The amount of daily coins claim streak the user has.
@@ -84,7 +84,7 @@ export class PlayerInfo extends Manager {
     isBannedFromMapShare: boolean;
 
     /**
-     * The amount of Alice coins the user has transferred to other user.
+     * The amount of Mahiru coins the user has transferred to other user.
      */
     transferred: number;
 
@@ -108,7 +108,7 @@ export class PlayerInfo extends Manager {
             "id",
         );
         this.points = data.points;
-        this.alicecoins = data.alicecoins;
+        this.coins = data.coins;
         this.streak = data.streak;
         this.picture_config = data.picture_config;
         this.dailyreset = data.dailyreset;
@@ -132,24 +132,24 @@ export class PlayerInfo extends Manager {
         const localization: PlayerInfoLocalization =
             this.getLocalization(language);
 
-        if (this.alicecoins + amount < 0) {
+        if (this.coins + amount < 0) {
             // This would only happen if the amount incremented is negative
             return this.createOperationResult(
                 false,
                 StringHelper.formatString(
                     localization.getTranslation("tooMuchCoinDeduction"),
-                    this.alicecoins.toLocaleString(
+                    this.coins.toLocaleString(
                         LocaleHelper.convertToBCP47(language),
                     ),
                 ),
             );
         }
 
-        this.alicecoins = Math.max(0, this.alicecoins + amount);
+        this.coins = Math.max(0, this.coins + amount);
 
         return DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: this.discordid },
-            { $set: { alicecoins: this.alicecoins } },
+            { $set: { coins: this.coins } },
         );
     }
 
@@ -175,7 +175,7 @@ export class PlayerInfo extends Manager {
 
         this.hasClaimedDaily = true;
 
-        this.alicecoins += coinAmount;
+        this.coins += coinAmount;
 
         ++this.streak;
 
@@ -187,7 +187,7 @@ export class PlayerInfo extends Manager {
             { discordid: this.discordid },
             {
                 $inc: {
-                    alicecoins: coinAmount,
+                    coins: coinAmount,
                 },
                 $set: {
                     hasClaimedDaily: this.hasClaimedDaily,
@@ -202,7 +202,7 @@ export class PlayerInfo extends Manager {
      *
      * @param amount The amount of coins to transfer.
      * @param thisPlayer The `Player` instance of this user.
-     * @param to The player to transfer the Alice coins to.
+     * @param to The player to transfer the Mahiru coins to.
      * @param limit The limit of coins that can be transferred, if available.
      * @param language The locale of the user who attempted the transfer. Defaults to English.
      * @returns An object containing information about the operation.
@@ -263,7 +263,7 @@ export class PlayerInfo extends Manager {
 
         await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { discordid: this.discordid },
-            { $inc: { transferred: amount, alicecoins: -amount } },
+            { $inc: { transferred: amount, coins: -amount } },
         );
 
         return to.incrementCoins(amount);

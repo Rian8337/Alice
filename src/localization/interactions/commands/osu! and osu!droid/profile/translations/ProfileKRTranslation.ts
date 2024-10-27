@@ -33,7 +33,7 @@ export class ProfileKRTranslation extends Translation<ProfileStrings> {
         switchBackgroundConfirmation: "%s, 정말 프로필 배경을 바꿀건가요?",
         switchBackgroundSuccess:
             "%s, 성공적으로 프로필 배경을 %s로 바꿨어요. 당신은 이제 %s%s 앨리스 코인이 남았어요.",
-        aliceCoinAmount: "",
+        mahiruCoinAmount: "",
         userDoesntOwnAnyBadge: "죄송해요, 가지고 계신 뱃지가 없네요!",
         badgeIsAlreadyClaimed: "죄송해요, 이미 이 뱃지를 가지고 계시네요!",
         equipBadgeSuccess: "%s, 성공적으로 %s 뱃지를 %s슬롯에 장착했어요.",

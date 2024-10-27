@@ -78,7 +78,7 @@ import { DroidHelper } from "@utils/helpers/DroidHelper";
  * Utility to create message embeds.
  */
 export abstract class EmbedCreator {
-    private static readonly botSign = "Alice Synthesis Thirty";
+    private static readonly botSign = "Mahiru Shiina";
 
     /**
      * Creates a normal embed.
@@ -980,7 +980,7 @@ export abstract class EmbedCreator {
      * Creates a clan auction embed.
      *
      * @param auction The auction to create the embed for.
-     * @param coinEmoji Alice coin emoji.
+     * @param coinEmoji Mahiru coin emoji.
      * @param language The locale of the user who attempted to create the embed. Defaults to English.
      * @returns The embed.
      */
@@ -1014,7 +1014,7 @@ export abstract class EmbedCreator {
                     )}\n` +
                     `${bold(
                         localization.getTranslation("auctionMinimumBid"),
-                    )}: ${coinEmoji}${auction.min_price} Alice coins`,
+                    )}: ${coinEmoji}${auction.min_price} Mahiru coins`,
             )
             .addFields(
                 {
@@ -1044,7 +1044,7 @@ export abstract class EmbedCreator {
                                 (v, i) =>
                                     `#${i + 1}: ${v.clan} - ${coinEmoji}\`${
                                         v.amount
-                                    }\` Alice coins`,
+                                    }\` Mahiru coins`,
                             ),
                 },
             );

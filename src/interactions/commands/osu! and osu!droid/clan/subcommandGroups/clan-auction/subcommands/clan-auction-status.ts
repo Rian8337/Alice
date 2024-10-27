@@ -78,7 +78,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 )}: ${auction.amount.toLocaleString(BCP47)}\n` +
                 `${bold(
                     localization.getTranslation("auctionMinimumBid"),
-                )}: ${auction.min_price.toLocaleString(BCP47)} Alice coins`,
+                )}: ${auction.min_price.toLocaleString(BCP47)} Mahiru coins`,
         });
 
     const bids: AuctionBid[] = [...auction.bids.values()];
@@ -93,7 +93,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         if (bid) {
             biddersDescription += `#${i + 1}: ${bid.clan} - ${bold(
                 bid.amount.toLocaleString(BCP47),
-            )} Alice coins\n`;
+            )} Mahiru coins\n`;
         } else {
             biddersDescription += `#${i + 1}: -\n`;
         }
@@ -103,7 +103,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         biddersDescription += ".\n".repeat(Math.min(bidIndex - 4, 3));
         biddersDescription += `#${bidIndex + 1}: ${clanName} - ${bold(
             bids[bidIndex].amount.toLocaleString(BCP47),
-        )} Alice coins`;
+        )} Mahiru coins`;
     }
 
     embed.addFields({

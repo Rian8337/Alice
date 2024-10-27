@@ -84,11 +84,11 @@ export class ClanENTranslation extends Translation<ClanStrings> {
         invalidClanAuctionDuration:
             "I'm sorry, auctions can only last between a minute and a day!",
         invalidClanAuctionBidAmount:
-            "Hey, please enter a valid amount of Alice coins to bid!",
+            "Hey, please enter a valid amount of Mahiru coins to bid!",
         buyShopItemConfirmation:
-            "Are you sure you want to buy a %s for %s Alice coins?",
+            "Are you sure you want to buy a %s for %s Mahiru coins?",
         createClanConfirmation:
-            "Are you sure you want to create a clan named `%s` for %s Alice coins?",
+            "Are you sure you want to create a clan named `%s` for %s Mahiru coins?",
         leaveClanConfirmation:
             "Are you sure you want to leave your current clan?",
         disbandClanConfirmation: "Are you sure you want to disband the clan?",
@@ -125,7 +125,7 @@ export class ClanENTranslation extends Translation<ClanStrings> {
         clanNameHasUnicode:
             "I'm sorry, clan name must not contain any unicode characters!",
         notEnoughCoins:
-            "I'm sorry, you don't have enough Alice coins to %s! You need %s Alice coins!",
+            "I'm sorry, you don't have enough Mahiru coins to %s! You need %s Mahiru coins!",
         clanNameIsTaken:
             "I'm sorry, that name is already taken by another clan!",
         clanDoesntExist: "I'm sorry, that clan doesn't exist!",
@@ -143,7 +143,7 @@ export class ClanENTranslation extends Translation<ClanStrings> {
         profileNotFound:
             "I'm sorry, I cannot find your bound osu!droid account's profile!",
         clanUpkeepInformation:
-            "Your upkeep cost is somewhere between %s Alice coins, which will be taken from you in %s. Your clan's estimated total weekly upkeep cost is %s Alice coins.",
+            "Your upkeep cost is somewhere between %s Mahiru coins, which will be taken from you in %s. Your clan's estimated total weekly upkeep cost is %s Mahiru coins.",
         clanDescriptionTooLong:
             "I'm sorry, clan description must be less than 2000 characters!",
         createClanSuccessful: "Successfully created clan `%s`.",
@@ -178,7 +178,7 @@ export class ClanENTranslation extends Translation<ClanStrings> {
         buyShopItemFailed:
             "I'm sorry, I couldn't purchase this shop item for you: %s.",
         buyShopItemSuccessful:
-            "Successfully bought this shop item for %s Alice coins.",
+            "Successfully bought this shop item for %s Mahiru coins.",
         promoteMemberFailed: "I'm sorry, I couldn't promote this user: %s.",
         promoteMemberSuccessful: "Successfully promoted the user to co-leader.",
         demoteMemberFailed: "I'm sorry, I couldn't demote this user: %s.",

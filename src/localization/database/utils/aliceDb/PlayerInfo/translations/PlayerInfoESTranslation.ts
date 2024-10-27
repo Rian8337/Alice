@@ -7,7 +7,7 @@ import { PlayerInfoStrings } from "../PlayerInfoLocalization";
 export class PlayerInfoESTranslation extends Translation<PlayerInfoStrings> {
     override readonly translations: PlayerInfoStrings = {
         tooMuchCoinDeduction:
-            "demasiada reducción de monedas; solo puedes resucir a lo mucho % monedas Alice",
+            "demasiada reducción de monedas; solo puedes resucir a lo mucho % monedas Mahiru",
         dailyClaimUsed: "la recompensa diaria ha sido usada",
         dailyLimitReached:
             "el monto a transferir sobrepasa el límite diario. Puedes transferir % monedas aun.",

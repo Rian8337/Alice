@@ -126,7 +126,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
                 {
                     projection: {
                         _id: 0,
-                        alicecoins: 1,
+                        coins: 1,
                     },
                 },
             );
@@ -151,7 +151,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
                 uid: bindInfo.uid,
                 username: bindInfo.username,
                 discordid: this.id,
-                alicecoins: coinAward,
+                coins: coinAward,
             });
         }
 

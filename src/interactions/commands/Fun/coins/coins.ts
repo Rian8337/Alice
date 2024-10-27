@@ -36,24 +36,24 @@ export const category: SlashCommand["category"] = CommandCategory.fun;
 
 export const config: SlashCommand["config"] = {
     name: "coins",
-    description: "Main command for Alice coins.",
+    description: "Main command for Mahiru coins.",
     options: [
         {
             name: "add",
             type: ApplicationCommandOptionType.Subcommand,
-            description: "Adds Alice coins to a user (bot owner only).",
+            description: "Adds Mahiru coins to a user (bot owner only).",
             options: [
                 {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionType.User,
-                    description: "The user to add Alice coins to.",
+                    description: "The user to add Mahiru coins to.",
                 },
                 {
                     name: "amount",
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
-                    description: "The amount of Alice coins to add.",
+                    description: "The amount of Mahiru coins to add.",
                     minValue: 0,
                 },
             ],
@@ -61,24 +61,24 @@ export const config: SlashCommand["config"] = {
         {
             name: "claim",
             type: ApplicationCommandOptionType.Subcommand,
-            description: "Claim daily Alice coins.",
+            description: "Claim daily Mahiru coins.",
         },
         {
             name: "remove",
             type: ApplicationCommandOptionType.Subcommand,
-            description: "Remove Alice coins from a user (bot owner only).",
+            description: "Remove Mahiru coins from a user (bot owner only).",
             options: [
                 {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionType.User,
-                    description: "The user to remove Alice coins from.",
+                    description: "The user to remove Mahiru coins from.",
                 },
                 {
                     name: "amount",
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
-                    description: "The amount of Alice coins to remove.",
+                    description: "The amount of Mahiru coins to remove.",
                     minValue: 0,
                 },
             ],
@@ -86,19 +86,19 @@ export const config: SlashCommand["config"] = {
         {
             name: "transfer",
             type: ApplicationCommandOptionType.Subcommand,
-            description: "Transfer your Alice coins to a user",
+            description: "Transfer your Mahiru coins to a user",
             options: [
                 {
                     name: "user",
                     required: true,
                     type: ApplicationCommandOptionType.User,
-                    description: "The user to transfer Alice coins to.",
+                    description: "The user to transfer Mahiru coins to.",
                 },
                 {
                     name: "amount",
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
-                    description: "The amount of Alice coins to transfer.",
+                    description: "The amount of Mahiru coins to transfer.",
                     minValue: 0,
                 },
             ],
@@ -106,7 +106,7 @@ export const config: SlashCommand["config"] = {
         {
             name: "view",
             type: ApplicationCommandOptionType.Subcommand,
-            description: "View a user's Alice coins.",
+            description: "View a user's Mahiru coins.",
             options: [
                 {
                     name: "user",
@@ -119,21 +119,21 @@ export const config: SlashCommand["config"] = {
     example: [
         {
             command: "coins claim",
-            description: "will claim your daily Alice coins.",
+            description: "will claim your daily Mahiru coins.",
         },
         {
             command: "coins transfer",
             arguments: [
                 {
                     name: "user",
-                    value: "@Rian8337#0001",
+                    value: "@rian8337",
                 },
                 {
                     name: "amount",
                     value: 500,
                 },
             ],
-            description: "will transfer 500 Alice coins to Rian8337.",
+            description: "will transfer 500 Mahiru coins to Rian8337.",
         },
         {
             command: "coins view",
@@ -144,7 +144,7 @@ export const config: SlashCommand["config"] = {
                 },
             ],
             description:
-                "will view the amount of Alice coins of the Discord account with that ID.",
+                "will view the amount of Mahiru coins of the Discord account with that ID.",
         },
     ],
     permissions: [],

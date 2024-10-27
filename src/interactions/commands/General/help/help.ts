@@ -206,7 +206,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             getCommandList(client);
 
         embed
-            .setTitle(localization.getTranslation("aliceHelp"))
+            .setTitle(localization.getTranslation("mahiruHelp"))
             .setDescription(
                 `${localization.getTranslation("creator")}\n\n` +
                     `${localization.getTranslation("useHelpCommand")}\n` +

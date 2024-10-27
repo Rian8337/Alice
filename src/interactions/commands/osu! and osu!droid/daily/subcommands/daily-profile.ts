@@ -33,7 +33,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     const uid: number | null = interaction.options.getInteger("uid");
     const username: string | null = interaction.options.getString("username");
 
-    const coin: GuildEmoji = client.emojis.resolve(Constants.aliceCoinEmote)!;
+    const coin: GuildEmoji = client.emojis.resolve(Constants.mahiruCoinEmote)!;
 
     const dbManager: PlayerInfoCollectionManager =
         DatabaseManager.aliceDb.collections.playerInfo;
@@ -44,7 +44,7 @@ export const run: SlashSubcommand<true>["run"] = async (
         projection: {
             _id: 0,
             points: 1,
-            alicecoins: 1,
+            coins: 1,
             challenges: 1,
         },
     };
@@ -89,7 +89,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             name: localization.getTranslation("statistics"),
             value: `${bold(localization.getTranslation("points"))}: ${
                 playerInfo.points
-            }\n${bold("Alice Coins")}: ${coin}${playerInfo.alicecoins}\n${bold(
+            }\n${bold("Mahiru Coins")}: ${coin}${playerInfo.coins}\n${bold(
                 localization.getTranslation("challengesCompleted"),
             )}: ${playerInfo.challenges.size}`,
         });

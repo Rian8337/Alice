@@ -8,7 +8,7 @@ import { HelpStrings } from "../HelpLocalization";
 export class HelpESTranslation extends Translation<HelpStrings> {
     override readonly translations: HelpStrings = {
         noCommandFound: "Lo siento, no puedo encontrar el comando!",
-        aliceHelp: "Ayuda de Alice Synthesis Thirty ",
+        mahiruHelp: "Ayuda de Mahiru Shiina",
         creator: `Creado por ${userMention(
             "132783516176875520",
         )} y ${userMention("386742340968120321")}.`,

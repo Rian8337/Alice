@@ -88,7 +88,7 @@ export abstract class ProfileManager extends Manager {
                         projection: {
                             _id: 0,
                             picture_config: 1,
-                            alicecoins: detailed ? 1 : undefined,
+                            coins: detailed ? 1 : undefined,
                             points: detailed ? 1 : undefined,
                         },
                     },

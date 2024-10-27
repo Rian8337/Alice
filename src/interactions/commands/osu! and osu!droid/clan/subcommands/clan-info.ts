@@ -63,7 +63,7 @@ export const run: SlashSubcommand<true>["run"] = async (
     });
 
     const coinEmoji: GuildEmoji = client.emojis.cache.get(
-        Constants.aliceCoinEmote,
+        Constants.mahiruCoinEmote,
     )!;
 
     const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
@@ -96,7 +96,7 @@ export const run: SlashSubcommand<true>["run"] = async (
             name: localization.getTranslation("clanTotalUpkeepEstimation"),
             value: `${coinEmoji}${clan
                 .calculateOverallUpkeep()
-                .toLocaleString(BCP47)} Alice coins`,
+                .toLocaleString(BCP47)} Mahiru coins`,
             inline: true,
         },
     );

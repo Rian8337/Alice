@@ -68,14 +68,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             {
                 projection: {
                     _id: 0,
-                    alicecoins: 1,
+                    coins: 1,
                 },
             },
         );
 
     const cost: number = 2500;
 
-    if (!playerInfo || playerInfo.alicecoins < cost) {
+    if (!playerInfo || playerInfo.coins < cost) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("notEnoughCoins"),

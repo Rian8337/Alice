@@ -182,7 +182,7 @@ export class ProfileCardCreator {
 
         this.initDescriptionBox();
         this.drawPlayerLevel();
-        await this.drawAliceCoinsInformation();
+        await this.drawMahiruCoinsInformation();
 
         if (this.template) {
             this.drawTemplateBadges();
@@ -558,13 +558,13 @@ export class ProfileCardCreator {
     }
 
     /**
-     * Draws the Alice coins information of the player.
+     * Draws the Mahiru coins information of the player.
      */
-    private async drawAliceCoinsInformation(): Promise<void> {
+    private async drawMahiruCoinsInformation(): Promise<void> {
         this.context.save();
 
         const coinImage = await loadImage(
-            `${process.cwd()}/files/images/alicecoin.png`,
+            `${process.cwd()}/files/images/MahiruBeat.png`,
         );
 
         this.context.drawImage(coinImage, 15, 255, 50, 50);
@@ -573,9 +573,9 @@ export class ProfileCardCreator {
         this.context.textBaseline = "middle";
 
         this.context.fillText(
-            `${(this.playerInfo?.alicecoins ?? 0).toLocaleString(
+            `${(this.playerInfo?.coins ?? 0).toLocaleString(
                 this.BCP47,
-            )} Alice Coins | ${(this.playerInfo?.points ?? 0).toLocaleString(
+            )} Mahiru Coins | ${(this.playerInfo?.points ?? 0).toLocaleString(
                 this.BCP47,
             )} ${this.localization.getTranslation("challengePoints")}`,
             75,

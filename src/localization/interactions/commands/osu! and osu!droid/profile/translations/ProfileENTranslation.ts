@@ -30,14 +30,14 @@ export class ProfileENTranslation extends Translation<ProfileStrings> {
         changeInfoBackgroundColorSuccess:
             "%s, successfully changed your profile picture description box background color to `%s`.",
         coinsToBuyBackgroundNotEnough:
-            "I'm sorry, you don't have enough %sAlice coins to perform this action! A background costs %s`500` Alice coins. You currently have %s`%s` Alice coins.",
+            "I'm sorry, you don't have enough %sMahiru coins to perform this action! A background costs %s`500` Mahiru coins. You currently have %s`%s` Mahiru coins.",
         buyBackgroundConfirmation:
-            "%s, you don't have this background yet! Are you sure you want to purchase this background for %s`500` Alice coins and change your background profile picture to the background?",
+            "%s, you don't have this background yet! Are you sure you want to purchase this background for %s`500` Mahiru coins and change your background profile picture to the background?",
         switchBackgroundConfirmation:
             "%s, are you sure you want to change your background profile picture?",
         switchBackgroundSuccess:
             "%s, successfully set your background profile picture to `%s`.",
-        aliceCoinAmount: "You now have %s`%s` Alice coins.",
+        mahiruCoinAmount: "You now have %s`%s` Mahiru coins.",
         userDoesntOwnAnyBadge: "I'm sorry, you don't own any badges!",
         badgeIsAlreadyClaimed: "I'm sorry, you've already owned this badge!",
         equipBadgeSuccess: "%s, successfully equipped badge `%s` at slot %s.",
