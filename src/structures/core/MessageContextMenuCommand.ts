@@ -1,4 +1,4 @@
-import { Bot } from "@alice-core/Bot";
+import { Bot } from "@core/Bot";
 import { MessageContextMenuCommandInteraction } from "discord.js";
 import { ContextMenuCommand } from "./ContextMenuCommand";
 
@@ -14,6 +14,6 @@ export interface MessageContextMenuCommand extends ContextMenuCommand {
      */
     run(
         client: Bot,
-        interaction: MessageContextMenuCommandInteraction
+        interaction: MessageContextMenuCommandInteraction,
     ): Promise<unknown>;
 }

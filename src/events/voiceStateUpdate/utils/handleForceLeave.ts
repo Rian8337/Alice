@@ -1,11 +1,11 @@
 import { EventUtil } from "structures/core/EventUtil";
-import { MusicManager } from "@alice-utils/managers/MusicManager";
+import { MusicManager } from "@utils/managers/MusicManager";
 import { VoiceState } from "discord.js";
 
 export const run: EventUtil["run"] = async (
     client,
     oldState: VoiceState,
-    newState: VoiceState
+    newState: VoiceState,
 ) => {
     if (oldState.member!.id === client.user.id && !newState.channel) {
         MusicManager.leave(oldState.channel!);

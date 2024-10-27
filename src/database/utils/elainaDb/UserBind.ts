@@ -1,15 +1,15 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DPPSubmissionValidity } from "@enums/utils/DPPSubmissionValidity";
 import { OperationResult } from "structures/core/OperationResult";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
-import { PPEntry } from "@alice-structures/dpp/PPEntry";
-import { PrototypePPEntry } from "@alice-structures/dpp/PrototypePPEntry";
-import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
-import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { PPEntry } from "@structures/dpp/PPEntry";
+import { PrototypePPEntry } from "@structures/dpp/PrototypePPEntry";
+import { RecalculationProgress } from "@structures/dpp/RecalculationProgress";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { HelperFunctions } from "@utils/helpers/HelperFunctions";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { Collection, Snowflake } from "discord.js";
 import { ObjectId, UpdateFilter } from "mongodb";
 import { consola } from "consola";
@@ -22,17 +22,17 @@ import {
     Modes,
 } from "@rian8337/osu-base";
 import { Score, Player } from "@rian8337/osu-droid-utilities";
-import { UserBindLocalization } from "@alice-localization/database/utils/elainaDb/UserBind/UserBindLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Language } from "@alice-localization/base/Language";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { DatabaseInGamePP } from "@alice-structures/database/aliceDb/DatabaseInGamePP";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { UserBindLocalization } from "@localization/database/utils/elainaDb/UserBind/UserBindLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { Language } from "@localization/base/Language";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { DiscordBackendRESTManager } from "@utils/managers/DiscordBackendRESTManager";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { DatabaseInGamePP } from "@structures/database/aliceDb/DatabaseInGamePP";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
 
 /**
  * Represents a Discord user who has at least one osu!droid account bound.

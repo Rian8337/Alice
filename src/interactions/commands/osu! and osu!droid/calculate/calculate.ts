@@ -1,11 +1,11 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
 import {
     Accuracy,
     MapInfo,
@@ -21,18 +21,18 @@ import {
     DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes,
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
-import { CalculateLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/calculate/CalculateLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
-import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
-import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattributes/ResponseDifficultyAttributes";
-import { DPPProcessorCalculationResponse } from "@alice-structures/utils/DPPProcessorCalculationResponse";
+import { CalculateLocalization } from "@localization/interactions/commands/osu! and osu!droid/calculate/CalculateLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { RebalanceDroidPerformanceAttributes } from "@structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
+import { ResponseDifficultyAttributes } from "@structures/difficultyattributes/ResponseDifficultyAttributes";
+import { DPPProcessorCalculationResponse } from "@structures/utils/DPPProcessorCalculationResponse";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new CalculateLocalization(

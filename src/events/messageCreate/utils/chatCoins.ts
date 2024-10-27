@@ -1,8 +1,8 @@
 import { Message, Snowflake, TextChannel } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
-import { Constants } from "@alice-core/Constants";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { Constants } from "@core/Constants";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
 
 const coinCooldown: Set<Snowflake> = new Set();
 
@@ -61,7 +61,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     _id: 0,
                     alicecoins: 1,
                 },
-            }
+            },
         );
 
     if (!playerInfo) {

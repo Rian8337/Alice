@@ -1,16 +1,16 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { UserContextMenuCommand } from "structures/core/UserContextMenuCommand";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { ViewRecentPlaysLocalization } from "@alice-localization/interactions/contextmenus/user/viewRecentPlays/ViewRecentPlaysLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { ViewRecentPlaysLocalization } from "@localization/interactions/contextmenus/user/viewRecentPlays/ViewRecentPlaysLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ScoreDisplayHelper } from "@utils/helpers/ScoreDisplayHelper";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 
 export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
     const localization = new ViewRecentPlaysLocalization(

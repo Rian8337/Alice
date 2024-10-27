@@ -1,11 +1,11 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseGuildSettings } from "structures/database/aliceDb/DatabaseGuildSettings";
 import { DisabledCommand } from "structures/moderation/DisabledCommand";
 import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
 import { GuildChannelSettings } from "structures/moderation/GuildChannelSettings";
-import { Language } from "@alice-localization/base/Language";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { Language } from "@localization/base/Language";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { Collection, Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 
@@ -45,7 +45,7 @@ export class GuildSettings extends Manager {
 
     constructor(
         data: DatabaseGuildSettings = DatabaseManager.aliceDb?.collections
-            .guildSettings.defaultDocument ?? {}
+            .guildSettings.defaultDocument ?? {},
     ) {
         super();
 
@@ -53,11 +53,11 @@ export class GuildSettings extends Manager {
         this.id = data.id;
         this.channelSettings = ArrayHelper.arrayToCollection(
             data.channelSettings ?? [],
-            "id"
+            "id",
         );
         this.disabledCommands = ArrayHelper.arrayToCollection(
             data.disabledCommands ?? [],
-            "name"
+            "name",
         );
         this.disabledEventUtils = data.disabledEventUtils ?? [];
         this.preferredLocale = data.preferredLocale ?? "en";

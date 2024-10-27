@@ -1,6 +1,6 @@
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { Language } from "@alice-localization/base/Language";
-import { SupportTicketGuideButtonCreatorLocalization } from "@alice-localization/utils/ticket/SupportTicketGuideButtonCreator/SupportTicketGuideButtonCreatorLocalization";
+import { Symbols } from "@enums/utils/Symbols";
+import { Language } from "@localization/base/Language";
+import { SupportTicketGuideButtonCreatorLocalization } from "@localization/utils/ticket/SupportTicketGuideButtonCreator/SupportTicketGuideButtonCreatorLocalization";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 /**

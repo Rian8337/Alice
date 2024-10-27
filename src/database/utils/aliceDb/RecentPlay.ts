@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseRecentPlay } from "@alice-structures/database/aliceDb/DatabaseRecentPlay";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
-import { SliderTickInformation } from "@alice-structures/dpp/SliderTickInformation";
-import { Manager } from "@alice-utils/base/Manager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DatabaseRecentPlay } from "@structures/database/aliceDb/DatabaseRecentPlay";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
+import { SliderTickInformation } from "@structures/dpp/SliderTickInformation";
+import { Manager } from "@utils/base/Manager";
 import {
     Accuracy,
     IModApplicableToDroid,

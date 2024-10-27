@@ -1,6 +1,6 @@
 import { GuildChannel, Message, EmbedBuilder, ThreadChannel } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author?.bot) {
@@ -9,7 +9,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
     const logChannel: GuildChannel | ThreadChannel | undefined =
         message.guild?.channels.cache.find(
-            (c) => c.id === "643770576238018570"
+            (c) => c.id === "643770576238018570",
         );
 
     if (!logChannel?.isTextBased()) {

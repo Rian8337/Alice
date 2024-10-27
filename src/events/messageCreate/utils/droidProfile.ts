@@ -1,11 +1,11 @@
 import { Message } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
-import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { DroidProfileLocalization } from "@alice-localization/events/messageCreate/droidProfile/DroidProfileLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { ProfileManager } from "@utils/managers/ProfileManager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { DroidProfileLocalization } from "@localization/events/messageCreate/droidProfile/DroidProfileLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot || !message.channel.isSendable()) {

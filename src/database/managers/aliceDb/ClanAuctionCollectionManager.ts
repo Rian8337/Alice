@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { ClanAuction } from "@database/utils/aliceDb/ClanAuction";
 import { DatabaseClanAuction } from "structures/database/aliceDb/DatabaseClanAuction";
 import { Collection as DiscordCollection } from "discord.js";
 
@@ -11,7 +11,7 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<
     ClanAuction
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseClanAuction
+        data: DatabaseClanAuction,
     ) => ClanAuction = ClanAuction;
 
     override get defaultDocument(): DatabaseClanAuction {
@@ -45,7 +45,7 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<
      * @returns The clan's auctions, mapped by their name.
      */
     getClanAuctions(
-        clanName: string
+        clanName: string,
     ): Promise<DiscordCollection<string, ClanAuction>> {
         return this.get("name", { auctioneer: clanName });
     }
@@ -57,7 +57,7 @@ export class ClanAuctionCollectionManager extends DatabaseCollectionManager<
      * @returns Auctions that have expired within the time limit.
      */
     getExpiredAuctions(
-        timelimit: number
+        timelimit: number,
     ): Promise<DiscordCollection<string, ClanAuction>> {
         return this.get("name", { expirydate: { $lte: timelimit } });
     }

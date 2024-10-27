@@ -1,14 +1,14 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { ClanAuction } from "@database/utils/aliceDb/ClanAuction";
+import { Clan } from "@database/utils/elainaDb/Clan";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
 import { PowerupType } from "structures/clan/PowerupType";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ClanLocalization } from "@localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ClanLocalization = new ClanLocalization(

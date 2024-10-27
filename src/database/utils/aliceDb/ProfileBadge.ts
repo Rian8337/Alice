@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseProfileBadge } from "structures/database/aliceDb/DatabaseProfileBadge";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 
 /**
@@ -16,7 +16,7 @@ export class ProfileBadge extends Manager implements DatabaseProfileBadge {
 
     constructor(
         data: DatabaseProfileBadge = DatabaseManager.aliceDb?.collections
-            .profileBadges.defaultDocument ?? {}
+            .profileBadges.defaultDocument ?? {},
     ) {
         super();
 

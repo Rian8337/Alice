@@ -1,5 +1,5 @@
-import { Localization } from "@alice-localization/base/Localization";
-import { Translations } from "@alice-localization/base/Translations";
+import { Localization } from "@localization/base/Localization";
+import { Translations } from "@localization/base/Translations";
 import { TimeoutENTranslation } from "./translations/TimeoutENTranslation";
 import { TimeoutESTranslation } from "./translations/TimeoutESTranslation";
 import { TimeoutKRTranslation } from "./translations/TimeoutKRTranslation";

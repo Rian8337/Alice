@@ -1,9 +1,9 @@
-import { OnboardingPerformancePointsLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingPerformancePoints/OnboardingPerformancePointsLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { createOnboardingNavigationRows } from "@alice-utils/creators/OnboardingNavigationRowCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { OnboardingPerformancePointsLocalization } from "@localization/interactions/buttons/Onboarding/onboardingPerformancePoints/OnboardingPerformancePointsLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { createOnboardingNavigationRows } from "@utils/creators/OnboardingNavigationRowCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const language = CommandHelper.getLocale(interaction);

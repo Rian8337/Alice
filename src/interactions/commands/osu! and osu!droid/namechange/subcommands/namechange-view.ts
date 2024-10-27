@@ -1,15 +1,15 @@
 import { bold, Collection, EmbedBuilder, userMention } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { NamechangeLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { NameChange } from "@database/utils/aliceDb/NameChange";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { NamechangeLocalization } from "@localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(

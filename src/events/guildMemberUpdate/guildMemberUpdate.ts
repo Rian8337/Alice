@@ -1,11 +1,11 @@
 import { GuildMember } from "discord.js";
 import { Event } from "structures/core/Event";
-import { EventHelper } from "@alice-utils/helpers/EventHelper";
+import { EventHelper } from "@utils/helpers/EventHelper";
 
 export const run: Event["run"] = async (
     client,
     oldMember: GuildMember,
-    newMember: GuildMember
+    newMember: GuildMember,
 ) => {
     EventHelper.runUtilities(
         client,
@@ -13,6 +13,6 @@ export const run: Event["run"] = async (
         newMember.guild,
         undefined,
         oldMember,
-        newMember
+        newMember,
     ).catch((e: Error) => client.emit("error", e));
 };

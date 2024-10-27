@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Language } from "@alice-localization/base/Language";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Language } from "@localization/base/Language";
+import { CacheManager } from "@utils/managers/CacheManager";
 
 /**
  * A helper class for locales.

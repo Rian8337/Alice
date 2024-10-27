@@ -1,11 +1,11 @@
 import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { WarningLocalization } from "@alice-localization/interactions/commands/Staff/warning/WarningLocalization";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { WarningManager } from "@alice-utils/managers/WarningManager";
+import { WarningLocalization } from "@localization/interactions/commands/Staff/warning/WarningLocalization";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { WarningManager } from "@utils/managers/WarningManager";
 import { User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

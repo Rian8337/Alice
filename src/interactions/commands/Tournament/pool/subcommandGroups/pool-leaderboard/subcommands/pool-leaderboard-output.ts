@@ -1,12 +1,12 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { TournamentMappool } from "@database/utils/elainaDb/TournamentMappool";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
-import { TournamentScore } from "@alice-structures/tournament/TournamentScore";
-import { PoolLocalization } from "@alice-localization/interactions/commands/Tournament/pool/PoolLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { TournamentScore } from "@structures/tournament/TournamentScore";
+import { PoolLocalization } from "@localization/interactions/commands/Tournament/pool/PoolLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { AttachmentBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

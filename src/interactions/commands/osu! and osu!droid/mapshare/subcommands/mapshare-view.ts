@@ -1,16 +1,16 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { MapShare } from "@database/utils/aliceDb/MapShare";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { BaseMessageOptions } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { MapshareLocalization } from "@localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(

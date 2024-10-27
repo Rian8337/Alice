@@ -1,8 +1,8 @@
-import { AccountTransferLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/accounttransfer/AccountTransferLocalization";
-import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { AccountTransferLocalization } from "@localization/interactions/commands/osu! and osu!droid/accounttransfer/AccountTransferLocalization";
+import { SlashSubcommand } from "@structures/core/SlashSubcommand";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { GuildMember } from "discord.js";
 
 export const run: SlashSubcommand["run"] = async (_, interaction) => {

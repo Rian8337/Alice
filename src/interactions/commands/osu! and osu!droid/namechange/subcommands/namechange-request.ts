@@ -1,15 +1,15 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { Constants } from "@alice-core/Constants";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { NamechangeLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { Constants } from "@core/Constants";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { NamechangeLocalization } from "@localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new NamechangeLocalization(

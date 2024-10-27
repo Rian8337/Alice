@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { AskCount } from "@alice-database/utils/aliceDb/AskCount";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { AskCount } from "@database/utils/aliceDb/AskCount";
 import { DatabaseAskCount } from "structures/database/aliceDb/DatabaseAskCount";
 import { Snowflake } from "discord.js";
 
@@ -11,7 +11,7 @@ export class AskCountCollectionManager extends DatabaseCollectionManager<
     AskCount
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseAskCount
+        data: DatabaseAskCount,
     ) => AskCount = AskCount;
 
     override get defaultDocument(): DatabaseAskCount {

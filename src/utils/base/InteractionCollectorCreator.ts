@@ -1,4 +1,4 @@
-import { CollectorState } from "@alice-structures/utils/CollectorState";
+import { CollectorState } from "@structures/utils/CollectorState";
 import {
     ButtonInteraction,
     CacheType,
@@ -30,7 +30,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         message: Message,
         duration: number,
         filter?: CollectorFilter<[ButtonInteraction<CacheType>]>,
-        componentAvailabilityListener?: (message: Message) => boolean
+        componentAvailabilityListener?: (message: Message) => boolean,
     ): CollectorState<ButtonInteraction> {
         const collector: InteractionCollector<ButtonInteraction> =
             message.createMessageComponentCollector({
@@ -48,7 +48,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         if (componentAvailabilityListener) {
             this.attachComponentAvailabilityListener(
                 options,
-                componentAvailabilityListener
+                componentAvailabilityListener,
             );
         }
 
@@ -68,12 +68,12 @@ export abstract class InteractionCollectorCreator extends Manager {
      * @returns An object containing the collector and a boolean state indicating whether the component was deleted.
      */
     static createSelectMenuCollector<
-        T extends Exclude<MessageComponentType, ComponentType.Button>
+        T extends Exclude<MessageComponentType, ComponentType.Button>,
     >(
         message: Message,
         duration: number,
         filter?: CollectorFilter<[MappedInteractionTypes[T]]>,
-        componentAvailabilityListener?: (message: Message) => boolean
+        componentAvailabilityListener?: (message: Message) => boolean,
     ): CollectorState<MappedInteractionTypes[T]> {
         const collector: InteractionCollector<MappedInteractionTypes[T]> =
             message.createMessageComponentCollector({
@@ -90,7 +90,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         if (componentAvailabilityListener) {
             this.attachComponentAvailabilityListener(
                 options,
-                componentAvailabilityListener
+                componentAvailabilityListener,
             );
         }
 
@@ -104,16 +104,16 @@ export abstract class InteractionCollectorCreator extends Manager {
      * @param listener The listener.
      */
     private static attachComponentAvailabilityListener<
-        T extends CollectedInteraction
+        T extends CollectedInteraction,
     >(
         options: CollectorState<T>,
-        listener: (message: Message) => boolean
+        listener: (message: Message) => boolean,
     ): void {
         const { collector } = options;
 
         const messageEditListener = (
             oldMessage: Message | PartialMessage,
-            newMessage: Message | PartialMessage
+            newMessage: Message | PartialMessage,
         ): void => {
             if (
                 !collector.ended &&
@@ -128,7 +128,7 @@ export abstract class InteractionCollectorCreator extends Manager {
         };
 
         const messageDeleteListener = (
-            message: Message | PartialMessage
+            message: Message | PartialMessage,
         ): void => {
             if (collector.messageId === message.id) {
                 options.componentIsDeleted = true;

@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { WhitelistValidity } from "@alice-enums/utils/WhitelistValidity";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { WhitelistValidity } from "@enums/utils/WhitelistValidity";
 import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
 import { WhitelistDifficultyStatistics } from "structures/dpp/WhitelistDifficultyStatistics";
-import { Manager } from "@alice-utils/base/Manager";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
+import { Manager } from "@utils/base/Manager";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { WhitelistManager } from "@utils/managers/WhitelistManager";
 import { ObjectId } from "bson";
 import { MapInfo } from "@rian8337/osu-base";
 

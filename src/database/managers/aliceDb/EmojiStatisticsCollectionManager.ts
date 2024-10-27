@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { EmojiStatistics } from "@database/utils/aliceDb/EmojiStatistics";
 import { DatabaseEmojiStatistics } from "structures/database/aliceDb/DatabaseEmojiStatistics";
 import { Collection as DiscordCollection, Guild, Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";

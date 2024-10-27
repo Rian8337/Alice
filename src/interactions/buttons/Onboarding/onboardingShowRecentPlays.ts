@@ -1,12 +1,12 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OnboardingShowRecentPlaysLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingShowRecentPlays/OnboardingShowRecentPlaysLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { OnboardingShowRecentPlaysLocalization } from "@localization/interactions/buttons/Onboarding/onboardingShowRecentPlays/OnboardingShowRecentPlaysLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ScoreDisplayHelper } from "@utils/helpers/ScoreDisplayHelper";
+import { ScoreHelper } from "@utils/helpers/ScoreHelper";
 import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {

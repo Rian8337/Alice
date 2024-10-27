@@ -1,11 +1,14 @@
 import { OsuAPIResponse } from "@rian8337/osu-base";
 import { RESTManager } from "./RESTManager";
+import { Config } from "@core/Config";
 
 /**
  * A REST manager for the beatmap processor.
  */
 export abstract class BeatmapProcessorRESTManager extends RESTManager {
-    private static readonly endpoint = "http://localhost:3017/api/beatmap/";
+    private static readonly endpoint = Config.isDebug
+        ? "https://droidpp.osudroid.moe/api/beatmap/"
+        : "http://localhost:3017/api/beatmap/";
 
     /**
      * Obtains a beatmap.

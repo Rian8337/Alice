@@ -1,8 +1,8 @@
 import { Channel, Collection, Guild } from "discord.js";
-import { Bot } from "@alice-core/Bot";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { Bot } from "@core/Bot";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { consola } from "consola";
 
 /**
@@ -28,7 +28,7 @@ export abstract class EventHelper {
         const eventName: string = <string>eventDirectory.split(/[/\\]/g).pop();
 
         for (const [utilityName, utility] of client.eventUtilities.get(
-            eventName
+            eventName,
         ) ?? new Collection()) {
             if (Config.isDebug && !utility.config.debugEnabled) {
                 continue;
@@ -55,7 +55,7 @@ export abstract class EventHelper {
 
             if (Config.enableDebugLog) {
                 consola.info(
-                    `Triggered ${utility} event utility from ${eventName} event`
+                    `Triggered ${utility} event utility from ${eventName} event`,
                 );
             }
 
@@ -74,12 +74,12 @@ export abstract class EventHelper {
     static isUtilityDisabledInChannel(
         channel: Channel,
         eventName: string,
-        utilityName: string
+        utilityName: string,
     ): boolean {
         return this.isUtilityDisabled(
             eventName,
             utilityName,
-            CommandUtilManager.channelDisabledEventUtils.get(channel.id)
+            CommandUtilManager.channelDisabledEventUtils.get(channel.id),
         );
     }
 
@@ -94,12 +94,12 @@ export abstract class EventHelper {
     static isUtilityDisabledInGuild(
         guild: Guild,
         eventName: string,
-        utilityName: string
+        utilityName: string,
     ): boolean {
         return this.isUtilityDisabled(
             eventName,
             utilityName,
-            CommandUtilManager.guildDisabledEventUtils.get(guild.id)
+            CommandUtilManager.guildDisabledEventUtils.get(guild.id),
         );
     }
 
@@ -112,7 +112,7 @@ export abstract class EventHelper {
      */
     static isUtilityDisabledGlobally(
         eventName: string,
-        utilityName: string
+        utilityName: string,
     ): boolean {
         return this.isUtilityDisabled(
             eventName,
@@ -127,7 +127,7 @@ export abstract class EventHelper {
 
                     return final;
                 })
-                .flat()
+                .flat(),
         );
     }
 
@@ -144,10 +144,10 @@ export abstract class EventHelper {
     private static isUtilityDisabled(
         eventName: string,
         utilityName: string,
-        disabledEventUtils?: DisabledEventUtil[]
+        disabledEventUtils?: DisabledEventUtil[],
     ): boolean {
         return !!disabledEventUtils?.find(
-            (v) => v.event === eventName && v.name === utilityName
+            (v) => v.event === eventName && v.name === utilityName,
         );
     }
 }

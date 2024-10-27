@@ -1,5 +1,5 @@
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { Manager } from "@alice-utils/base/Manager";
+import { Symbols } from "@enums/utils/Symbols";
+import { Manager } from "@utils/base/Manager";
 import {
     Guild,
     GuildMember,
@@ -25,7 +25,7 @@ export abstract class RoleReactionCreator extends Manager {
         guild: Guild,
         message: Message,
         role: Role,
-        emoji: Symbols | Snowflake
+        emoji: Symbols | Snowflake,
     ): Promise<ReactionCollector> {
         await message.react(emoji);
 
@@ -46,7 +46,7 @@ export abstract class RoleReactionCreator extends Manager {
             }
 
             message.reactions.cache.forEach((reaction) =>
-                reaction.users.remove(user.id)
+                reaction.users.remove(user.id),
             );
         });
 

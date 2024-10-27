@@ -1,14 +1,14 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { Constants } from "@alice-core/Constants";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { Constants } from "@core/Constants";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { ApplicationCommandOptionType } from "discord.js";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { SwitchbindLocalization } from "@alice-localization/interactions/commands/Bot Creators/switchbind/SwitchbindLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { SwitchbindLocalization } from "@localization/interactions/commands/Bot Creators/switchbind/SwitchbindLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization = new SwitchbindLocalization(

@@ -1,6 +1,6 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(

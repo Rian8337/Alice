@@ -1,15 +1,15 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { HelperFunctions } from "@utils/helpers/HelperFunctions";
 import { Collection } from "discord.js";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
-import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
-import { WhitelistValidity } from "@alice-enums/utils/WhitelistValidity";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { ScanLocalization } from "@alice-localization/interactions/commands/Bot Creators/scan/ScanLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { MapWhitelist } from "@database/utils/elainaDb/MapWhitelist";
+import { WhitelistValidity } from "@enums/utils/WhitelistValidity";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { ScanLocalization } from "@localization/interactions/commands/Bot Creators/scan/ScanLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { consola } from "consola";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

@@ -6,26 +6,26 @@ import {
     GuildBasedChannel,
     bold,
 } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { ActivityCategory } from "structures/interactions/commands/Tools/ActivityCategory";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { Constants } from "@alice-core/Constants";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { ChannelActivity } from "@alice-database/utils/aliceDb/ChannelActivity";
-import { ChannelActivityCollectionManager } from "@alice-database/managers/aliceDb/ChannelDataCollectionManager";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { Constants } from "@core/Constants";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { ChannelActivity } from "@database/utils/aliceDb/ChannelActivity";
+import { ChannelActivityCollectionManager } from "@database/managers/aliceDb/ChannelDataCollectionManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import {
     MessageanalyticsLocalization,
     MessageanalyticsStrings,
-} from "@alice-localization/interactions/commands/Tools/messageanalytics/MessageanalyticsLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
+} from "@localization/interactions/commands/Tools/messageanalytics/MessageanalyticsLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ChannelActivityData } from "@structures/utils/ChannelActivityData";
 
 /**
  * Converts days to milliseconds.

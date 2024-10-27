@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { hyperlink } from "discord.js";
 import { BotinfoStrings } from "../BotinfoLocalization";
 
@@ -9,19 +9,19 @@ export class BotinfoENTranslation extends Translation<BotinfoStrings> {
     override readonly translations: BotinfoStrings = {
         aboutBot: `This is ${hyperlink(
             "Alice",
-            "%s"
+            "%s",
         )}, a multipurpose Discord bot by ${hyperlink(
             "Rian8337",
-            "%s"
+            "%s",
         )} and ${hyperlink("NeroYuki", "%s")} made for ${hyperlink(
             "osu!droid",
-            "%s"
+            "%s",
         )}. However, it has a plethora of other uses as well, and is mainly used to power the ${hyperlink(
             "osu!droid (International)",
-            "%s"
+            "%s",
         )} Discord server.\n\nIf you enjoy the features offered by the bot, feel free to ${hyperlink(
             "buy us a coffee",
-            "%s"
+            "%s",
         )}!`,
         botInfo: "Bot Information",
         botVersion: "Version",

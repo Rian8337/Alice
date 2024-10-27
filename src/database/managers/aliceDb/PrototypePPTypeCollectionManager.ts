@@ -1,6 +1,6 @@
-import { DatabasePrototypePPType } from "@alice-structures/database/aliceDb/DatabasePrototypePPType";
+import { DatabasePrototypePPType } from "@structures/database/aliceDb/DatabasePrototypePPType";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { PrototypePPType } from "@alice-database/utils/aliceDb/PrototypePPType";
+import { PrototypePPType } from "@database/utils/aliceDb/PrototypePPType";
 import { ApplicationCommandOptionChoiceData } from "discord.js";
 import { FindOptions } from "mongodb";
 

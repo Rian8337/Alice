@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { DPPAPIKey } from "@alice-database/utils/aliceDb/DPPAPIKey";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { DPPAPIKey } from "@database/utils/aliceDb/DPPAPIKey";
 import { DatabaseDPPAPIKey } from "structures/database/aliceDb/DatabaseDPPAPIKey";
 
 /**
@@ -10,7 +10,7 @@ export class DPPAPIKeyCollectionManager extends DatabaseCollectionManager<
     DPPAPIKey
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseDPPAPIKey
+        data: DatabaseDPPAPIKey,
     ) => DPPAPIKey = DPPAPIKey;
 
     override get defaultDocument(): DatabaseDPPAPIKey {

@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { EightBallFilter } from "@alice-database/utils/aliceDb/EightBallFilter";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { EightBallFilter } from "@database/utils/aliceDb/EightBallFilter";
 import { DatabaseEightBallFilter } from "structures/database/aliceDb/DatabaseEightBallFilter";
 
 /**
@@ -10,7 +10,7 @@ export class EightBallFilterCollectionManager extends DatabaseCollectionManager<
     EightBallFilter
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseEightBallFilter
+        data: DatabaseEightBallFilter,
     ) => EightBallFilter = EightBallFilter;
 
     override get defaultDocument(): DatabaseEightBallFilter {

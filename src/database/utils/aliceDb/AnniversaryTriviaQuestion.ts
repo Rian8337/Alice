@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseAnniversaryTriviaQuestion } from "@alice-structures/database/aliceDb/DatabaseAnniversaryTriviaQuestion";
-import { Manager } from "@alice-utils/base/Manager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DatabaseAnniversaryTriviaQuestion } from "@structures/database/aliceDb/DatabaseAnniversaryTriviaQuestion";
+import { Manager } from "@utils/base/Manager";
 
 /**
  * Represents a question for the anniversary trivia game.

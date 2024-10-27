@@ -1,15 +1,15 @@
 import { MapInfo } from "@rian8337/osu-base";
-import { Config } from "@alice-core/Config";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { Config } from "@core/Config";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { OperationResult } from "structures/core/OperationResult";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { BlacklistLocalization } from "@alice-localization/interactions/commands/Bot Creators/blacklist/BlacklistLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { WhitelistManager } from "@utils/managers/WhitelistManager";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { BlacklistLocalization } from "@localization/interactions/commands/Bot Creators/blacklist/BlacklistLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import {
     ApplicationCommandOptionType,
     StringSelectMenuInteraction,

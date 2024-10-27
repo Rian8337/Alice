@@ -1,19 +1,19 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseNameChange } from "structures/database/aliceDb/DatabaseNameChange";
 import { OperationResult } from "structures/core/OperationResult";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 import { bold, Snowflake } from "discord.js";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { Language } from "@alice-localization/base/Language";
-import { NameChangeLocalization } from "@alice-localization/database/utils/aliceDb/NameChange/NameChangeLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { Language } from "@localization/base/Language";
+import { NameChangeLocalization } from "@localization/database/utils/aliceDb/NameChange/NameChangeLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * Represents an osu!droid name change request.

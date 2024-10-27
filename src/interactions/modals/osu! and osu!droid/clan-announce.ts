@@ -1,11 +1,11 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Clan } from "@database/utils/elainaDb/Clan";
 import { ModalCommand } from "structures/core/ModalCommand";
-import { ClanAnnounceLocalization } from "@alice-localization/interactions/modals/osu! and osu!droid/clan-announce/ClanAnnounceLocalization";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ClanAnnounceLocalization } from "@localization/interactions/modals/osu! and osu!droid/clan-announce/ClanAnnounceLocalization";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { Role, userMention } from "discord.js";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {

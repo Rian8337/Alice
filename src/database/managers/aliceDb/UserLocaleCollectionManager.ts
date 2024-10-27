@@ -1,8 +1,8 @@
-import { UserLocale } from "@alice-database/utils/aliceDb/UserLocale";
+import { UserLocale } from "@database/utils/aliceDb/UserLocale";
 import { OperationResult } from "structures/core/OperationResult";
 import { DatabaseUserLocale } from "structures/database/aliceDb/DatabaseUserLocale";
-import { Language } from "@alice-localization/base/Language";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { Language } from "@localization/base/Language";
+import { CacheManager } from "@utils/managers/CacheManager";
 import { Snowflake } from "discord.js";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 

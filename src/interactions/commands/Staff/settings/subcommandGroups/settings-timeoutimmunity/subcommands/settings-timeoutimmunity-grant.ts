@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { GuildPunishmentConfig } from "@database/utils/aliceDb/GuildPunishmentConfig";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { SettingsLocalization } from "@alice-localization/interactions/commands/Staff/settings/SettingsLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { SettingsLocalization } from "@localization/interactions/commands/Staff/settings/SettingsLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { Role } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

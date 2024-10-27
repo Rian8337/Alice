@@ -1,15 +1,15 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { Collection } from "discord.js";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { LeaderboardLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { LeaderboardLocalization } from "@localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(

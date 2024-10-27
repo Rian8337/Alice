@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TicketLocalization } from "@alice-localization/interactions/commands/General/ticket/TicketLocalization";
-import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ModalCreator } from "@alice-utils/creators/ModalCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { TicketLocalization } from "@localization/interactions/commands/General/ticket/TicketLocalization";
+import { SlashSubcommand } from "@structures/core/SlashSubcommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { ModalCreator } from "@utils/creators/ModalCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

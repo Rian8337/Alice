@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { GuildSettingsCollectionManager } from "@alice-database/managers/aliceDb/GuildSettingsCollectionManager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { GuildSettingsCollectionManager } from "@database/managers/aliceDb/GuildSettingsCollectionManager";
 import { OperationResult } from "structures/core/OperationResult";
 import { DisabledCommand } from "structures/moderation/DisabledCommand";
 import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
-import { Language } from "@alice-localization/base/Language";
-import { CommandUtilManagerLocalization } from "@alice-localization/utils/managers/CommandUtilManager/CommandUtilManagerLocalization";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { Language } from "@localization/base/Language";
+import { CommandUtilManagerLocalization } from "@localization/utils/managers/CommandUtilManager/CommandUtilManagerLocalization";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 import {
     Collection,
     GuildTextBasedChannel,

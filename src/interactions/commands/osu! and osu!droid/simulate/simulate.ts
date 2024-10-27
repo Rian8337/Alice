@@ -1,24 +1,24 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { SimulateLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/simulate/SimulateLocalization";
-import { SlashCommand } from "@alice-structures/core/SlashCommand";
-import { ScoreRank } from "@alice-structures/utils/ScoreRank";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { CommandCategory } from "@enums/core/CommandCategory";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { SimulateLocalization } from "@localization/interactions/commands/osu! and osu!droid/simulate/SimulateLocalization";
+import { SlashCommand } from "@structures/core/SlashCommand";
+import { ScoreRank } from "@structures/utils/ScoreRank";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { ReplayHelper } from "@utils/helpers/ReplayHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import {
     Accuracy,
     BeatmapDifficulty,

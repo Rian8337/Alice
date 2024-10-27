@@ -1,4 +1,4 @@
-import { ProfileBackground } from "@alice-database/utils/aliceDb/ProfileBackground";
+import { ProfileBackground } from "@database/utils/aliceDb/ProfileBackground";
 import { DatabaseProfileBackground } from "structures/database/aliceDb/DatabaseProfileBackground";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
@@ -10,7 +10,7 @@ export class ProfileBackgroundCollectionManager extends DatabaseCollectionManage
     ProfileBackground
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseProfileBackground
+        data: DatabaseProfileBackground,
     ) => ProfileBackground = ProfileBackground;
 
     override get defaultDocument(): DatabaseProfileBackground {

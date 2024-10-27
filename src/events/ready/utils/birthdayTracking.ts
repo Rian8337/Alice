@@ -1,13 +1,13 @@
-import { Config } from "@alice-core/Config";
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { Config } from "@core/Config";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Symbols } from "@enums/utils/Symbols";
 import { EventUtil } from "structures/core/EventUtil";
 import { DatabaseBirthday } from "structures/database/aliceDb/DatabaseBirthday";
-import { BirthdayTrackingLocalization } from "@alice-localization/events/ready/birthdayTracking/BirthdayTrackingLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { BirthdayTrackingLocalization } from "@localization/events/ready/birthdayTracking/BirthdayTrackingLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 import { consola } from "consola";
 
 export const run: EventUtil["run"] = async (client) => {

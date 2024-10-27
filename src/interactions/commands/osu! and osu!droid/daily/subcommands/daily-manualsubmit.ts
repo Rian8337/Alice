@@ -1,20 +1,20 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { DailyLocalization } from "@localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { PermissionHelper } from "@utils/helpers/PermissionHelper";
+import { RESTManager } from "@utils/managers/RESTManager";
 import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 import { GuildMember, bold } from "discord.js";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,

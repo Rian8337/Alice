@@ -1,16 +1,16 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Clan } from "@database/utils/elainaDb/Clan";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
+import { ClanLocalization } from "@localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { PermissionHelper } from "@utils/helpers/PermissionHelper";
 import { Collection, GuildMember, Snowflake } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (

@@ -10,24 +10,24 @@ import {
     TextChannel,
     User,
 } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { ClanMember } from "structures/clan/ClanMember";
 import { Powerup } from "structures/clan/Powerup";
 import { DatabaseClan } from "structures/database/elainaDb/DatabaseClan";
 import { Manager } from "../../../utils/base/Manager";
 import { MessageCreator } from "../../../utils/creators/MessageCreator";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { Constants } from "@alice-core/Constants";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { Constants } from "@core/Constants";
 import { PowerupType } from "structures/clan/PowerupType";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { RESTManager } from "@utils/managers/RESTManager";
 import { Image } from "canvas";
 import { Precision } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { OperationResult } from "structures/core/OperationResult";
-import { Language } from "@alice-localization/base/Language";
-import { ClanLocalization } from "@alice-localization/database/utils/elainaDb/Clan/ClanLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { Language } from "@localization/base/Language";
+import { ClanLocalization } from "@localization/database/utils/elainaDb/Clan/ClanLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * Represents a clan.
@@ -302,7 +302,7 @@ export class Clan extends Manager {
             player instanceof Player
                 ? player.rank
                 : player !== null
-                  ? (await DroidHelper.getPlayerRank(player.score)) ?? 0
+                  ? ((await DroidHelper.getPlayerRank(player.score)) ?? 0)
                   : 0;
 
         for (const uid of toAcceptBindInfo.previous_bind.slice(1)) {
@@ -315,7 +315,8 @@ export class Clan extends Manager {
                 tempPlayer instanceof Player
                     ? tempPlayer.rank
                     : tempPlayer != null
-                      ? (await DroidHelper.getPlayerRank(tempPlayer.score)) ?? 0
+                      ? ((await DroidHelper.getPlayerRank(tempPlayer.score)) ??
+                        0)
                       : 0;
 
             if (tempPlayer && rank > tempRank) {

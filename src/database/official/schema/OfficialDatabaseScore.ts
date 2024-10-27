@@ -1,4 +1,4 @@
-import { ScoreRank } from "@alice-structures/utils/ScoreRank";
+import { ScoreRank } from "@structures/utils/ScoreRank";
 
 /**
  * Represents an osu!droid score.

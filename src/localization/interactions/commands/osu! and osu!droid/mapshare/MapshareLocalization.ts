@@ -1,5 +1,5 @@
-import { Localization } from "@alice-localization/base/Localization";
-import { Translations } from "@alice-localization/base/Translations";
+import { Localization } from "@localization/base/Localization";
+import { Translations } from "@localization/base/Translations";
 import { MapshareENTranslation } from "./translations/MapshareENTranslation";
 import { MapshareESTranslation } from "./translations/MapshareESTranslation";
 import { MapshareKRTranslation } from "./translations/MapshareKRTranslation";

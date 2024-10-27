@@ -1,10 +1,10 @@
 import { GuildBan, GuildBasedChannel } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
-import { Constants } from "@alice-core/Constants";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Constants } from "@core/Constants";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { GuildPunishmentConfig } from "@database/utils/aliceDb/GuildPunishmentConfig";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 
 export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
     if (guildBan.guild.id !== Constants.mainServer) {
@@ -13,7 +13,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-            guildBan.guild
+            guildBan.guild,
         );
 
     if (!guildConfig) {
@@ -34,7 +34,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
                 projection: {
                     _id: 0,
                 },
-            }
+            },
         );
 
     if (!bindInfo) {
@@ -46,7 +46,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
     });
 
     logChannel.send(
-        MessageCreator.createAccept(`Successfully unbinded ${guildBan.user}.`)
+        MessageCreator.createAccept(`Successfully unbinded ${guildBan.user}.`),
     );
 };
 

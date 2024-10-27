@@ -1,5 +1,5 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { IllegalMap } from "@alice-database/utils/aliceDb/IllegalMap";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { IllegalMap } from "@database/utils/aliceDb/IllegalMap";
 import { EventUtil } from "structures/core/EventUtil";
 import { Collection } from "discord.js";
 
@@ -10,7 +10,7 @@ export const run: EventUtil["run"] = async () => {
         while (
             (illegalMaps =
                 await DatabaseManager.aliceDb.collections.illegalMap.getUnscannedBeatmaps(
-                    100
+                    100,
                 )).size > 0
         ) {
             for (const illegalMap of illegalMaps.values()) {
@@ -24,7 +24,7 @@ export const run: EventUtil["run"] = async () => {
                 $unset: {
                     deleteDone: "",
                 },
-            }
+            },
         );
     }, 1800 * 1000);
 };

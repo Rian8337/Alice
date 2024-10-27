@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { hideLinkEmbed, hyperlink } from "discord.js";
 import { ViewDroidProfileStrings } from "../ViewDroidProfileLocalization";
 
@@ -11,7 +11,7 @@ export class ViewDroidProfileKRTranslation extends Translation<ViewDroidProfileS
         userProfileNotFound: "죄송해요, 그 유저의 프로필을 찾을 수 없었어요!",
         viewingProfile: `${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}의 osu!droid 프로필:`,
     };
 }

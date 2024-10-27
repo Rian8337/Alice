@@ -1,4 +1,4 @@
-import { YouTubeVideoInformation } from "@alice-structures/youtube/YouTubeVideoInformation";
+import { YouTubeVideoInformation } from "@structures/youtube/YouTubeVideoInformation";
 import { decode } from "html-entities";
 import { RequestResponse } from "@rian8337/osu-base";
 import { RESTManager } from "./RESTManager";
@@ -16,11 +16,11 @@ export abstract class YouTubeRESTManager extends RESTManager {
      * @returns The information of the video, `null` if not found.
      */
     static async getInformation(
-        id: string
+        id: string,
     ): Promise<YouTubeVideoInformation | null> {
         const result: RequestResponse = await this.request(
             this.host +
-                `videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${id}`
+                `videos?key=${process.env.YOUTUBE_API_KEY}&part=snippet&id=${id}`,
         );
 
         if (result.statusCode !== 200) {
@@ -58,11 +58,11 @@ export abstract class YouTubeRESTManager extends RESTManager {
      * @param query The query to search for.
      */
     static async searchVideos(
-        query: string
+        query: string,
     ): Promise<YouTubeVideoInformation[]> {
         const result: RequestResponse = await this.request(
             this.host +
-                `search?key=${process.env.YOUTUBE_API_KEY}&part=snippet&q=${query}&type=video&maxResults=25`
+                `search?key=${process.env.YOUTUBE_API_KEY}&part=snippet&q=${query}&type=video&maxResults=25`,
         );
 
         if (result.statusCode !== 200) {

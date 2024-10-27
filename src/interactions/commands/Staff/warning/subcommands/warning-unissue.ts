@@ -1,12 +1,12 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Warning } from "@alice-database/utils/aliceDb/Warning";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Warning } from "@database/utils/aliceDb/Warning";
 import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { WarningLocalization } from "@alice-localization/interactions/commands/Staff/warning/WarningLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { WarningManager } from "@alice-utils/managers/WarningManager";
+import { WarningLocalization } from "@localization/interactions/commands/Staff/warning/WarningLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { WarningManager } from "@utils/managers/WarningManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WarningLocalization = new WarningLocalization(

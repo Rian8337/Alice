@@ -1,18 +1,18 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { ApplicationCommandOptionType, bold } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { GuildEmoji } from "discord.js";
-import { EmojistatisticsLocalization } from "@alice-localization/interactions/commands/Tools/emojistatistics/EmojistatisticsLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { EmojistatisticsLocalization } from "@localization/interactions/commands/Tools/emojistatistics/EmojistatisticsLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {

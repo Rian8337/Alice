@@ -4,14 +4,14 @@ import {
     PermissionsBitField,
     TextChannel,
 } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { VoteChoice } from "structures/interactions/commands/Tools/VoteChoice";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Voting } from "@alice-database/utils/aliceDb/Voting";
-import { VoteLocalization } from "@alice-localization/interactions/commands/Tools/vote/VoteLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { Voting } from "@database/utils/aliceDb/Voting";
+import { VoteLocalization } from "@localization/interactions/commands/Tools/vote/VoteLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(

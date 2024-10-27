@@ -1,15 +1,15 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { MapWhitelist } from "@database/utils/elainaDb/MapWhitelist";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { WhitelistLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { WhitelistLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
 import { Comparison } from "structures/dpp/Comparison";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { bold, EmbedBuilder, GuildMember, hyperlink } from "discord.js";
 import { Filter, Sort } from "mongodb";
 

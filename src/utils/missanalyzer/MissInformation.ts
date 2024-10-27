@@ -1,4 +1,4 @@
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 import {
     BeatmapMetadata,
     DroidHitWindow,

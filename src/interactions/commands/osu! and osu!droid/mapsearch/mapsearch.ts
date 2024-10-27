@@ -5,23 +5,23 @@ import {
     bold,
     hyperlink,
 } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { CommandCategory } from "@enums/core/CommandCategory";
+import { Symbols } from "@enums/utils/Symbols";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { SayobotAPIResponse } from "@alice-structures/sayobot/SayobotAPIResponse";
-import { SayobotBeatmap } from "@alice-structures/sayobot/SayobotBeatmap";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
+import { SayobotAPIResponse } from "@structures/sayobot/SayobotAPIResponse";
+import { SayobotBeatmap } from "@structures/sayobot/SayobotBeatmap";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { RESTManager } from "@utils/managers/RESTManager";
 import { RankedStatus, RequestResponse } from "@rian8337/osu-base";
-import { MapsearchLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapsearch/MapsearchLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MapsearchLocalization } from "@localization/interactions/commands/osu! and osu!droid/mapsearch/MapsearchLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: MapsearchLocalization = new MapsearchLocalization(

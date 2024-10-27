@@ -1,17 +1,17 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PrototypePP } from "@alice-database/utils/aliceDb/PrototypePP";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { PrototypePP } from "@database/utils/aliceDb/PrototypePP";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { bold, GuildMember, userMention } from "discord.js";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { PPLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new PPLocalization(

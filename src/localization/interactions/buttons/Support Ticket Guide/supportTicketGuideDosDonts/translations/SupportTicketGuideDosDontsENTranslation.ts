@@ -1,6 +1,6 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { SupportTicketGuideDosDontsStrings } from "../SupportTicketGuideDosDontsLocalization";
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { userMention, channelMention } from "discord.js";
 
 /**

@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseProfileBackground } from "structures/database/aliceDb/DatabaseProfileBackground";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 
 /**
@@ -16,7 +16,7 @@ export class ProfileBackground
 
     constructor(
         data: DatabaseProfileBackground = DatabaseManager.aliceDb?.collections
-            .profileBackgrounds.defaultDocument ?? {}
+            .profileBackgrounds.defaultDocument ?? {},
     ) {
         super();
 

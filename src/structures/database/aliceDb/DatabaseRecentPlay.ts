@@ -3,11 +3,11 @@ import {
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
 import { BaseDocument } from "../BaseDocument";
-import { SliderTickInformation } from "@alice-structures/dpp/SliderTickInformation";
+import { SliderTickInformation } from "@structures/dpp/SliderTickInformation";
 
 /**
  * Represents a recent play.

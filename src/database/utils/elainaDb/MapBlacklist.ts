@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseMapBlacklist } from "structures/database/elainaDb/DatabaseMapBlacklist";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 
 /**
@@ -13,7 +13,7 @@ export class MapBlacklist extends Manager implements DatabaseMapBlacklist {
 
     constructor(
         data: DatabaseMapBlacklist = DatabaseManager.elainaDb?.collections
-            .mapBlacklist.defaultDocument ?? {}
+            .mapBlacklist.defaultDocument ?? {},
     ) {
         super();
 

@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseRestoredPlayerCredentials } from "structures/database/aliceDb/DatabaseRestoredPlayerCredentials";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 
 /**
  * Represents a player whose account was deleted due to the *incident*.
@@ -30,7 +30,7 @@ export class RestoredPlayerCredentials
 
     constructor(
         data: DatabaseRestoredPlayerCredentials = DatabaseManager.aliceDb
-            ?.collections.restoredPlayerCredentials.defaultDocument
+            ?.collections.restoredPlayerCredentials.defaultDocument,
     ) {
         super();
 

@@ -1,13 +1,13 @@
 import { MapInfo } from "@rian8337/osu-base";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { EmbedBuilder, BaseMessageOptions } from "discord.js";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { DownloadlinkLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/downloadlink/DownloadlinkLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { DownloadlinkLocalization } from "@localization/interactions/commands/osu! and osu!droid/downloadlink/DownloadlinkLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: DownloadlinkLocalization = new DownloadlinkLocalization(

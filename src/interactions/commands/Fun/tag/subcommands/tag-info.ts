@@ -1,12 +1,12 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { GuildTag } from "@database/utils/aliceDb/GuildTag";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { TagLocalization } from "@alice-localization/interactions/commands/Fun/tag/TagLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { TagLocalization } from "@localization/interactions/commands/Fun/tag/TagLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { bold, EmbedBuilder, userMention } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

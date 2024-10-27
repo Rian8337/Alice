@@ -1,9 +1,9 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MapTriviaPlayer } from "@alice-structures/trivia/MapTriviaPlayer";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { MapTriviaPlayer } from "@structures/trivia/MapTriviaPlayer";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { CacheManager } from "@utils/managers/CacheManager";
 import {
     Collection,
     GuildMember,
@@ -23,15 +23,15 @@ import {
     OsuAPIRequestBuilder,
     OsuAPIResponse,
 } from "@rian8337/osu-base";
-import { TriviaLocalization } from "@alice-localization/interactions/commands/Fun/trivia/TriviaLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { ModalCreator } from "@alice-utils/creators/ModalCreator";
-import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { TriviaLocalization } from "@localization/interactions/commands/Fun/trivia/TriviaLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { InteractionCollectorCreator } from "@utils/base/InteractionCollectorCreator";
+import { Symbols } from "@enums/utils/Symbols";
+import { ModalCreator } from "@utils/creators/ModalCreator";
+import { TriviaMapCachedAnswer } from "@structures/trivia/TriviaMapCachedAnswer";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 
 async function getBeatmaps(fetchAttempt = 0): Promise<MapInfo[]> {
     if (fetchAttempt === 5) {

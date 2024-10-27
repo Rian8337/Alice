@@ -1,9 +1,9 @@
-import { SpamAccountBanLocalization } from "@alice-localization/interactions/buttons/Spam Account Detection/spamAccountBan/SpamAccountBanLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { SpamAccountBanLocalization } from "@localization/interactions/buttons/Spam Account Detection/spamAccountBan/SpamAccountBanLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {

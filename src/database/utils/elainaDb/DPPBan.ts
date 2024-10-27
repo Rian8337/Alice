@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseDPPBan } from "structures/database/elainaDb/DatabaseDPPBan";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 
 /**
@@ -13,7 +13,7 @@ export class DPPBan extends Manager implements DatabaseDPPBan {
 
     constructor(
         data: DatabaseDPPBan = DatabaseManager.elainaDb?.collections.dppBan
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 

@@ -1,7 +1,7 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { AccountTransferStrings } from "../AccountTransferLocalization";
 import { hyperlink, messageLink } from "discord.js";
-import { Constants } from "@alice-core/Constants";
+import { Constants } from "@core/Constants";
 
 /**
  * The English translation for the `accountTransfer` slash command.

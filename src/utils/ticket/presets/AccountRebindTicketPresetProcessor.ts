@@ -3,21 +3,21 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { AccountRebindTicketPresetProcessorLocalization } from "@alice-localization/utils/ticket/presets/AccountRebindTicketPresetProcessor/AccountRebindTicketPresetProcessorLocalization";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { AccountRebindTicketPresetProcessorLocalization } from "@localization/utils/ticket/presets/AccountRebindTicketPresetProcessor/AccountRebindTicketPresetProcessorLocalization";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { ModalTicketPresetProcessor } from "./ModalTicketPresetProcessor";
-import { ProcessedSupportTicketPreset } from "@alice-structures/utils/ProcessedSupportTicketPreset";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { Language } from "@alice-localization/base/Language";
+import { ProcessedSupportTicketPreset } from "@structures/utils/ProcessedSupportTicketPreset";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { Language } from "@localization/base/Language";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { Constants } from "@alice-core/Constants";
-import { Config } from "@alice-core/Config";
-import { ModalRepliableInteraction } from "@alice-structures/core/ModalRepliableInteraction";
-import { DatabaseSupportTicketPreset } from "@alice-structures/database/aliceDb/DatabaseSupportTicketPreset";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { Constants } from "@core/Constants";
+import { Config } from "@core/Config";
+import { ModalRepliableInteraction } from "@structures/core/ModalRepliableInteraction";
+import { DatabaseSupportTicketPreset } from "@structures/database/aliceDb/DatabaseSupportTicketPreset";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * The ticket preset processor for account rebinds.

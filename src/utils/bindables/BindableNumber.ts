@@ -1,7 +1,7 @@
 import { Precision } from "@rian8337/osu-base";
 import { Bindable } from "./Bindable";
 import { ValueChangedEvent } from "./ValueChangedEvent";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 
 /**
  * A `Bindable` that has the utility to limit numbers to a certain precision.
@@ -162,7 +162,7 @@ export class BindableNumber extends Bindable<number> {
     protected setPrecision(
         precision: number,
         updateCurrentValue: boolean,
-        source: BindableNumber
+        source: BindableNumber,
     ): void {
         const prev: number = this._precision;
         this._precision = precision;
@@ -183,7 +183,7 @@ export class BindableNumber extends Bindable<number> {
      */
     bindPrecisionChanged(
         onChange: ValueChangedEvent<number>,
-        runOnceImmediately?: boolean
+        runOnceImmediately?: boolean,
     ): void {
         this._precisionChanged.push(onChange);
 
@@ -209,7 +209,7 @@ export class BindableNumber extends Bindable<number> {
      */
     bindMinValueChanged(
         onChange: ValueChangedEvent<number>,
-        runOnceImmediately?: boolean
+        runOnceImmediately?: boolean,
     ): void {
         this._minValueChanged.push(onChange);
 
@@ -235,7 +235,7 @@ export class BindableNumber extends Bindable<number> {
      */
     bindMaxValueChanged(
         onChange: ValueChangedEvent<number>,
-        runOnceImmediately?: boolean
+        runOnceImmediately?: boolean,
     ): void {
         this._maxValueChanged.push(onChange);
 
@@ -264,7 +264,7 @@ export class BindableNumber extends Bindable<number> {
     protected setMinValue(
         minValue: number,
         updateCurrentValue: boolean,
-        source: BindableNumber | null
+        source: BindableNumber | null,
     ): void {
         const prev: number = this._minValue;
 
@@ -289,7 +289,7 @@ export class BindableNumber extends Bindable<number> {
     protected setMaxValue(
         maxValue: number,
         updateCurrentValue: boolean,
-        source: BindableNumber | null
+        source: BindableNumber | null,
     ) {
         const prev: number = this._maxValue;
         this._maxValue = maxValue;
@@ -314,7 +314,7 @@ export class BindableNumber extends Bindable<number> {
             const clampedValue: number = this.clampValue(
                 value,
                 this.minValue,
-                this.maxValue
+                this.maxValue,
             );
 
             super.value =
@@ -340,7 +340,7 @@ export class BindableNumber extends Bindable<number> {
     protected triggerPrecisionChange(
         previousValue: number,
         source: BindableNumber | null,
-        propagateToBindings: boolean = true
+        propagateToBindings: boolean = true,
     ): void {
         // Check a bound bindable hasn't changed the value again (it will fire its own event)
         const beforePropagation: number = this._precision;
@@ -371,7 +371,7 @@ export class BindableNumber extends Bindable<number> {
     protected triggerMinValueChange(
         previousValue: number,
         source: BindableNumber | null,
-        propagateToBindings: boolean = true
+        propagateToBindings: boolean = true,
     ): void {
         // Check a bound bindable hasn't changed the value again (it will fire its own event)
         const beforePropagation: number = this._minValue;
@@ -402,7 +402,7 @@ export class BindableNumber extends Bindable<number> {
     protected triggerMaxValueChange(
         previousValue: number,
         source: BindableNumber | null,
-        propagateToBindings: boolean = true
+        propagateToBindings: boolean = true,
     ): void {
         // Check a bound bindable hasn't changed the value again (it will fire its own event)
         const beforePropagation: number = this._maxValue;
@@ -444,7 +444,7 @@ export class BindableNumber extends Bindable<number> {
         if (them instanceof BindableNumber) {
             if (!this.isValidRange(them.minValue, them.maxValue)) {
                 throw new RangeError(
-                    `The target bindable has specified an invalid range of [${them.minValue} - ${them.maxValue}].`
+                    `The target bindable has specified an invalid range of [${them.minValue} - ${them.maxValue}].`,
                 );
             }
         }
@@ -473,7 +473,7 @@ export class BindableNumber extends Bindable<number> {
         return Precision.almostEqualsNumber(
             this.value,
             this.defaultValue,
-            this.precision / 2
+            this.precision / 2,
         );
     }
 
@@ -491,7 +491,7 @@ export class BindableNumber extends Bindable<number> {
     protected clampValue(
         value: number,
         minValue: number,
-        maxValue: number
+        maxValue: number,
     ): number {
         return NumberHelper.clamp(value, minValue, maxValue);
     }

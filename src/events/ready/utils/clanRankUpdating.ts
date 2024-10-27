@@ -1,9 +1,9 @@
-import { Config } from "@alice-core/Config";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Config } from "@core/Config";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: EventUtil["run"] = async () => {
     setInterval(
@@ -59,9 +59,9 @@ export const run: EventUtil["run"] = async () => {
                         const rank =
                             player instanceof Player
                                 ? player.rank
-                                : (await DroidHelper.getPlayerRank(
+                                : ((await DroidHelper.getPlayerRank(
                                       player.score,
-                                  )) ?? 0;
+                                  )) ?? 0);
 
                         if (rank > 0 && highestRank > rank) {
                             highestRank = rank;

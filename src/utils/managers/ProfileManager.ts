@@ -1,13 +1,13 @@
 import { Player } from "@rian8337/osu-droid-utilities";
 import { registerFont } from "canvas";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Manager } from "@alice-utils/base/Manager";
-import { ProfileCardCreator } from "@alice-utils/creators/ProfileCardCreator";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { Language } from "@alice-localization/base/Language";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Manager } from "@utils/base/Manager";
+import { ProfileCardCreator } from "@utils/creators/ProfileCardCreator";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
+import { Language } from "@localization/base/Language";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * A manager for osu!droid accounts' profile.

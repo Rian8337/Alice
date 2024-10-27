@@ -7,8 +7,8 @@ import {
     GuildMemberFlags,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
-import { Constants } from "@alice-core/Constants";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { Constants } from "@core/Constants";
+import { Symbols } from "@enums/utils/Symbols";
 
 export const run: EventUtil["run"] = async (_, member: GuildMember) => {
     if (member.guild.id !== Constants.mainServer || member.user.bot) {

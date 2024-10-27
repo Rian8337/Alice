@@ -1,12 +1,12 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { EditSupportTicketLocalization } from "@alice-localization/interactions/buttons/Support Ticket/editSupportTicket/EditSupportTicketLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ModalCreator } from "@alice-utils/creators/ModalCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { EditSupportTicketLocalization } from "@localization/interactions/buttons/Support Ticket/editSupportTicket/EditSupportTicketLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { ModalCreator } from "@utils/creators/ModalCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {

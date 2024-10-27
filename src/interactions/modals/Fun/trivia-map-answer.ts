@@ -1,10 +1,10 @@
 import { ModalCommand } from "structures/core/ModalCommand";
-import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
-import { TriviaMapAnswerLocalization } from "@alice-localization/interactions/modals/Fun/trivia-map-answerquestion/TriviaMapAnswerLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { TriviaMapCachedAnswer } from "@structures/trivia/TriviaMapCachedAnswer";
+import { TriviaMapAnswerLocalization } from "@localization/interactions/modals/Fun/trivia-map-answerquestion/TriviaMapAnswerLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { CacheManager } from "@utils/managers/CacheManager";
 import { Collection, Snowflake } from "discord.js";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {

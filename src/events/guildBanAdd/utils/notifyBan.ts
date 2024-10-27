@@ -8,9 +8,9 @@ import {
     GuildBasedChannel,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { GuildPunishmentConfig } from "@database/utils/aliceDb/GuildPunishmentConfig";
+import { DatabaseManager } from "@database/DatabaseManager";
 
 export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
     const auditLogEntries: GuildAuditLogs<AuditLogEvent.MemberBanAdd> =
@@ -35,7 +35,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
 
     const guildConfig: GuildPunishmentConfig | null =
         await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-            guildBan.guild
+            guildBan.guild,
         );
 
     if (!guildConfig) {
@@ -64,7 +64,7 @@ export const run: EventUtil["run"] = async (_, guildBan: GuildBan) => {
             {
                 name: "=========================",
                 value: `Reason: ${banLog.reason ?? "Not specified."}`,
-            }
+            },
         );
 
     if (banLog.executor) {

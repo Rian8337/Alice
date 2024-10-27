@@ -1,9 +1,9 @@
-import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
+import { MapWhitelist } from "@database/utils/elainaDb/MapWhitelist";
 import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Filter, Sort } from "mongodb";
 import { Collection as DiscordCollection } from "discord.js";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 
 /**
  * A manager for the `mapwhitelist` command.
@@ -13,7 +13,7 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<
     MapWhitelist
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseMapWhitelist
+        data: DatabaseMapWhitelist,
     ) => MapWhitelist = MapWhitelist;
 
     override get defaultDocument(): DatabaseMapWhitelist {
@@ -38,7 +38,7 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<
      * @param amount The amount of beatmaps to get.
      */
     async getUnscannedBeatmaps(
-        amount: number
+        amount: number,
     ): Promise<DiscordCollection<number, MapWhitelist>> {
         const mapWhitelist: DatabaseMapWhitelist[] = await this.collection
             .find({ whitelistScanDone: { $ne: true } })
@@ -47,7 +47,7 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<
 
         return ArrayHelper.arrayToCollection(
             mapWhitelist.map((v) => new MapWhitelist(v)),
-            "mapid"
+            "mapid",
         );
     }
 
@@ -64,7 +64,7 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<
         page: number,
         searchQuery: Filter<DatabaseMapWhitelist> = {},
         sort: Sort = {},
-        amount: number = 10
+        amount: number = 10,
     ): Promise<MapWhitelist[]> {
         const result: DatabaseMapWhitelist[] = await this.collection
             .find(searchQuery, {
@@ -86,7 +86,7 @@ export class MapWhitelistCollectionManager extends DatabaseCollectionManager<
      * @returns The amount of beatmaps found with the given search query.
      */
     getWhitelistQueryResultCount(
-        searchQuery: Filter<DatabaseMapWhitelist>
+        searchQuery: Filter<DatabaseMapWhitelist>,
     ): Promise<number> {
         return this.collection.countDocuments(searchQuery);
     }

@@ -1,7 +1,7 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
-import { ModalCreator } from "@alice-utils/creators/ModalCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { ClanLocalization } from "@localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
+import { ModalCreator } from "@utils/creators/ModalCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

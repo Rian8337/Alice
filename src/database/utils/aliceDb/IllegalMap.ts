@@ -1,8 +1,8 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
 import { DatabaseIllegalMap } from "structures/database/aliceDb/DatabaseIllegalMap";
-import { Manager } from "@alice-utils/base/Manager";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { Manager } from "@utils/base/Manager";
+import { ScoreHelper } from "@utils/helpers/ScoreHelper";
 import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { ObjectId } from "mongodb";
@@ -17,7 +17,7 @@ export class IllegalMap extends Manager implements DatabaseIllegalMap {
 
     constructor(
         data: DatabaseIllegalMap = DatabaseManager.aliceDb?.collections
-            .illegalMap.defaultDocument ?? {}
+            .illegalMap.defaultDocument ?? {},
     ) {
         super();
 
@@ -50,7 +50,7 @@ export class IllegalMap extends Manager implements DatabaseIllegalMap {
                 $set: {
                     deleteDone: true,
                 },
-            }
+            },
         );
     }
 }

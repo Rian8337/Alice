@@ -1,5 +1,5 @@
-import { AutocompleteSubhandler } from "@alice-structures/core/AutocompleteSubhandler";
-import { Manager } from "@alice-utils/base/Manager";
+import { AutocompleteSubhandler } from "@structures/core/AutocompleteSubhandler";
+import { Manager } from "@utils/base/Manager";
 import { AutocompleteInteraction } from "discord.js";
 
 /**
@@ -12,11 +12,11 @@ export abstract class AutocompleteHelper extends Manager {
      * @param interaction The interaction.
      */
     static runSubcommandSubhandler(
-        interaction: AutocompleteInteraction
+        interaction: AutocompleteInteraction,
     ): Promise<unknown> {
         return this.runSubOrGroupSubhandler(
             interaction,
-            this.getSubcommandSubhandler(interaction)
+            this.getSubcommandSubhandler(interaction),
         );
     }
 
@@ -26,11 +26,11 @@ export abstract class AutocompleteHelper extends Manager {
      * @param interaction The interaction.
      */
     static runSubcommandGroupSubhandler(
-        interaction: AutocompleteInteraction
+        interaction: AutocompleteInteraction,
     ): Promise<unknown> {
         return this.runSubOrGroupSubhandler(
             interaction,
-            this.getSubcommandGroupSubhandler(interaction)
+            this.getSubcommandGroupSubhandler(interaction),
         );
     }
 
@@ -41,7 +41,7 @@ export abstract class AutocompleteHelper extends Manager {
      * @returns The handler, if found.
      */
     static getSubcommandSubhandler(
-        interaction: AutocompleteInteraction
+        interaction: AutocompleteInteraction,
     ): AutocompleteSubhandler | null {
         if (!interaction.options.getSubcommand(false)) {
             return null;
@@ -69,7 +69,7 @@ export abstract class AutocompleteHelper extends Manager {
      * @returns The handler, if found.
      */
     static getSubcommandGroupSubhandler(
-        interaction: AutocompleteInteraction
+        interaction: AutocompleteInteraction,
     ): AutocompleteSubhandler | null {
         if (!interaction.options.getSubcommandGroup(false)) {
             return null;
@@ -97,7 +97,7 @@ export abstract class AutocompleteHelper extends Manager {
      */
     private static runSubOrGroupSubhandler(
         interaction: AutocompleteInteraction,
-        handler: AutocompleteSubhandler | null
+        handler: AutocompleteSubhandler | null,
     ): Promise<unknown> {
         if (!handler) {
             return interaction.respond([]);

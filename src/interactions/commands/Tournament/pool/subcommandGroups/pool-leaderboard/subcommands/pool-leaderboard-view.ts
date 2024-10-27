@@ -1,20 +1,20 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { TournamentMappool } from "@database/utils/elainaDb/TournamentMappool";
+import { Symbols } from "@enums/utils/Symbols";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
-import { TournamentScore } from "@alice-structures/tournament/TournamentScore";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { PoolLocalization } from "@alice-localization/interactions/commands/Tournament/pool/PoolLocalization";
+import { TournamentScore } from "@structures/tournament/TournamentScore";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { PoolLocalization } from "@localization/interactions/commands/Tournament/pool/PoolLocalization";
 import { ScoreRank } from "structures/utils/ScoreRank";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { GuildMember, EmbedBuilder, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

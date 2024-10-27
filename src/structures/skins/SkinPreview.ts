@@ -1,4 +1,4 @@
-import { SkinPreviewType } from "@alice-enums/utils/SkinPreviewType";
+import { SkinPreviewType } from "@enums/utils/SkinPreviewType";
 import { SkinPreviewData } from "./SkinPreviewData";
 
 /**

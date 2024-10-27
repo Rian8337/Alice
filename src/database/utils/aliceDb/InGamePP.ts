@@ -1,11 +1,11 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
-import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
-import { DatabaseInGamePP } from "@alice-structures/database/aliceDb/DatabaseInGamePP";
-import { PPEntry } from "@alice-structures/dpp/PPEntry";
+import { RecalculationProgress } from "@structures/dpp/RecalculationProgress";
+import { DatabaseInGamePP } from "@structures/database/aliceDb/DatabaseInGamePP";
+import { PPEntry } from "@structures/dpp/PPEntry";
 
 /**
  * Represents the droid performance point (dpp) entry of an osu!droid account that corresponds

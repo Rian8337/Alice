@@ -1,5 +1,5 @@
-import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
-import { TriviaQuestionType } from "@alice-enums/trivia/TriviaQuestionType";
+import { TriviaQuestionCategory } from "@enums/trivia/TriviaQuestionCategory";
+import { TriviaQuestionType } from "@enums/trivia/TriviaQuestionType";
 import { User } from "discord.js";
 
 /**

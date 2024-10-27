@@ -1,4 +1,4 @@
-import { SkinPreview } from "@alice-structures/skins/SkinPreview";
+import { SkinPreview } from "@structures/skins/SkinPreview";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 

@@ -1,7 +1,7 @@
-import { Warning } from "@alice-database/utils/aliceDb/Warning";
+import { Warning } from "@database/utils/aliceDb/Warning";
 import { OperationResult } from "structures/core/OperationResult";
 import { DatabaseWarning } from "structures/database/aliceDb/DatabaseWarning";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { Collection as DiscordCollection, Snowflake } from "discord.js";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
@@ -13,7 +13,7 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
     Warning
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseWarning
+        data: DatabaseWarning,
     ) => Warning = Warning;
 
     override get defaultDocument(): DatabaseWarning {
@@ -61,7 +61,7 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
      */
     getByGuildWarningId(
         guildId: Snowflake,
-        warningId: number
+        warningId: number,
     ): Promise<Warning | null> {
         return this.getOne({ globalId: `${guildId}-${warningId}` });
     }
@@ -75,7 +75,7 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
      */
     async getUserWarningsInGuild(
         guildId: Snowflake,
-        userId: Snowflake
+        userId: Snowflake,
     ): Promise<DiscordCollection<string, Warning>> {
         const res: DatabaseWarning[] = await this.collection
             .find({
@@ -86,7 +86,7 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
 
         return ArrayHelper.arrayToCollection(
             res.map((v) => new Warning(v)),
-            "globalId"
+            "globalId",
         );
     }
 
@@ -101,7 +101,7 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
     transferWarnings(
         guildId: Snowflake,
         fromUserId: Snowflake,
-        toUserId: Snowflake
+        toUserId: Snowflake,
     ): Promise<OperationResult> {
         return this.updateMany(
             {
@@ -111,7 +111,7 @@ export class WarningCollectionManager extends DatabaseCollectionManager<
                 $set: {
                     discordId: toUserId,
                 },
-            }
+            },
         );
     }
 }

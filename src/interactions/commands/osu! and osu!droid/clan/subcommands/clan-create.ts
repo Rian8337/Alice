@@ -1,16 +1,16 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ClanLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { ClanLocalization } from "@localization/interactions/commands/osu! and osu!droid/clan/ClanLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new ClanLocalization(
@@ -136,7 +136,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const rank =
         player instanceof Player
             ? player.rank
-            : (await DroidHelper.getPlayerRank(player.score)) ?? 0;
+            : ((await DroidHelper.getPlayerRank(player.score)) ?? 0);
 
     await DatabaseManager.elainaDb.collections.clan.insert({
         leader: interaction.user.id,

@@ -1,20 +1,20 @@
 import { bold, GuildMember } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { ProfileManager } from "@utils/managers/ProfileManager";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { FindOptions } from "mongodb";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new ProfileLocalization(
@@ -123,7 +123,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const rank =
         player instanceof Player
             ? player.rank
-            : (await DroidHelper.getPlayerRank(player.score)) ?? 0;
+            : ((await DroidHelper.getPlayerRank(player.score)) ?? 0);
 
     embed
         .setAuthor({

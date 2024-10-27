@@ -1,12 +1,12 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TicketLocalization } from "@alice-localization/interactions/commands/General/ticket/TicketLocalization";
-import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { TicketLocalization } from "@localization/interactions/commands/General/ticket/TicketLocalization";
+import { SlashSubcommand } from "@structures/core/SlashSubcommand";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

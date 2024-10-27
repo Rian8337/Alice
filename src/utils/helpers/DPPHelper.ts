@@ -1,14 +1,14 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { DPPSubmissionValidity } from "@alice-enums/utils/DPPSubmissionValidity";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { PPEntry } from "@alice-structures/dpp/PPEntry";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { DiscordBackendRESTManager } from "@alice-utils/managers/DiscordBackendRESTManager";
-import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { DPPSubmissionValidity } from "@enums/utils/DPPSubmissionValidity";
+import { Symbols } from "@enums/utils/Symbols";
+import { PPEntry } from "@structures/dpp/PPEntry";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { DiscordBackendRESTManager } from "@utils/managers/DiscordBackendRESTManager";
+import { WhitelistManager } from "@utils/managers/WhitelistManager";
 import { Accuracy, MapInfo, RankedStatus, Utils } from "@rian8337/osu-base";
 import {
     CacheableDifficultyAttributes,
@@ -23,11 +23,11 @@ import { Score } from "@rian8337/osu-droid-utilities";
 import { Collection, RepliableInteraction, underscore } from "discord.js";
 import { CommandHelper } from "./CommandHelper";
 import { NumberHelper } from "./NumberHelper";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { ResponseDifficultyAttributes } from "@alice-structures/difficultyattributes/ResponseDifficultyAttributes";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { ResponseDifficultyAttributes } from "@structures/difficultyattributes/ResponseDifficultyAttributes";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 
 /**
  * A helper for droid performance points related things.

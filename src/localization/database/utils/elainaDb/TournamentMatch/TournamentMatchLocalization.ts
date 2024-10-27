@@ -1,5 +1,5 @@
-import { Localization } from "@alice-localization/base/Localization";
-import { Translations } from "@alice-localization/base/Translations";
+import { Localization } from "@localization/base/Localization";
+import { Translations } from "@localization/base/Translations";
 import { TournamentMatchENTranslation } from "./translations/TournamentMatchENTranslation";
 import { TournamentMatchESTranslation } from "./translations/TournamentMatchESTranslation";
 import { TournamentMatchKRTranslation } from "./translations/TournamentMatchKRTranslation";

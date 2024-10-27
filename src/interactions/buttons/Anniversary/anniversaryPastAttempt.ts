@@ -1,11 +1,11 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { AnniversaryReviewType } from "@alice-enums/utils/AnniversaryReviewType";
-import { AnniversaryPastAttemptLocalization } from "@alice-localization/interactions/buttons/Anniversary/anniversaryPastAttempt/AnniversaryPastAttemptLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { AnniversaryReviewType } from "@enums/utils/AnniversaryReviewType";
+import { AnniversaryPastAttemptLocalization } from "@localization/interactions/buttons/Anniversary/anniversaryPastAttempt/AnniversaryPastAttemptLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { CacheManager } from "@utils/managers/CacheManager";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {

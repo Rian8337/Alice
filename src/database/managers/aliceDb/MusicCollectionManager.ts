@@ -1,4 +1,4 @@
-import { MusicCollection } from "@alice-database/utils/aliceDb/MusicCollection";
+import { MusicCollection } from "@database/utils/aliceDb/MusicCollection";
 import { DatabaseMusicCollection } from "structures/database/aliceDb/DatabaseMusicCollection";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake, User, Collection as DiscordCollection } from "discord.js";
@@ -11,7 +11,7 @@ export class MusicCollectionManager extends DatabaseCollectionManager<
     MusicCollection
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseMusicCollection
+        data: DatabaseMusicCollection,
     ) => MusicCollection = MusicCollection;
 
     override get defaultDocument(): DatabaseMusicCollection {
@@ -31,7 +31,7 @@ export class MusicCollectionManager extends DatabaseCollectionManager<
      * @returns The music collections owned by the user, mapped by the name.
      */
     getUserCollections(
-        user: User
+        user: User,
     ): Promise<DiscordCollection<string, MusicCollection>>;
 
     /**
@@ -42,11 +42,11 @@ export class MusicCollectionManager extends DatabaseCollectionManager<
      * @returns The music collections owned by the user, mapped by the name.
      */
     getUserCollections(
-        id: Snowflake
+        id: Snowflake,
     ): Promise<DiscordCollection<string, MusicCollection>>;
 
     getUserCollections(
-        userOrId: User | Snowflake
+        userOrId: User | Snowflake,
     ): Promise<DiscordCollection<string, MusicCollection>> {
         return this.get("name", {
             owner: userOrId instanceof User ? userOrId.id : userOrId,

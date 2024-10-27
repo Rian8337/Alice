@@ -1,14 +1,14 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { UpdateFilter } from "mongodb";
 import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerInfo";
 

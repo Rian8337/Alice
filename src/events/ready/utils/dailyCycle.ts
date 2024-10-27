@@ -1,14 +1,14 @@
-import { Config } from "@alice-core/Config";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { Config } from "@core/Config";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
 import { EventUtil } from "structures/core/EventUtil";
-import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { MessageAnalyticsHelper } from "@utils/helpers/MessageAnalyticsHelper";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 
 async function resetDailyCoinsAndMapShare(): Promise<void> {
     await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
         { discordid: "386742340968120321" },
-        { $inc: { dailyreset: 86400 } }
+        { $inc: { dailyreset: 86400 } },
     );
 
     await DatabaseManager.aliceDb.collections.playerInfo.updateMany(
@@ -19,7 +19,7 @@ async function resetDailyCoinsAndMapShare(): Promise<void> {
                 hasSubmittedMapShare: false,
                 transferred: 0,
             },
-        }
+        },
     );
 }
 
@@ -32,7 +32,7 @@ export const run: EventUtil["run"] = async () => {
                     _id: 0,
                     dailyreset: 1,
                 },
-            }
+            },
         ))!;
 
     let resetTime: number = playerInfo.dailyreset!;

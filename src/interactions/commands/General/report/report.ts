@@ -4,17 +4,17 @@ import {
     roleMention,
     bold,
 } from "discord.js";
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { Constants } from "@alice-core/Constants";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ReportLocalization } from "@alice-localization/interactions/commands/General/report/ReportLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Constants } from "@core/Constants";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ReportLocalization } from "@localization/interactions/commands/General/report/ReportLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new ReportLocalization(

@@ -1,6 +1,6 @@
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { CacheManager } from "./CacheManager";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 
 /**
  * A manager for anniversary trivia.

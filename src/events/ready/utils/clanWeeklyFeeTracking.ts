@@ -1,17 +1,17 @@
-import { Config } from "@alice-core/Config";
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Config } from "@core/Config";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { Clan } from "@database/utils/elainaDb/Clan";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 import { OperationResult } from "structures/core/OperationResult";
-import { Language } from "@alice-localization/base/Language";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Language } from "@localization/base/Language";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 
 export const run: EventUtil["run"] = async (client) => {
     return;

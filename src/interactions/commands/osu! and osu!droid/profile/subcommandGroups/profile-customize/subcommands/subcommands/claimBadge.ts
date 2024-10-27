@@ -1,21 +1,21 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Symbols } from "@enums/utils/Symbols";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MessageInputCreator } from "@utils/creators/MessageInputCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
 import { Modes, RankedStatus } from "@rian8337/osu-base";
-import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization = new ProfileLocalization(

@@ -2,17 +2,17 @@ import {
     ChannelCooldownKey,
     GlobalCooldownKey,
 } from "structures/core/CooldownKey";
-import { LimitedCapacityCollection } from "@alice-utils/LimitedCapacityCollection";
+import { LimitedCapacityCollection } from "@utils/LimitedCapacityCollection";
 import { Collection, Snowflake } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { Language } from "@alice-localization/base/Language";
-import { TriviaQuestionCachedAnswer } from "@alice-structures/trivia/TriviaQuestionCachedAnswer";
-import { TriviaMapCachedAnswer } from "@alice-structures/trivia/TriviaMapCachedAnswer";
-import { LiveDroidDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/LiveDroidDifficultyAttributesCacheManager";
-import { LiveOsuDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/LiveOsuDifficultyAttributesCacheManager";
-import { RebalanceDroidDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/RebalanceDroidDifficultyAttributesCacheManager";
-import { RebalanceOsuDifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/RebalanceOsuDifficultyAttributesCacheManager";
-import { AnniversaryTriviaQuestion } from "@alice-database/utils/aliceDb/AnniversaryTriviaQuestion";
+import { Language } from "@localization/base/Language";
+import { TriviaQuestionCachedAnswer } from "@structures/trivia/TriviaQuestionCachedAnswer";
+import { TriviaMapCachedAnswer } from "@structures/trivia/TriviaMapCachedAnswer";
+import { LiveDroidDifficultyAttributesCacheManager } from "@utils/difficultyattributescache/LiveDroidDifficultyAttributesCacheManager";
+import { LiveOsuDifficultyAttributesCacheManager } from "@utils/difficultyattributescache/LiveOsuDifficultyAttributesCacheManager";
+import { RebalanceDroidDifficultyAttributesCacheManager } from "@utils/difficultyattributescache/RebalanceDroidDifficultyAttributesCacheManager";
+import { RebalanceOsuDifficultyAttributesCacheManager } from "@utils/difficultyattributescache/RebalanceOsuDifficultyAttributesCacheManager";
+import { AnniversaryTriviaQuestion } from "@database/utils/aliceDb/AnniversaryTriviaQuestion";
 
 /**
  * A manager that holds anything that is cached.

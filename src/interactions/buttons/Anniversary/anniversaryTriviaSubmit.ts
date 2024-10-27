@@ -1,12 +1,12 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { AnniversaryTriviaSubmitLocalization } from "@alice-localization/interactions/buttons/Anniversary/anniversaryTriviaSubmit/AnniversaryTriviaSubmitLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { AnniversaryTriviaManager } from "@alice-utils/managers/AnniversaryTriviaManager";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { AnniversaryTriviaSubmitLocalization } from "@localization/interactions/buttons/Anniversary/anniversaryTriviaSubmit/AnniversaryTriviaSubmitLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { AnniversaryTriviaManager } from "@utils/managers/AnniversaryTriviaManager";
+import { CacheManager } from "@utils/managers/CacheManager";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {

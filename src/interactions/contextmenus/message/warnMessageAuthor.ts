@@ -1,16 +1,16 @@
-import { Constants } from "@alice-core/Constants";
+import { Constants } from "@core/Constants";
 import { MessageContextMenuCommand } from "structures/core/MessageContextMenuCommand";
 import { OperationResult } from "structures/core/OperationResult";
-import { WarnMessageAuthorLocalization } from "@alice-localization/interactions/contextmenus/message/warnMessageAuthor/WarnMessageAuthorLocalization";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { WarningManager } from "@alice-utils/managers/WarningManager";
+import { WarnMessageAuthorLocalization } from "@localization/interactions/contextmenus/message/warnMessageAuthor/WarnMessageAuthorLocalization";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { WarningManager } from "@utils/managers/WarningManager";
 import { Utils } from "@rian8337/osu-base";
 import {
     Embed,

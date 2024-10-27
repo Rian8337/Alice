@@ -1,11 +1,11 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { GuildTag } from "@database/utils/aliceDb/GuildTag";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { TagLocalization } from "@alice-localization/interactions/commands/Fun/tag/TagLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { TagLocalization } from "@localization/interactions/commands/Fun/tag/TagLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import {
     AttachmentBuilder,
     Message,

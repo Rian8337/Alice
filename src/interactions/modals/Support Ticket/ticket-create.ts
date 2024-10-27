@@ -1,9 +1,9 @@
-import { SupportTicket } from "@alice-database/utils/aliceDb/SupportTicket";
-import { TicketCreateLocalization } from "@alice-localization/interactions/modals/Support Ticket/ticket-create/TicketCreateLocalization";
-import { ModalCommand } from "@alice-structures/core/ModalCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { SupportTicket } from "@database/utils/aliceDb/SupportTicket";
+import { TicketCreateLocalization } from "@localization/interactions/modals/Support Ticket/ticket-create/TicketCreateLocalization";
+import { ModalCommand } from "@structures/core/ModalCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: ModalCommand["run"] = async (client, interaction) => {
     const language = CommandHelper.getLocale(interaction);

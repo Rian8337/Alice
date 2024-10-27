@@ -1,8 +1,8 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { CacheManager } from "@utils/managers/CacheManager";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {

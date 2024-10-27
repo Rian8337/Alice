@@ -1,4 +1,4 @@
-import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
+import { ChannelActivityData } from "@structures/utils/ChannelActivityData";
 import { BaseDocument } from "../BaseDocument";
 
 /**

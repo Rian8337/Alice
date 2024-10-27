@@ -1,12 +1,12 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { AskCount } from "@alice-database/utils/aliceDb/AskCount";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { AskCount } from "@database/utils/aliceDb/AskCount";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { AskcountLocalization } from "@alice-localization/interactions/commands/Fun/askcount/AskcountLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { AskcountLocalization } from "@localization/interactions/commands/Fun/askcount/AskcountLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: AskcountLocalization = new AskcountLocalization(

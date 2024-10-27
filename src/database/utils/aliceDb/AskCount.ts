@@ -1,7 +1,7 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseAskCount } from "structures/database/aliceDb/DatabaseAskCount";
 import { OperationResult } from "structures/core/OperationResult";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
 
@@ -15,7 +15,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
 
     constructor(
         data: DatabaseAskCount = DatabaseManager.aliceDb?.collections.askCount
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 
@@ -35,7 +35,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
 
         return DatabaseManager.aliceDb.collections.askCount.updateOne(
             { discordid: this.discordid },
-            { $inc: { count: value } }
+            { $inc: { count: value } },
         );
     }
 
@@ -50,7 +50,7 @@ export class AskCount extends Manager implements DatabaseAskCount {
 
         return DatabaseManager.aliceDb.collections.askCount.updateOne(
             { discordid: this.discordid },
-            { $set: { count: value } }
+            { $set: { count: value } },
         );
     }
 }

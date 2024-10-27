@@ -1,4 +1,4 @@
-import { TrackedPlayer } from "@alice-database/utils/elainaDb/TrackedPlayer";
+import { TrackedPlayer } from "@database/utils/elainaDb/TrackedPlayer";
 import { DatabaseTrackedPlayer } from "structures/database/elainaDb/DatabaseTrackedPlayer";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { OperationResult } from "structures/core/OperationResult";
@@ -11,7 +11,7 @@ export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<
     TrackedPlayer
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseTrackedPlayer
+        data: DatabaseTrackedPlayer,
     ) => TrackedPlayer = TrackedPlayer;
 
     override get defaultDocument(): DatabaseTrackedPlayer {
@@ -30,7 +30,7 @@ export class PlayerTrackingCollectionManager extends DatabaseCollectionManager<
         return this.updateOne(
             { uid: uid },
             { $set: { uid: uid } },
-            { upsert: true }
+            { upsert: true },
         );
     }
 

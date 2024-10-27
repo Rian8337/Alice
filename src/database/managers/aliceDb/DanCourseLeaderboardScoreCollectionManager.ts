@@ -1,6 +1,6 @@
-import { DanCourseLeaderboardScore } from "@alice-database/utils/aliceDb/DanCourseLeaderboardScore";
-import { DatabaseDanCourseLeaderboardScore } from "@alice-structures/database/aliceDb/DatabaseDanCourseLeaderboardScore";
-import { DatabaseDanCourseScore } from "@alice-structures/database/aliceDb/DatabaseDanCourseScore";
+import { DanCourseLeaderboardScore } from "@database/utils/aliceDb/DanCourseLeaderboardScore";
+import { DatabaseDanCourseLeaderboardScore } from "@structures/database/aliceDb/DatabaseDanCourseLeaderboardScore";
+import { DatabaseDanCourseScore } from "@structures/database/aliceDb/DatabaseDanCourseScore";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**
@@ -13,7 +13,7 @@ export class DanCourseLeaderboardScoreCollectionManager extends DatabaseCollecti
     DanCourseLeaderboardScore
 > {
     protected override utilityInstance: new (
-        data: DatabaseDanCourseScore
+        data: DatabaseDanCourseScore,
     ) => DanCourseLeaderboardScore = DanCourseLeaderboardScore;
 
     override get defaultDocument(): DatabaseDanCourseScore {
@@ -50,7 +50,7 @@ export class DanCourseLeaderboardScoreCollectionManager extends DatabaseCollecti
      */
     async getLeaderboard(
         hash: string,
-        page: number
+        page: number,
     ): Promise<DanCourseLeaderboardScore[]> {
         const amountPerPage: number = 50;
 
@@ -74,7 +74,7 @@ export class DanCourseLeaderboardScoreCollectionManager extends DatabaseCollecti
      */
     getScore(
         uid: number,
-        hash: string
+        hash: string,
     ): Promise<DanCourseLeaderboardScore | null> {
         return this.getOne({ uid: uid, hash: hash });
     }

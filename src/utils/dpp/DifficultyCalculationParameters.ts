@@ -1,4 +1,4 @@
-import { CloneableDifficultyCalculationParameters } from "@alice-structures/dpp/CloneableDifficultyCalculationParameters";
+import { CloneableDifficultyCalculationParameters } from "@structures/dpp/CloneableDifficultyCalculationParameters";
 import { Mod, ModDifficultyAdjust, ModUtil } from "@rian8337/osu-base";
 import {
     DifficultyCalculationOptions,

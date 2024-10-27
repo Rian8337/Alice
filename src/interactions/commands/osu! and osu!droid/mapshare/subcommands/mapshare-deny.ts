@@ -1,14 +1,14 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { MapShare } from "@database/utils/aliceDb/MapShare";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { MapshareLocalization } from "@localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MapshareLocalization = new MapshareLocalization(

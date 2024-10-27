@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseEightBallFilter } from "structures/database/aliceDb/DatabaseEightBallFilter";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 
 /**
@@ -19,7 +19,7 @@ export class EightBallFilter
 
     constructor(
         data: DatabaseEightBallFilter = DatabaseManager.aliceDb?.collections
-            .eightBallFilter.defaultDocument ?? {}
+            .eightBallFilter.defaultDocument ?? {},
     ) {
         super();
 

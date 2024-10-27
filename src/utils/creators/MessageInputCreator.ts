@@ -1,4 +1,4 @@
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import {
     InteractionReplyOptions,
     RepliableInteraction,

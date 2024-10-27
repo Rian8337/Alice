@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
-import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
+import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
 import {
     DroidAPIRequestBuilder,
     Mod,

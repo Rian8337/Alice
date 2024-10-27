@@ -1,4 +1,4 @@
-import { IPerformanceCalculationResult } from "@alice-structures/utils/IPerformanceCalculationResult";
+import { IPerformanceCalculationResult } from "@structures/utils/IPerformanceCalculationResult";
 import {
     DifficultyAttributes,
     DifficultyCalculator,

@@ -1,10 +1,10 @@
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { EmbeddedApplication } from "@alice-enums/utils/EmbeddedApplication";
-import { ActivityLocalization } from "@alice-localization/interactions/commands/Fun/activity/ActivityLocalization";
-import { SlashCommand } from "@alice-structures/core/SlashCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { CommandCategory } from "@enums/core/CommandCategory";
+import { EmbeddedApplication } from "@enums/utils/EmbeddedApplication";
+import { ActivityLocalization } from "@localization/interactions/commands/Fun/activity/ActivityLocalization";
+import { SlashCommand } from "@structures/core/SlashCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import {
     ApplicationCommandOptionType,
     ChannelType,

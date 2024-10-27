@@ -1,14 +1,14 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { PPLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

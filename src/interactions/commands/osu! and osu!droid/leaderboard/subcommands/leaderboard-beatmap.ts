@@ -1,12 +1,12 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { MapInfo } from "@rian8337/osu-base";
-import { LeaderboardLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
+import { LeaderboardLocalization } from "@localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ScoreDisplayHelper } from "@utils/helpers/ScoreDisplayHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: LeaderboardLocalization = new LeaderboardLocalization(

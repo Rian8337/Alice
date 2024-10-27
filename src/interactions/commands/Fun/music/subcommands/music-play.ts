@@ -1,14 +1,14 @@
 import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { MusicManager } from "@alice-utils/managers/MusicManager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { MusicManager } from "@utils/managers/MusicManager";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 import { GuildMember, StringSelectMenuInteraction } from "discord.js";
-import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MusicQueue } from "@utils/music/MusicQueue";
+import { MusicLocalization } from "@localization/interactions/commands/Fun/music/MusicLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inGuild()) {

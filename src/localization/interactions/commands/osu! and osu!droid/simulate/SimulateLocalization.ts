@@ -1,5 +1,5 @@
-import { Localization } from "@alice-localization/base/Localization";
-import { Translations } from "@alice-localization/base/Translations";
+import { Localization } from "@localization/base/Localization";
+import { Translations } from "@localization/base/Translations";
 import { SimulateENTranslation } from "./translations/SimulateENTranslation";
 import { SimulateESTranslation } from "./translations/SimulateESTranslation";
 import { SimulateIDTranslation } from "./translations/SImulateIDTranslation";

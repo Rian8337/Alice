@@ -1,4 +1,4 @@
-import { Voting } from "@alice-database/utils/aliceDb/Voting";
+import { Voting } from "@database/utils/aliceDb/Voting";
 import { DatabaseVoting } from "structures/database/aliceDb/DatabaseVoting";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake } from "discord.js";
@@ -12,7 +12,7 @@ export class VotingCollectionManager extends DatabaseCollectionManager<
     Voting
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseVoting
+        data: DatabaseVoting,
     ) => Voting = Voting;
 
     override get defaultDocument(): DatabaseVoting {
@@ -32,13 +32,13 @@ export class VotingCollectionManager extends DatabaseCollectionManager<
      */
     getCurrentVoteInChannel(
         channelId: Snowflake,
-        options?: FindOptions<DatabaseVoting>
+        options?: FindOptions<DatabaseVoting>,
     ): Promise<Voting | null> {
         return this.getOne({ channel: channelId }, options);
     }
 
     protected override processFindOptions(
-        options?: FindOptions<DatabaseVoting>
+        options?: FindOptions<DatabaseVoting>,
     ): FindOptions<DatabaseVoting> | undefined {
         if (options?.projection) {
             options.projection.channel = 1;

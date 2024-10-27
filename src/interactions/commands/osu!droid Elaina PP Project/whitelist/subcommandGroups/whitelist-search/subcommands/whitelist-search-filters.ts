@@ -1,8 +1,8 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { WhitelistLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { WhitelistLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { EmbedBuilder, GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

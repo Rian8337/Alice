@@ -1,9 +1,9 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseGuildPunishmentConfig } from "structures/database/aliceDb/DatabaseGuildPunishmentConfig";
 import { OperationResult } from "structures/core/OperationResult";
 import { RoleTimeoutPermission } from "structures/moderation/RoleTimeoutPermission";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
 import { Collection, Guild, GuildBasedChannel, Snowflake } from "discord.js";
 
@@ -38,7 +38,7 @@ export class GuildPunishmentConfig extends Manager {
 
     constructor(
         data: DatabaseGuildPunishmentConfig = DatabaseManager.aliceDb
-            ?.collections.guildPunishmentConfig.defaultDocument ?? {}
+            ?.collections.guildPunishmentConfig.defaultDocument ?? {},
     ) {
         super();
 
@@ -47,7 +47,7 @@ export class GuildPunishmentConfig extends Manager {
         this.logChannel = data.logChannel;
         this.allowedTimeoutRoles = ArrayHelper.arrayToCollection(
             data.allowedTimeoutRoles ?? [],
-            "id"
+            "id",
         );
         this.immuneTimeoutRoles = data.immuneTimeoutRoles ?? [];
     }
@@ -81,7 +81,7 @@ export class GuildPunishmentConfig extends Manager {
                 $addToSet: {
                     immuneTimeoutRoles: roleId,
                 },
-            }
+            },
         );
     }
 
@@ -93,7 +93,7 @@ export class GuildPunishmentConfig extends Manager {
      */
     async revokeTimeoutImmunity(roleId: Snowflake): Promise<OperationResult> {
         const index: number = this.immuneTimeoutRoles.findIndex(
-            (r) => r === roleId
+            (r) => r === roleId,
         );
 
         if (index === -1) {
@@ -108,7 +108,7 @@ export class GuildPunishmentConfig extends Manager {
                 $pull: {
                     immuneTimeoutRoles: roleId,
                 },
-            }
+            },
         );
     }
 
@@ -120,7 +120,7 @@ export class GuildPunishmentConfig extends Manager {
      */
     async grantTimeoutPermission(
         roleId: Snowflake,
-        maxTime: number
+        maxTime: number,
     ): Promise<OperationResult> {
         const roleTimeoutPermission: RoleTimeoutPermission | undefined =
             this.allowedTimeoutRoles.get(roleId);
@@ -137,7 +137,7 @@ export class GuildPunishmentConfig extends Manager {
                 $set: {
                     allowedTimeoutRoles: [...this.allowedTimeoutRoles.values()],
                 },
-            }
+            },
         );
     }
 
@@ -158,7 +158,7 @@ export class GuildPunishmentConfig extends Manager {
                 $set: {
                     allowedTimeoutRoles: [...this.allowedTimeoutRoles.values()],
                 },
-            }
+            },
         );
     }
 }

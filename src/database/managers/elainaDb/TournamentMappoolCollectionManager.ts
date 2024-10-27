@@ -1,4 +1,4 @@
-import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
+import { TournamentMappool } from "@database/utils/elainaDb/TournamentMappool";
 import { DatabaseTournamentMappool } from "structures/database/elainaDb/DatabaseTournamentMappool";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
@@ -10,7 +10,7 @@ export class TournamentMappoolCollectionManager extends DatabaseCollectionManage
     TournamentMappool
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseTournamentMappool
+        data: DatabaseTournamentMappool,
     ) => TournamentMappool = TournamentMappool;
 
     override get defaultDocument(): DatabaseTournamentMappool {

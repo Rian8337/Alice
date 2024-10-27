@@ -1,10 +1,10 @@
 import { Message, Snowflake } from "discord.js";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { Symbols } from "@enums/utils/Symbols";
 import { EventUtil } from "structures/core/EventUtil";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { CuteNoLewdLocalization } from "@alice-localization/events/messageCreate/cuteNoLewd/CuteNoLewdLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { CuteNoLewdLocalization } from "@localization/events/messageCreate/cuteNoLewd/CuteNoLewdLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 
 const pictureCooldown = new Set<Snowflake>();
 

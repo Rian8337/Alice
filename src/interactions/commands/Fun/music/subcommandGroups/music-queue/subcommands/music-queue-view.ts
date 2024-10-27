@@ -1,14 +1,14 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MusicInfo } from "@alice-utils/music/MusicInfo";
-import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MusicManager } from "@alice-utils/managers/MusicManager";
+import { MusicInfo } from "@utils/music/MusicInfo";
+import { MusicQueue } from "@utils/music/MusicQueue";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MusicManager } from "@utils/managers/MusicManager";
 import { GuildMember, EmbedBuilder, userMention } from "discord.js";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MusicLocalization } from "@localization/interactions/commands/Fun/music/MusicLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(

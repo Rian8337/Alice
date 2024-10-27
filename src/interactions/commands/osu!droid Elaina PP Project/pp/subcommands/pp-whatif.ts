@@ -1,19 +1,19 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBindCollectionManager } from "@alice-database/managers/elainaDb/UserBindCollectionManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UserBindCollectionManager } from "@database/managers/elainaDb/UserBindCollectionManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { PPLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: PPLocalization = new PPLocalization(

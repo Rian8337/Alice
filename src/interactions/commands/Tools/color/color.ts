@@ -1,12 +1,12 @@
 import { Canvas, createCanvas, CanvasRenderingContext2D } from "canvas";
 import { ApplicationCommandOptionType, AttachmentBuilder } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { ColorLocalization } from "@alice-localization/interactions/commands/Tools/color/ColorLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { ColorLocalization } from "@localization/interactions/commands/Tools/color/ColorLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: ColorLocalization = new ColorLocalization(

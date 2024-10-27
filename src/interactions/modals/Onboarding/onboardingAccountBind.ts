@@ -1,12 +1,12 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OnboardingAccountBindLocalization } from "@alice-localization/interactions/modals/Onboarding/OnboardingAccountBindLocalization";
-import { ModalCommand } from "@alice-structures/core/ModalCommand";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { OnboardingAccountBindLocalization } from "@localization/interactions/modals/Onboarding/OnboardingAccountBindLocalization";
+import { ModalCommand } from "@structures/core/ModalCommand";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {

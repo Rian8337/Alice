@@ -6,11 +6,11 @@ import {
     ModalSubmitInteraction,
 } from "discord.js";
 import { BaseTicketPresetProcessor } from "./BaseTicketPresetProcessor";
-import { ProcessedSupportTicketPreset } from "@alice-structures/utils/ProcessedSupportTicketPreset";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ModalRepliableInteraction } from "@alice-structures/core/ModalRepliableInteraction";
-import { DatabaseSupportTicketPreset } from "@alice-structures/database/aliceDb/DatabaseSupportTicketPreset";
+import { ProcessedSupportTicketPreset } from "@structures/utils/ProcessedSupportTicketPreset";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ModalRepliableInteraction } from "@structures/core/ModalRepliableInteraction";
+import { DatabaseSupportTicketPreset } from "@structures/database/aliceDb/DatabaseSupportTicketPreset";
 
 /**
  * A ticket preset processor that supports sending and receiving modals.

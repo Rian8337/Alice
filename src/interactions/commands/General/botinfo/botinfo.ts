@@ -1,16 +1,16 @@
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { BotinfoLocalization } from "@alice-localization/interactions/commands/General/botinfo/BotinfoLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { BotinfoLocalization } from "@localization/interactions/commands/General/botinfo/BotinfoLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { GuildMember, EmbedBuilder, hyperlink } from "discord.js";
 //@ts-expect-error: package.json will be included in distribution folder otherwise
 import { version } from "../../../../../package.json";
 //@ts-expect-error: package-lock.json will be included in distribution folder otherwise
 import { packages } from "../../../../../package-lock.json";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: BotinfoLocalization = new BotinfoLocalization(

@@ -14,23 +14,23 @@ import {
     underscore,
     channelMention,
 } from "discord.js";
-import { Config } from "@alice-core/Config";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { ClanAuction } from "@alice-database/utils/aliceDb/ClanAuction";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
-import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { Config } from "@core/Config";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { Symbols } from "@enums/utils/Symbols";
+import { Challenge } from "@database/utils/aliceDb/Challenge";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { ClanAuction } from "@database/utils/aliceDb/ClanAuction";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { TournamentMatch } from "@database/utils/elainaDb/TournamentMatch";
+import { DifficultyCalculationParameters } from "@utils/dpp/DifficultyCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
 import { ScoreRank } from "structures/utils/ScoreRank";
-import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
+import { MapShare } from "@database/utils/aliceDb/MapShare";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { MusicQueue } from "@utils/music/MusicQueue";
+import { BeatmapDifficultyHelper } from "@utils/helpers/BeatmapDifficultyHelper";
 import {
     MapInfo,
     Accuracy,
@@ -55,24 +55,24 @@ import {
     HitErrorInformation,
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { Language } from "@alice-localization/base/Language";
+import { Language } from "@localization/base/Language";
 import {
     EmbedCreatorLocalization,
     EmbedCreatorStrings,
-} from "@alice-localization/utils/creators/EmbedCreator/EmbedCreatorLocalization";
-import { Warning } from "@alice-database/utils/aliceDb/Warning";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
-import { NormalEmbedOptions } from "@alice-structures/utils/NormalEmbedOptions";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+} from "@localization/utils/creators/EmbedCreator/EmbedCreatorLocalization";
+import { Warning } from "@database/utils/aliceDb/Warning";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { ReplayHelper } from "@utils/helpers/ReplayHelper";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
+import { NormalEmbedOptions } from "@structures/utils/NormalEmbedOptions";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * Utility to create message embeds.

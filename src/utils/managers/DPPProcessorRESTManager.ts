@@ -1,8 +1,8 @@
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { RESTManager } from "./RESTManager";
 import { ModUtil, Modes, RequestResponse } from "@rian8337/osu-base";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { RawDifficultyAttributes } from "@structures/difficultyattributes/RawDifficultyAttributes";
 import {
     CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
@@ -13,15 +13,15 @@ import {
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { consola } from "consola";
-import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
-import { PerformanceAttributes } from "@alice-structures/difficultyattributes/PerformanceAttributes";
-import { RebalanceDroidPerformanceAttributes } from "@alice-structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
-import { PPSubmissionOperationResult } from "@alice-structures/dpp/PPSubmissionOperationResult";
-import { DPPProcessorCalculationResponse } from "@alice-structures/utils/DPPProcessorCalculationResponse";
+import { DifficultyCalculationParameters } from "@utils/dpp/DifficultyCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
+import { PerformanceAttributes } from "@structures/difficultyattributes/PerformanceAttributes";
+import { RebalanceDroidPerformanceAttributes } from "@structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
+import { PPSubmissionOperationResult } from "@structures/dpp/PPSubmissionOperationResult";
+import { DPPProcessorCalculationResponse } from "@structures/utils/DPPProcessorCalculationResponse";
 
 /**
  * A REST manager for the droid performance points processor backend.

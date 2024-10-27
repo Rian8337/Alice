@@ -5,9 +5,9 @@ import {
     Snowflake,
     User,
 } from "discord.js";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { DatabaseInGamePP } from "@alice-structures/database/aliceDb/DatabaseInGamePP";
-import { InGamePP } from "@alice-database/utils/aliceDb/InGamePP";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { DatabaseInGamePP } from "@structures/database/aliceDb/DatabaseInGamePP";
+import { InGamePP } from "@database/utils/aliceDb/InGamePP";
 
 /**
  * A manager for the `ingamepp` collection.

@@ -1,4 +1,4 @@
-import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
+import { TournamentMatch } from "@database/utils/elainaDb/TournamentMatch";
 import { DatabaseTournamentMatch } from "structures/database/elainaDb/DatabaseTournamentMatch";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake } from "discord.js";

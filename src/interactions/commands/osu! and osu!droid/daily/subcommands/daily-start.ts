@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Challenge } from "@database/utils/aliceDb/Challenge";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { Language } from "@alice-localization/base/Language";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { DailyLocalization } from "@localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { Language } from "@localization/base/Language";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {

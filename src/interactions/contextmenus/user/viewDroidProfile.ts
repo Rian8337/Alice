@@ -1,13 +1,13 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { UserContextMenuCommand } from "structures/core/UserContextMenuCommand";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { ViewDroidProfileLocalization } from "@alice-localization/interactions/contextmenus/user/viewDroidProfile/ViewDroidProfileLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { ViewDroidProfileLocalization } from "@localization/interactions/contextmenus/user/viewDroidProfile/ViewDroidProfileLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ProfileManager } from "@utils/managers/ProfileManager";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
     const localization = new ViewDroidProfileLocalization(

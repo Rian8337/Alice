@@ -1,7 +1,7 @@
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { EventUtil } from "structures/core/EventUtil";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { Message } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 
@@ -33,7 +33,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
             BeatmapManager.setChannelLatestBeatmap(
                 message.channel.id,
-                beatmapInfo.hash
+                beatmapInfo.hash,
             );
         }
     }

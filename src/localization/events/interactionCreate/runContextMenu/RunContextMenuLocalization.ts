@@ -1,5 +1,5 @@
-import { Localization } from "@alice-localization/base/Localization";
-import { Translations } from "@alice-localization/base/Translations";
+import { Localization } from "@localization/base/Localization";
+import { Translations } from "@localization/base/Translations";
 import { RunContextMenuENTranslation } from "./translations/RunContextMenuENTranslation";
 import { RunContextMenuESTranslation } from "./translations/RunContextMenuESTranslation";
 import { RunContextMenuKRTranslation } from "./translations/RunContextMenuKRTranslation";

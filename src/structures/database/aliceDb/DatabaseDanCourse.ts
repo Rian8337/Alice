@@ -1,4 +1,4 @@
-import { DanCoursePassRequirement } from "@alice-structures/dancourse/DanCoursePassRequirement";
+import { DanCoursePassRequirement } from "@structures/dancourse/DanCoursePassRequirement";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 

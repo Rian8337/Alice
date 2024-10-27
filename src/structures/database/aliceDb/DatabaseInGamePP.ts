@@ -1,7 +1,7 @@
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
-import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
-import { PPEntry } from "@alice-structures/dpp/PPEntry";
+import { RecalculationProgress } from "@structures/dpp/RecalculationProgress";
+import { PPEntry } from "@structures/dpp/PPEntry";
 
 /**
  * Represents the droid performance point (dpp) entry of an osu!droid account that corresponds

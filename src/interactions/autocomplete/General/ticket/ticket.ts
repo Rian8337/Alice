@@ -1,5 +1,5 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { AutocompleteHandler } from "@structures/core/AutocompleteHandler";
 
 export const run: AutocompleteHandler["run"] = async (_, interaction) => {
     interaction.respond(

@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseAnniversaryTriviaPlayer } from "@alice-structures/database/aliceDb/DatabaseAnniversaryTriviaPlayer";
-import { Manager } from "@alice-utils/base/Manager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DatabaseAnniversaryTriviaPlayer } from "@structures/database/aliceDb/DatabaseAnniversaryTriviaPlayer";
+import { Manager } from "@utils/base/Manager";
 import { AnniversaryTriviaQuestion } from "./AnniversaryTriviaQuestion";
 import {
     ActionRowBuilder,
@@ -9,15 +9,15 @@ import {
     ButtonStyle,
     GuildMember,
 } from "discord.js";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { Language } from "@alice-localization/base/Language";
-import { AnniversaryTriviaPlayerLocalization } from "@alice-localization/database/utils/aliceDb/AnniversaryTriviaPlayer/AnniversaryTriviaPlayerLocalization";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { AnniversaryTriviaAttempt } from "@alice-structures/utils/AnniversaryTriviaAttempt";
-import { AnniversaryTriviaManager } from "@alice-utils/managers/AnniversaryTriviaManager";
-import { AnniversaryTriviaCurrentAttemptQuestion } from "@alice-structures/utils/AnniversaryTriviaCurrentAttemptQuestion";
-import { AnniversaryReviewType } from "@alice-enums/utils/AnniversaryReviewType";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { Language } from "@localization/base/Language";
+import { AnniversaryTriviaPlayerLocalization } from "@localization/database/utils/aliceDb/AnniversaryTriviaPlayer/AnniversaryTriviaPlayerLocalization";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { AnniversaryTriviaAttempt } from "@structures/utils/AnniversaryTriviaAttempt";
+import { AnniversaryTriviaManager } from "@utils/managers/AnniversaryTriviaManager";
+import { AnniversaryTriviaCurrentAttemptQuestion } from "@structures/utils/AnniversaryTriviaCurrentAttemptQuestion";
+import { AnniversaryReviewType } from "@enums/utils/AnniversaryReviewType";
+import { CacheManager } from "@utils/managers/CacheManager";
 
 /**
  * Represents a player in the anniversary trivia game.

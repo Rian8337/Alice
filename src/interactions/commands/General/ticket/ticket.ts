@@ -1,7 +1,7 @@
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SupportTicketStatus } from "@alice-enums/ticket/SupportTicketStatus";
-import { SlashCommand } from "@alice-structures/core/SlashCommand";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { CommandCategory } from "@enums/core/CommandCategory";
+import { SupportTicketStatus } from "@enums/ticket/SupportTicketStatus";
+import { SlashCommand } from "@structures/core/SlashCommand";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { ApplicationCommandOptionType, ChannelType } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {

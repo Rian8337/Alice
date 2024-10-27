@@ -1,8 +1,8 @@
 import { Collection as DiscordCollection } from "discord.js";
-import { IllegalMap } from "@alice-database/utils/aliceDb/IllegalMap";
+import { IllegalMap } from "@database/utils/aliceDb/IllegalMap";
 import { DatabaseIllegalMap } from "structures/database/aliceDb/DatabaseIllegalMap";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 
 /**
  * A manager for the `illegalmap` collection.
@@ -12,7 +12,7 @@ export class IllegalMapCollectionManager extends DatabaseCollectionManager<
     IllegalMap
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseIllegalMap
+        data: DatabaseIllegalMap,
     ) => IllegalMap = IllegalMap;
 
     override get defaultDocument(): DatabaseIllegalMap {
@@ -28,7 +28,7 @@ export class IllegalMapCollectionManager extends DatabaseCollectionManager<
      * @returns The unscanned beatmaps, mapped by MD5 hash.
      */
     async getUnscannedBeatmaps(
-        count: number
+        count: number,
     ): Promise<DiscordCollection<string, IllegalMap>> {
         const res: DatabaseIllegalMap[] = await this.collection
             .find({ deleteDone: { $ne: true } })
@@ -37,7 +37,7 @@ export class IllegalMapCollectionManager extends DatabaseCollectionManager<
 
         return ArrayHelper.arrayToCollection(
             res.map((v) => new IllegalMap(v)),
-            "hash"
+            "hash",
         );
     }
 }

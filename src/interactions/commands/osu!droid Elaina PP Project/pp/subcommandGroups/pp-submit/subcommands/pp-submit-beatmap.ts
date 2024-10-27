@@ -1,21 +1,21 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Constants } from "@alice-core/Constants";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Constants } from "@core/Constants";
 import { Accuracy, MapInfo } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { PPLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { GuildMember, bold } from "discord.js";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { Symbols } from "@enums/utils/Symbols";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new PPLocalization(
@@ -130,7 +130,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             )} | ${bold(
                 result?.statuses[0]?.success
                     ? "Success"
-                    : result?.statuses[0].reason ?? "Unknown",
+                    : (result?.statuses[0].reason ?? "Unknown"),
             )}`,
         });
 

@@ -1,7 +1,7 @@
-import { Constants } from "@alice-core/Constants";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
-import { SlashCommand } from "@alice-structures/core/SlashCommand";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { Constants } from "@core/Constants";
+import { CommandCategory } from "@enums/core/CommandCategory";
+import { SlashCommand } from "@structures/core/SlashCommand";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { ApplicationCommandOptionType } from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {

@@ -1,11 +1,11 @@
-import { SupportTicket } from "@alice-database/utils/aliceDb/SupportTicket";
-import { SupportTicketPreset } from "@alice-database/utils/aliceDb/SupportTicketPreset";
-import { TicketCreateWithPresetLocalization } from "@alice-localization/interactions/modals/Support Ticket/ticket-create-with-preset/TicketCreateWithPresetLocalization";
-import { ModalCommand } from "@alice-structures/core/ModalCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ModalTicketPresetProcessor } from "@alice-utils/ticket/presets/ModalTicketPresetProcessor";
+import { SupportTicket } from "@database/utils/aliceDb/SupportTicket";
+import { SupportTicketPreset } from "@database/utils/aliceDb/SupportTicketPreset";
+import { TicketCreateWithPresetLocalization } from "@localization/interactions/modals/Support Ticket/ticket-create-with-preset/TicketCreateWithPresetLocalization";
+import { ModalCommand } from "@structures/core/ModalCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ModalTicketPresetProcessor } from "@utils/ticket/presets/ModalTicketPresetProcessor";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {
     const language = CommandHelper.getLocale(interaction);

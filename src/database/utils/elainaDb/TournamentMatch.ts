@@ -1,8 +1,8 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
 import { DatabaseTournamentMatch } from "structures/database/elainaDb/DatabaseTournamentMatch";
 import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
 import {
@@ -15,9 +15,9 @@ import {
 } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { TournamentMappool } from "./TournamentMappool";
-import { Language } from "@alice-localization/base/Language";
-import { TournamentMatchLocalization } from "@alice-localization/database/utils/elainaDb/TournamentMatch/TournamentMatchLocalization";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { Language } from "@localization/base/Language";
+import { TournamentMatchLocalization } from "@localization/database/utils/elainaDb/TournamentMatch/TournamentMatchLocalization";
+import { StringHelper } from "@utils/helpers/StringHelper";
 
 /**
  * Represents a tournament match.

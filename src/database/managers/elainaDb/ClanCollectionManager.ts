@@ -1,9 +1,9 @@
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
+import { Clan } from "@database/utils/elainaDb/Clan";
 import { DatabaseClan } from "structures/database/elainaDb/DatabaseClan";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection } from "discord.js";
 import { Snowflake, User } from "discord.js";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 
 /**
  * A manager for the `clan` collection.
@@ -13,7 +13,7 @@ export class ClanCollectionManager extends DatabaseCollectionManager<
     Clan
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseClan
+        data: DatabaseClan,
     ) => Clan = Clan;
 
     override get defaultDocument(): DatabaseClan {
@@ -129,7 +129,7 @@ export class ClanCollectionManager extends DatabaseCollectionManager<
      * @param weeklyFeeTimeLimit The time limit.
      */
     async getClansDueToWeeklyFee(
-        weeklyFeeTimeLimit: number
+        weeklyFeeTimeLimit: number,
     ): Promise<DiscordCollection<string, Clan>> {
         const databaseClans: DatabaseClan[] = await this.collection
             .find({ weeklyfee: { $lte: weeklyFeeTimeLimit } })
@@ -138,7 +138,7 @@ export class ClanCollectionManager extends DatabaseCollectionManager<
 
         return ArrayHelper.arrayToCollection(
             databaseClans.map((v) => new Clan(v)),
-            "name"
+            "name",
         );
     }
 }

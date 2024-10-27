@@ -1,5 +1,5 @@
 import { EventUtil } from "structures/core/EventUtil";
-import { RoleReactionCreator } from "@alice-utils/creators/RoleReactionCreator";
+import { RoleReactionCreator } from "@utils/creators/RoleReactionCreator";
 import { Guild, TextChannel, Role, Message } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {
@@ -17,7 +17,7 @@ export const run: EventUtil["run"] = async (client) => {
         guild,
         message,
         role,
-        "639481086425956382"
+        "639481086425956382",
     );
 };
 

@@ -1,7 +1,7 @@
-import { CreateSupportTicketLocalization } from "@alice-localization/interactions/buttons/Support Ticket/createSupportTicket/CreateSupportTicketLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { ModalCreator } from "@alice-utils/creators/ModalCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { CreateSupportTicketLocalization } from "@localization/interactions/buttons/Support Ticket/createSupportTicket/CreateSupportTicketLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { ModalCreator } from "@utils/creators/ModalCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {

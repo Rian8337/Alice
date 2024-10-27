@@ -1,10 +1,10 @@
-import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler";
+import { AutocompleteHandler } from "@structures/core/AutocompleteHandler";
 import { BaseInteraction } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
 
 export const run: EventUtil["run"] = async (
     client,
-    interaction: BaseInteraction
+    interaction: BaseInteraction,
 ) => {
     if (!interaction.isAutocomplete()) {
         return;

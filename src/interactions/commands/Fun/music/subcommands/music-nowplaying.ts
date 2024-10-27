@@ -1,13 +1,13 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MusicInfo } from "@alice-utils/music/MusicInfo";
-import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MusicManager } from "@alice-utils/managers/MusicManager";
+import { MusicInfo } from "@utils/music/MusicInfo";
+import { MusicQueue } from "@utils/music/MusicQueue";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MusicManager } from "@utils/managers/MusicManager";
 import { GuildMember, EmbedBuilder } from "discord.js";
-import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MusicLocalization } from "@localization/interactions/commands/Fun/music/MusicLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const musicInformation: MusicInfo | undefined =

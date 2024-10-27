@@ -3,18 +3,18 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from "discord.js";
-import { RecalcTicketPresetProcessorLocalization } from "@alice-localization/utils/ticket/presets/RecalcTicketPresetProcessor/RecalcTicketPresetProcessorLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { RecalcTicketPresetProcessorLocalization } from "@localization/utils/ticket/presets/RecalcTicketPresetProcessor/RecalcTicketPresetProcessorLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { ModalTicketPresetProcessor } from "./ModalTicketPresetProcessor";
-import { ModalRepliableInteraction } from "@alice-structures/core/ModalRepliableInteraction";
-import { DatabaseSupportTicketPreset } from "@alice-structures/database/aliceDb/DatabaseSupportTicketPreset";
-import { ProcessedSupportTicketPreset } from "@alice-structures/utils/ProcessedSupportTicketPreset";
-import { Language } from "@alice-localization/base/Language";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { Constants } from "@alice-core/Constants";
+import { ModalRepliableInteraction } from "@structures/core/ModalRepliableInteraction";
+import { DatabaseSupportTicketPreset } from "@structures/database/aliceDb/DatabaseSupportTicketPreset";
+import { ProcessedSupportTicketPreset } from "@structures/utils/ProcessedSupportTicketPreset";
+import { Language } from "@localization/base/Language";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { Constants } from "@core/Constants";
 
 /**
  * The ticket preset processor for dpp recalculations.

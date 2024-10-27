@@ -1,14 +1,14 @@
 import { GuildMember, EmbedBuilder } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
-import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
-import { PingLocalization } from "@alice-localization/interactions/commands/General/ping/PingLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { HelperFunctions } from "@utils/helpers/HelperFunctions";
+import { PingLocalization } from "@localization/interactions/commands/General/ping/PingLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const localization: PingLocalization = new PingLocalization(

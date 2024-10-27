@@ -1,14 +1,14 @@
 import { Player } from "@rian8337/osu-droid-utilities";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { UserbindLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/userbind/UserbindLocalization";
-import { Constants } from "@alice-core/Constants";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { UserbindLocalization } from "@localization/interactions/commands/osu! and osu!droid/userbind/UserbindLocalization";
+import { Constants } from "@core/Constants";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new UserbindLocalization(

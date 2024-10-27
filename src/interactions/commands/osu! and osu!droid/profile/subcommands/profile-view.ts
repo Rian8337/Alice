@@ -1,18 +1,18 @@
 import { Player } from "@rian8337/osu-droid-utilities";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { Constants } from "@alice-core/Constants";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Constants } from "@core/Constants";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { ProfileManager } from "@utils/managers/ProfileManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { createHash } from "crypto";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new ProfileLocalization(

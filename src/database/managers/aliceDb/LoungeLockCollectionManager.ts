@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { LoungeLock } from "@alice-database/utils/aliceDb/LoungeLock";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { LoungeLock } from "@database/utils/aliceDb/LoungeLock";
 import { DatabaseLoungeLock } from "structures/database/aliceDb/DatabaseLoungeLock";
 import { OperationResult } from "structures/core/OperationResult";
 import { Snowflake } from "discord.js";
@@ -12,7 +12,7 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<
     LoungeLock
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseLoungeLock
+        data: DatabaseLoungeLock,
     ) => LoungeLock = LoungeLock;
 
     override get defaultDocument(): DatabaseLoungeLock {
@@ -44,7 +44,7 @@ export class LoungeLockCollectionManager extends DatabaseCollectionManager<
     insertNewLock(
         userId: Snowflake,
         duration: number,
-        reason: string
+        reason: string,
     ): Promise<OperationResult> {
         return this.insert({
             discordid: userId,

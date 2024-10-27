@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { MusicCollection } from "@alice-database/utils/aliceDb/MusicCollection";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { MusicCollection } from "@database/utils/aliceDb/MusicCollection";
 import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { MusicLocalization } from "@localization/interactions/commands/Fun/music/MusicLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(

@@ -1,11 +1,11 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OnboardingPlayerProfileActionLocalization } from "@alice-localization/interactions/buttons/Onboarding/onboardingPlayerProfileAction/OnboardingPlayerProfileActionLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ProfileManager } from "@alice-utils/managers/ProfileManager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { OnboardingPlayerProfileActionLocalization } from "@localization/interactions/buttons/Onboarding/onboardingPlayerProfileAction/OnboardingPlayerProfileActionLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ProfileManager } from "@utils/managers/ProfileManager";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const localization = new OnboardingPlayerProfileActionLocalization(

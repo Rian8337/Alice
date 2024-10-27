@@ -1,14 +1,14 @@
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { Symbols } from "@enums/utils/Symbols";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { MusicManager } from "@alice-utils/managers/MusicManager";
-import { MusicInfo } from "@alice-utils/music/MusicInfo";
+import { MusicLocalization } from "@localization/interactions/commands/Fun/music/MusicLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { MusicManager } from "@utils/managers/MusicManager";
+import { MusicInfo } from "@utils/music/MusicInfo";
 import { GuildMember, EmbedBuilder, userMention } from "discord.js";
 import { VideoSearchResult } from "yt-search";
 

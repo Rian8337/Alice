@@ -1,9 +1,9 @@
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { Language } from "@alice-localization/base/Language";
-import { MessageButtonCreatorLocalization } from "@alice-localization/utils/creators/MessageButtonCreator/MessageButtonCreatorLocalization";
-import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Symbols } from "@enums/utils/Symbols";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { Language } from "@localization/base/Language";
+import { MessageButtonCreatorLocalization } from "@localization/utils/creators/MessageButtonCreator/MessageButtonCreatorLocalization";
+import { InteractionCollectorCreator } from "@utils/base/InteractionCollectorCreator";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import {
     InteractionReplyOptions,
     Message,
@@ -21,13 +21,13 @@ import {
     RepliableInteraction,
 } from "discord.js";
 import { MessageCreator } from "./MessageCreator";
-import { MissAnalyzer } from "@alice-utils/missanalyzer/MissAnalyzer";
+import { MissAnalyzer } from "@utils/missanalyzer/MissAnalyzer";
 import { ReplayData } from "@rian8337/osu-droid-replay-analyzer";
-import { OnButtonPressed } from "@alice-structures/utils/OnButtonPressed";
-import { OnButtonCollectorEnd } from "@alice-structures/utils/OnButtonCollectorEnd";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { OnButtonPressed } from "@structures/utils/OnButtonPressed";
+import { OnButtonCollectorEnd } from "@structures/utils/OnButtonCollectorEnd";
+import { CacheManager } from "@utils/managers/CacheManager";
 import { Beatmap, IModApplicableToDroid, Mod } from "@rian8337/osu-base";
-import { TimingDistributionChart } from "@alice-utils/timingdistribution/TimingDistributionChart";
+import { TimingDistributionChart } from "@utils/timingdistribution/TimingDistributionChart";
 
 /**
  * A utility to create message buttons.

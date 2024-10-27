@@ -1,14 +1,14 @@
-import { Config } from "@alice-core/Config";
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SupportTicket } from "@alice-database/utils/aliceDb/SupportTicket";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { TicketLocalization } from "@alice-localization/interactions/commands/General/ticket/TicketLocalization";
-import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
-import { DatabaseSupportTicket } from "@alice-structures/database/aliceDb/DatabaseSupportTicket";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Config } from "@core/Config";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { SupportTicket } from "@database/utils/aliceDb/SupportTicket";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { TicketLocalization } from "@localization/interactions/commands/General/ticket/TicketLocalization";
+import { SlashSubcommand } from "@structures/core/SlashSubcommand";
+import { DatabaseSupportTicket } from "@structures/database/aliceDb/DatabaseSupportTicket";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

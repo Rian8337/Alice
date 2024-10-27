@@ -1,5 +1,5 @@
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { Symbols } from "@enums/utils/Symbols";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import { bold } from "discord.js";
 
 /**
@@ -41,7 +41,7 @@ export abstract class MessageCreator {
     static createWarn(content: string, ...args: string[]): string {
         // No space after symbol is intentional.
         return `${Symbols.exclamationMark}${bold(
-            `| ${StringHelper.formatString(content, ...args)}`
+            `| ${StringHelper.formatString(content, ...args)}`,
         )}`;
     }
 
@@ -60,7 +60,7 @@ export abstract class MessageCreator {
         ...args: string[]
     ): string {
         return `${prefix} ${bold(
-            `| ${StringHelper.formatString(content, ...args)}`
+            `| ${StringHelper.formatString(content, ...args)}`,
         )}`;
     }
 }

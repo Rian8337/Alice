@@ -1,18 +1,18 @@
-import { Config } from "@alice-core/Config";
-import { Constants } from "@alice-core/Constants";
+import { Config } from "@core/Config";
+import { Constants } from "@core/Constants";
 import { EventUtil } from "structures/core/EventUtil";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { RunCommandLocalization } from "@alice-localization/events/interactionCreate/runCommand/RunCommandLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { RunCommandLocalization } from "@localization/events/interactionCreate/runCommand/RunCommandLocalization";
 import {
     ChannelCooldownKey,
     GlobalCooldownKey,
 } from "structures/core/CooldownKey";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { PermissionHelper } from "@utils/helpers/PermissionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 import {
     BaseInteraction,
     CacheType,

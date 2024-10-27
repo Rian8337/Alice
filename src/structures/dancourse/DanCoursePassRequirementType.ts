@@ -1,4 +1,4 @@
-import { PassRequirementType } from "@alice-structures/challenge/PassRequirementType";
+import { PassRequirementType } from "@structures/challenge/PassRequirementType";
 
 /**
  * The type of requirement to pass a dan course beatmap.

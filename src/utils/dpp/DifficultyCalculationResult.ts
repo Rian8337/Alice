@@ -1,4 +1,4 @@
-import { IDifficultyCalculationResult } from "@alice-structures/utils/IDifficultyCalculationResult";
+import { IDifficultyCalculationResult } from "@structures/utils/IDifficultyCalculationResult";
 import { MapInfo } from "@rian8337/osu-base";
 import {
     CacheableDifficultyAttributes,

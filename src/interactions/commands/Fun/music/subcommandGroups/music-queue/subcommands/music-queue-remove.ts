@@ -1,13 +1,13 @@
 import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { MusicManager } from "@alice-utils/managers/MusicManager";
+import { MusicQueue } from "@utils/music/MusicQueue";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { MusicManager } from "@utils/managers/MusicManager";
 import { GuildMember } from "discord.js";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { MusicLocalization } from "@localization/interactions/commands/Fun/music/MusicLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MusicLocalization = new MusicLocalization(

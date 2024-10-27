@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const playerInfo: PlayerInfo | null =

@@ -1,4 +1,4 @@
-import { PlayerSkin } from "@alice-database/utils/aliceDb/PlayerSkin";
+import { PlayerSkin } from "@database/utils/aliceDb/PlayerSkin";
 import { DatabasePlayerSkin } from "structures/database/aliceDb/DatabasePlayerSkin";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake, User } from "discord.js";
@@ -11,7 +11,7 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<
     PlayerSkin
 > {
     protected override readonly utilityInstance: new (
-        data: DatabasePlayerSkin
+        data: DatabasePlayerSkin,
     ) => PlayerSkin = PlayerSkin;
 
     override get defaultDocument(): DatabasePlayerSkin {
@@ -48,7 +48,7 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<
      */
     async checkSkinNameAvailability(
         user: User | Snowflake,
-        name: string
+        name: string,
     ): Promise<boolean> {
         const skin: PlayerSkin | null = await this.getOne(
             {
@@ -59,7 +59,7 @@ export class PlayerSkinCollectionManager extends DatabaseCollectionManager<
                 projection: {
                     _id: 1,
                 },
-            }
+            },
         );
 
         return skin !== null;

@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { GuildTag } from "@database/utils/aliceDb/GuildTag";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { TagLocalization } from "@alice-localization/interactions/commands/Fun/tag/TagLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { TagLocalization } from "@localization/interactions/commands/Fun/tag/TagLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { bold, Collection, EmbedBuilder, User } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

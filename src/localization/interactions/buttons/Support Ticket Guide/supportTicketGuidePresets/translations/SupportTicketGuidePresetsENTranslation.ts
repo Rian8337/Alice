@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { SupportTicketGuidePresetsStrings } from "../SupportTicketGuidePresetsLocalization";
 import { chatInputApplicationCommandMention, inlineCode } from "discord.js";
 

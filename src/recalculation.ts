@@ -1,7 +1,7 @@
 import "module-alias/register";
 import { config } from "dotenv";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { consola } from "consola";
 process.env.UV_THREADPOOL_SIZE = "128";
 

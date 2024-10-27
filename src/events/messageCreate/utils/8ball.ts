@@ -1,11 +1,11 @@
 import { Message, bold } from "discord.js";
-import { Config } from "@alice-core/Config";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { EightBallResponseType } from "@alice-enums/utils/EightBallResponseType";
+import { Config } from "@core/Config";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { EightBallResponseType } from "@enums/utils/EightBallResponseType";
 import { EventUtil } from "structures/core/EventUtil";
 import { DatabaseEightBallFilter } from "structures/database/aliceDb/DatabaseEightBallFilter";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 
 /**
  * Gets the response type to a message.

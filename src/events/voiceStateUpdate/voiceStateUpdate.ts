@@ -1,11 +1,11 @@
 import { Event } from "structures/core/Event";
-import { EventHelper } from "@alice-utils/helpers/EventHelper";
+import { EventHelper } from "@utils/helpers/EventHelper";
 import { VoiceState } from "discord.js";
 
 export const run: Event["run"] = async (
     client,
     oldState: VoiceState,
-    newState: VoiceState
+    newState: VoiceState,
 ) => {
     EventHelper.runUtilities(
         client,
@@ -13,6 +13,6 @@ export const run: Event["run"] = async (
         newState.guild,
         newState.channel ?? oldState.channel,
         oldState,
-        newState
+        newState,
     ).catch((e: Error) => client.emit("error", e));
 };

@@ -1,11 +1,11 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SkinPreviewType } from "@alice-enums/utils/SkinPreviewType";
-import { SkinLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/skin/SkinLocalization";
-import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { SkinPreviewType } from "@enums/utils/SkinPreviewType";
+import { SkinLocalization } from "@localization/interactions/commands/osu! and osu!droid/skin/SkinLocalization";
+import { SlashSubcommand } from "@structures/core/SlashSubcommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,

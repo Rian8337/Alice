@@ -1,11 +1,11 @@
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MaintenanceLocalization } from "@alice-localization/interactions/commands/Bot Creators/maintenance/MaintenanceLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MaintenanceLocalization } from "@localization/interactions/commands/Bot Creators/maintenance/MaintenanceLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
     const reason: string = interaction.options.getString("reason") ?? "Unknown";

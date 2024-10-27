@@ -1,9 +1,9 @@
-import { InitialSupportTicketGuideLocalization } from "@alice-localization/interactions/buttons/Support Ticket Guide/initialSupportTicketGuide/InitialSupportTicketGuideLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { createSupportTicketGuideButton } from "@alice-utils/creators/SupportTicketGuideButtonCreator";
+import { InitialSupportTicketGuideLocalization } from "@localization/interactions/buttons/Support Ticket Guide/initialSupportTicketGuide/InitialSupportTicketGuideLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { createSupportTicketGuideButton } from "@utils/creators/SupportTicketGuideButtonCreator";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     if (!interaction.inCachedGuild()) {

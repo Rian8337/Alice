@@ -1,4 +1,4 @@
-import { ConstantsStrings } from "@alice-localization/core/constants/ConstantsLocalization";
+import { ConstantsStrings } from "@localization/core/constants/ConstantsLocalization";
 import { Snowflake } from "discord.js";
 import { join } from "path";
 

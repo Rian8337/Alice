@@ -1,8 +1,8 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
-import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DatabaseChannelActivity } from "@structures/database/aliceDb/DatabaseChannelActivity";
+import { ChannelActivityData } from "@structures/utils/ChannelActivityData";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 
@@ -27,7 +27,7 @@ export class ChannelActivity extends Manager {
 
     constructor(
         data: DatabaseChannelActivity = DatabaseManager.aliceDb?.collections
-            .channelActivity.defaultDocument ?? {}
+            .channelActivity.defaultDocument ?? {},
     ) {
         super();
 
@@ -35,7 +35,7 @@ export class ChannelActivity extends Manager {
         this.timestamp = data.timestamp;
         this.channels = ArrayHelper.arrayToCollection(
             data.channels,
-            "channelId"
+            "channelId",
         );
     }
 }

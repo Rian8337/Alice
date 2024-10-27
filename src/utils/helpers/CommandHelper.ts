@@ -15,23 +15,23 @@ import {
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { CacheManager } from "../managers/CacheManager";
 import { CommandScope } from "structures/core/CommandScope";
-import { Constants } from "@alice-core/Constants";
+import { Constants } from "@core/Constants";
 import {
     ChannelCooldownKey,
     GlobalCooldownKey,
 } from "structures/core/CooldownKey";
 import { Permission } from "structures/core/Permission";
-import { Config } from "@alice-core/Config";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { Config } from "@core/Config";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { PermissionHelper } from "./PermissionHelper";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ApplicationCommandOptionType } from "discord.js";
-import { Language } from "@alice-localization/base/Language";
-import { CommandHelperLocalization } from "@alice-localization/utils/helpers/CommandHelper/CommandHelperLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { Language } from "@localization/base/Language";
+import { CommandHelperLocalization } from "@localization/utils/helpers/CommandHelper/CommandHelperLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 import { InteractionHelper } from "./InteractionHelper";
 import { Locale } from "discord.js";
 

@@ -1,5 +1,5 @@
-import { Localization } from "@alice-localization/base/Localization";
-import { Translations } from "@alice-localization/base/Translations";
+import { Localization } from "@localization/base/Localization";
+import { Translations } from "@localization/base/Translations";
 import { WarningManagerENTranslation } from "./translations/WarningManagerENTranslation";
 import { WarningManagerESTranslation } from "./translations/WarningManagerESTranslation";
 import { WarningManagerIDTranslation } from "./translations/WarningManagerIDTranslation";

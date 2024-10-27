@@ -1,4 +1,4 @@
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { Modes } from "@rian8337/osu-base";
 import { ExtendedDroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
 import { DifficultyAttributesCacheManager } from "./DifficultyAttributesCacheManager";

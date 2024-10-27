@@ -1,6 +1,6 @@
 import { Accuracy, Beatmap, MapInfo, Mod, ModUtil } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
 import {
     DifficultyAttributes,
     DifficultyCalculator,
@@ -13,16 +13,16 @@ import {
     DifficultyHitObject as RebalanceDifficultyHitObject,
     PerformanceCalculator as RebalancePerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
-import { PerformanceCalculationResult } from "@alice-utils/dpp/PerformanceCalculationResult";
-import { RebalancePerformanceCalculationResult } from "@alice-utils/dpp/RebalancePerformanceCalculationResult";
-import { RebalanceDifficultyCalculationResult } from "@alice-utils/dpp/RebalanceDifficultyCalculationResult";
-import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
-import { DifficultyCalculationResult } from "@alice-utils/dpp/DifficultyCalculationResult";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { DifficultyAttributesCacheManager } from "@alice-utils/difficultyattributescache/DifficultyAttributesCacheManager";
-import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { PerformanceCalculationResult } from "@utils/dpp/PerformanceCalculationResult";
+import { RebalancePerformanceCalculationResult } from "@utils/dpp/RebalancePerformanceCalculationResult";
+import { RebalanceDifficultyCalculationResult } from "@utils/dpp/RebalanceDifficultyCalculationResult";
+import { DifficultyCalculationParameters } from "@utils/dpp/DifficultyCalculationParameters";
+import { DifficultyCalculationResult } from "@utils/dpp/DifficultyCalculationResult";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { DifficultyAttributesCacheManager } from "@utils/difficultyattributescache/DifficultyAttributesCacheManager";
+import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
 import { NumberHelper } from "./NumberHelper";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 import { DroidHelper } from "./DroidHelper";
 
 /**

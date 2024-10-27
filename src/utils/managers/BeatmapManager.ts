@@ -21,14 +21,14 @@ import {
     Precision,
     RankedStatus,
 } from "@rian8337/osu-base";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { CacheManager } from "./CacheManager";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { createCanvas } from "canvas";
-import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { HelperFunctions } from "@utils/helpers/HelperFunctions";
 import { ScoreRank } from "structures/utils/ScoreRank";
-import { BeatmapRetrievalOptions } from "@alice-structures/utils/BeatmapRetrievalOptions";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { BeatmapRetrievalOptions } from "@structures/utils/BeatmapRetrievalOptions";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
 import { BeatmapProcessorRESTManager } from "./BeatmapProcessorRESTManager";
 
 /**

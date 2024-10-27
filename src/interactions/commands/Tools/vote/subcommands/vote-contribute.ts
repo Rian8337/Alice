@@ -1,16 +1,16 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Voting } from "@alice-database/utils/aliceDb/Voting";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Voting } from "@database/utils/aliceDb/Voting";
 import { VoteChoice } from "structures/interactions/commands/Tools/VoteChoice";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { VoteLocalization } from "@alice-localization/interactions/commands/Tools/vote/VoteLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { VoteLocalization } from "@localization/interactions/commands/Tools/vote/VoteLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { UpdateFilter } from "mongodb";
 import { DatabaseVoting } from "structures/database/aliceDb/DatabaseVoting";
 import { bold } from "discord.js";
-import { TatsuRESTManager } from "@alice-utils/managers/TatsuRESTManager";
+import { TatsuRESTManager } from "@utils/managers/TatsuRESTManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: VoteLocalization = new VoteLocalization(

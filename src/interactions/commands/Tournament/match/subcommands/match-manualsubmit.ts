@@ -1,19 +1,19 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { TournamentMappool } from "@alice-database/utils/elainaDb/TournamentMappool";
-import { TournamentMatch } from "@alice-database/utils/elainaDb/TournamentMatch";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { TournamentMappool } from "@database/utils/elainaDb/TournamentMappool";
+import { TournamentMatch } from "@database/utils/elainaDb/TournamentMatch";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
 import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { bold, EmbedBuilder } from "discord.js";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
+import { Symbols } from "@enums/utils/Symbols";
+import { MatchLocalization } from "@localization/interactions/commands/Tournament/match/MatchLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { Mod, ModDoubleTime, ModHidden, ModNoFail } from "@rian8337/osu-base";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: MatchLocalization = new MatchLocalization(

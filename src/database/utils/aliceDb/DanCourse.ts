@@ -1,9 +1,9 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { OperationResult } from "@alice-structures/core/OperationResult";
-import { DanCoursePassRequirement } from "@alice-structures/dancourse/DanCoursePassRequirement";
-import { DatabaseDanCourse } from "@alice-structures/database/aliceDb/DatabaseDanCourse";
-import { Manager } from "@alice-utils/base/Manager";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { OperationResult } from "@structures/core/OperationResult";
+import { DanCoursePassRequirement } from "@structures/dancourse/DanCoursePassRequirement";
+import { DatabaseDanCourse } from "@structures/database/aliceDb/DatabaseDanCourse";
+import { Manager } from "@utils/base/Manager";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import { Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 import { DanCourseScore } from "./DanCourseScore";
@@ -21,7 +21,7 @@ export class DanCourse extends Manager implements DatabaseDanCourse {
 
     constructor(
         data: DatabaseDanCourse = DatabaseManager.aliceDb?.collections
-            .danCourses.defaultDocument ?? {}
+            .danCourses.defaultDocument ?? {},
     ) {
         super();
 
@@ -71,7 +71,7 @@ export class DanCourse extends Manager implements DatabaseDanCourse {
             if (this.requirement.forcedAR === undefined) {
                 return this.createOperationResult(
                     false,
-                    "Invalid force AR settings was used"
+                    "Invalid force AR settings was used",
                 );
             }
 
@@ -81,7 +81,7 @@ export class DanCourse extends Manager implements DatabaseDanCourse {
             ) {
                 return this.createOperationResult(
                     false,
-                    `Force AR settings was too low, minimum is ${this.requirement.forcedAR.minValue} but was set to ${forcedAR}`
+                    `Force AR settings was too low, minimum is ${this.requirement.forcedAR.minValue} but was set to ${forcedAR}`,
                 );
             }
 
@@ -91,7 +91,7 @@ export class DanCourse extends Manager implements DatabaseDanCourse {
             ) {
                 return this.createOperationResult(
                     false,
-                    `Force AR settings was too high, maximum is ${this.requirement.forcedAR.maxValue} but was set to ${forcedAR}`
+                    `Force AR settings was too high, maximum is ${this.requirement.forcedAR.maxValue} but was set to ${forcedAR}`,
                 );
             }
         }
@@ -101,14 +101,14 @@ export class DanCourse extends Manager implements DatabaseDanCourse {
                 false,
                 `Invalid speed multiplier was used, must be ${
                     this.requirement.speedMultiplier ?? 1
-                } but was ${speedMultiplier}`
+                } but was ${speedMultiplier}`,
             );
         }
 
         if (score.isSliderLock && !this.requirement.allowSliderLock) {
             return this.createOperationResult(
                 false,
-                "Slider lock was activated"
+                "Slider lock was activated",
             );
         }
 
@@ -118,7 +118,7 @@ export class DanCourse extends Manager implements DatabaseDanCourse {
         ) {
             return this.createOperationResult(
                 false,
-                "Slider accuracy was not used"
+                "Slider accuracy was not used",
             );
         }
 
@@ -129,17 +129,17 @@ export class DanCourse extends Manager implements DatabaseDanCourse {
             case "rank":
                 return this.createOperationResult(
                     score.grade >= this.requirement.value,
-                    "Pass requirement was not met"
+                    "Pass requirement was not met",
                 );
             case "acc":
                 return this.createOperationResult(
                     score.grade * 100 >= this.requirement.value,
-                    "Pass requirement was not met"
+                    "Pass requirement was not met",
                 );
             default:
                 return this.createOperationResult(
                     score.grade <= this.requirement.value,
-                    "Pass requirement was not met"
+                    "Pass requirement was not met",
                 );
         }
     }

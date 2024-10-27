@@ -5,15 +5,15 @@ import {
     TextChannel,
 } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { CreateinviteLocalization } from "@alice-localization/interactions/commands/Staff/createinvite/CreateinviteLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { CreateinviteLocalization } from "@localization/interactions/commands/Staff/createinvite/CreateinviteLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: CreateinviteLocalization = new CreateinviteLocalization(

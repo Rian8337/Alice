@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { GuildSettings } from "@alice-database/utils/aliceDb/GuildSettings";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { GuildSettings } from "@database/utils/aliceDb/GuildSettings";
 import { OperationResult } from "structures/core/OperationResult";
 import { DatabaseGuildSettings } from "structures/database/aliceDb/DatabaseGuildSettings";
-import { Language } from "@alice-localization/base/Language";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { Language } from "@localization/base/Language";
+import { CacheManager } from "@utils/managers/CacheManager";
 import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
 

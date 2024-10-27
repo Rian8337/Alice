@@ -1,17 +1,17 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { AuctionBid } from "structures/clan/AuctionBid";
 import { DatabaseClanAuction } from "structures/database/aliceDb/DatabaseClanAuction";
-import { Manager } from "@alice-utils/base/Manager";
-import { Clan } from "@alice-database/utils/elainaDb/Clan";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { Manager } from "@utils/base/Manager";
+import { Clan } from "@database/utils/elainaDb/Clan";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
 import { ObjectId } from "bson";
 import { Collection } from "discord.js";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { Powerup } from "structures/clan/Powerup";
 import { PowerupType } from "structures/clan/PowerupType";
 import { OperationResult } from "structures/core/OperationResult";
-import { Language } from "@alice-localization/base/Language";
-import { ClanAuctionLocalization } from "@alice-localization/database/utils/aliceDb/ClanAuction/ClanAuctionLocalization";
+import { Language } from "@localization/base/Language";
+import { ClanAuctionLocalization } from "@localization/database/utils/aliceDb/ClanAuction/ClanAuctionLocalization";
 
 /**
  * Represents a clan auction.
@@ -64,7 +64,7 @@ export class ClanAuction extends Manager {
 
     constructor(
         data: DatabaseClanAuction = DatabaseManager.aliceDb?.collections
-            .clanAuction.defaultDocument ?? {}
+            .clanAuction.defaultDocument ?? {},
     ) {
         super();
 
@@ -106,7 +106,7 @@ export class ClanAuction extends Manager {
      */
     async end(
         force?: boolean,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ClanAuctionLocalization =
             this.getLocalization(language);
@@ -117,7 +117,7 @@ export class ClanAuction extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("auctionHasntExpired")
+                localization.getTranslation("auctionHasntExpired"),
             );
         }
 
@@ -135,7 +135,7 @@ export class ClanAuction extends Manager {
         for (const bid of this.bids.values()) {
             const clan: Clan | null =
                 await DatabaseManager.elainaDb.collections.clan.getFromName(
-                    bid.clan
+                    bid.clan,
                 );
 
             if (clan) {
@@ -155,7 +155,7 @@ export class ClanAuction extends Manager {
      */
     async giveItemTo(
         clan?: Clan,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ClanAuctionLocalization =
             this.getLocalization(language);
@@ -165,7 +165,7 @@ export class ClanAuction extends Manager {
             if (!clan) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("noWinningClan")
+                    localization.getTranslation("noWinningClan"),
                 );
             }
         }
@@ -185,20 +185,20 @@ export class ClanAuction extends Manager {
      * @param language The locale of the user who attempted to return the auctioned item. Defaults to English.
      */
     async returnItemToAuctioneer(
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: ClanAuctionLocalization =
             this.getLocalization(language);
 
         const clan: Clan | null =
             await DatabaseManager.elainaDb.collections.clan.getFromName(
-                this.auctioneer
+                this.auctioneer,
             );
 
         if (!clan) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("auctioneerNotFound")
+                localization.getTranslation("auctioneerNotFound"),
             );
         }
 
@@ -232,7 +232,7 @@ export class ClanAuction extends Manager {
                     amount: this.amount,
                     bids: [...this.bids.values()],
                 },
-            }
+            },
         );
     }
 

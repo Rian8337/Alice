@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { hyperlink } from "discord.js";
 import { OnboardingPerformancePointsStrings } from "../OnboardingPerformancePointsLocalization";
 
@@ -10,11 +10,11 @@ export class OnboardingPerformancePointsENTranslation extends Translation<Onboar
         embedTitle: "Droid Performance Points",
         droidPerformancePointsIntroduction: `This feature brings ${hyperlink(
             "performance points",
-            "https://osu.ppy.sh/wiki/en/Performance_points"
+            "https://osu.ppy.sh/wiki/en/Performance_points",
         )} to osu!droid with Discord as the medium under the name "droid performance points", which is commonly abbreviated as "dpp".`,
         droidPerformancePointsReadMore: `Read more about dpp ${hyperlink(
             "here",
-            "https://osudroidfaq.wordpress.com/elaina-pp-project/"
+            "https://osudroidfaq.wordpress.com/elaina-pp-project/",
         )}, including how to get started with it.`,
     };
 }

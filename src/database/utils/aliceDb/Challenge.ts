@@ -1,6 +1,6 @@
-import { Config } from "@alice-core/Config";
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Config } from "@core/Config";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { Bonus } from "structures/challenge/Bonus";
 import { BonusDescription } from "structures/challenge/BonusDescription";
 import { PassRequirement } from "structures/challenge/PassRequirement";
@@ -8,10 +8,10 @@ import { DatabaseChallenge } from "structures/database/aliceDb/DatabaseChallenge
 import { BonusID } from "structures/challenge/BonusID";
 import { ChallengeStatusType } from "structures/challenge/ChallengeStatusType";
 import { ChallengeType } from "structures/challenge/ChallengeType";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import {
     ApplicationCommandOptionChoiceData,
     Collection,
@@ -22,11 +22,11 @@ import {
     userMention,
 } from "discord.js";
 import { ObjectId } from "mongodb";
-import { Manager } from "@alice-utils/base/Manager";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { Manager } from "@utils/base/Manager";
+import { BeatmapDifficultyHelper } from "@utils/helpers/BeatmapDifficultyHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { OperationResult } from "structures/core/OperationResult";
 import {
     Mod,
@@ -47,23 +47,23 @@ import {
     HitErrorInformation,
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
-import { Language } from "@alice-localization/base/Language";
+import { ScoreHelper } from "@utils/helpers/ScoreHelper";
+import { Language } from "@localization/base/Language";
 import {
     ChallengeLocalization,
     ChallengeStrings,
-} from "@alice-localization/database/utils/aliceDb/Challenge/ChallengeLocalization";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { RESTManager } from "@alice-utils/managers/RESTManager";
+} from "@localization/database/utils/aliceDb/Challenge/ChallengeLocalization";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { RESTManager } from "@utils/managers/RESTManager";
 import { createHash } from "crypto";
-import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { ReplayHelper } from "@utils/helpers/ReplayHelper";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * Represents a daily or weekly challenge.

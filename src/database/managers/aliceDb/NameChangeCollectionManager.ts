@@ -1,4 +1,4 @@
-import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
+import { NameChange } from "@database/utils/aliceDb/NameChange";
 import { DatabaseNameChange } from "structures/database/aliceDb/DatabaseNameChange";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection, Snowflake, User } from "discord.js";
@@ -12,7 +12,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
     NameChange
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseNameChange
+        data: DatabaseNameChange,
     ) => NameChange = NameChange;
 
     override get defaultDocument(): DatabaseNameChange {
@@ -75,7 +75,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
     requestNameChange(
         discordId: Snowflake,
         uid: number,
-        newUsername: string
+        newUsername: string,
     ): Promise<OperationResult> {
         return this.updateOne(
             { uid: uid },
@@ -90,7 +90,7 @@ export class NameChangeCollectionManager extends DatabaseCollectionManager<
                     previous_usernames: [],
                 },
             },
-            { upsert: true }
+            { upsert: true },
         );
     }
 }

@@ -1,14 +1,14 @@
-import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
+import { TriviaQuestionCategory } from "@enums/trivia/TriviaQuestionCategory";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { TriviaQuestionResult } from "@alice-structures/trivia/TriviaQuestionResult";
-import { TriviaLocalization } from "@alice-localization/interactions/commands/Fun/trivia/TriviaLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { TriviaHelper } from "@alice-utils/helpers/TriviaHelper";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { TriviaQuestionResult } from "@structures/trivia/TriviaQuestionResult";
+import { TriviaLocalization } from "@localization/interactions/commands/Fun/trivia/TriviaLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { TriviaHelper } from "@utils/helpers/TriviaHelper";
+import { CacheManager } from "@utils/managers/CacheManager";
 import {
     GuildMember,
     EmbedBuilder,

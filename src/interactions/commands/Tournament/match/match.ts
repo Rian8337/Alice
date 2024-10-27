@@ -1,12 +1,12 @@
-import { Constants } from "@alice-core/Constants";
+import { Constants } from "@core/Constants";
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { Snowflake } from "discord.js";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const constantsLocalization: ConstantsLocalization =

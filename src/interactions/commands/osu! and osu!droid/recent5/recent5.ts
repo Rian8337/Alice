@@ -1,22 +1,22 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { ScoreDisplayHelper } from "@utils/helpers/ScoreDisplayHelper";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { Recent5Localization } from "@alice-localization/interactions/commands/osu! and osu!droid/recent5/Recent5Localization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { Recent5Localization } from "@localization/interactions/commands/osu! and osu!droid/recent5/Recent5Localization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
+import { ScoreHelper } from "@utils/helpers/ScoreHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new Recent5Localization(

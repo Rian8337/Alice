@@ -9,7 +9,7 @@ import {
     OsuDifficultyCalculator as RebalanceOsuDifficultyCalculator,
     OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
+import { CacheManager } from "@utils/managers/CacheManager";
 
 /**
  * A helper class for calculating osu!standard difficulty and performance of beatmaps or scores.

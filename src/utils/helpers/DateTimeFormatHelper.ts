@@ -1,5 +1,5 @@
-import { Language } from "@alice-localization/base/Language";
-import { DateTimeFormatHelperLocalization } from "@alice-localization/utils/helpers/DateTimeFormatHelper/DateTimeFormatHelperLocalization";
+import { Language } from "@localization/base/Language";
+import { DateTimeFormatHelperLocalization } from "@localization/utils/helpers/DateTimeFormatHelper/DateTimeFormatHelperLocalization";
 import { LocaleHelper } from "./LocaleHelper";
 
 /**

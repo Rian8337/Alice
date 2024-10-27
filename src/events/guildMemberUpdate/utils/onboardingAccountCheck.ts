@@ -1,7 +1,7 @@
-import { Constants } from "@alice-core/Constants";
-import { EventUtil } from "@alice-structures/core/EventUtil";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
+import { Constants } from "@core/Constants";
+import { EventUtil } from "@structures/core/EventUtil";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
 import {
     ActionRowBuilder,
     bold,

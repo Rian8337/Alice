@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { hideLinkEmbed, hyperlink } from "discord.js";
 import { OnboardingPlayerProfileActionStrings } from "../OnboardingPlayerProfileActionLocalization";
 

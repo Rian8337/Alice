@@ -1,5 +1,5 @@
-import { DanCourse } from "@alice-database/utils/aliceDb/DanCourse";
-import { DatabaseDanCourse } from "@alice-structures/database/aliceDb/DatabaseDanCourse";
+import { DanCourse } from "@database/utils/aliceDb/DanCourse";
+import { DatabaseDanCourse } from "@structures/database/aliceDb/DatabaseDanCourse";
 import { ApplicationCommandOptionChoiceData } from "discord.js";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
@@ -11,7 +11,7 @@ export class DanCourseCollectionManager extends DatabaseCollectionManager<
     DanCourse
 > {
     protected override utilityInstance: new (
-        data: DatabaseDanCourse
+        data: DatabaseDanCourse,
     ) => DanCourse = DanCourse;
 
     override get defaultDocument(): DatabaseDanCourse {
@@ -36,7 +36,7 @@ export class DanCourseCollectionManager extends DatabaseCollectionManager<
      */
     async searchBeatmapsForAutocomplete(
         searchQuery: string | RegExp,
-        amount: number = 25
+        amount: number = 25,
     ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
         let regExp: RegExp;
 
@@ -49,7 +49,7 @@ export class DanCourseCollectionManager extends DatabaseCollectionManager<
         const result: DatabaseDanCourse[] = await this.collection
             .find(
                 { courseName: regExp },
-                { projection: { _id: 0, courseName: 1 } }
+                { projection: { _id: 0, courseName: 1 } },
             )
             .limit(amount)
             .toArray();

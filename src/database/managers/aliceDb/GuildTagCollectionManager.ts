@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { GuildTag } from "@alice-database/utils/aliceDb/GuildTag";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { GuildTag } from "@database/utils/aliceDb/GuildTag";
 import { DatabaseGuildTag } from "structures/database/aliceDb/DatabaseGuildTag";
 import { Collection as DiscordCollection, Snowflake } from "discord.js";
 
@@ -11,7 +11,7 @@ export class GuildTagCollectionManager extends DatabaseCollectionManager<
     GuildTag
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseGuildTag
+        data: DatabaseGuildTag,
     ) => GuildTag = GuildTag;
 
     override get defaultDocument(): DatabaseGuildTag {
@@ -49,7 +49,7 @@ export class GuildTagCollectionManager extends DatabaseCollectionManager<
      */
     getUserGuildTags(
         guildId: Snowflake,
-        userId: Snowflake
+        userId: Snowflake,
     ): Promise<DiscordCollection<string, GuildTag>> {
         return this.get("name", {
             guildid: guildId,

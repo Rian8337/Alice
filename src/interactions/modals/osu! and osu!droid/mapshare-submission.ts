@@ -1,18 +1,18 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { MapShare } from "@database/utils/aliceDb/MapShare";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { ModalCommand } from "structures/core/ModalCommand";
 import { OperationResult } from "structures/core/OperationResult";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MapshareSubmissionLocalization } from "@alice-localization/interactions/modals/osu! and osu!droid/mapshare-postsubmission/MapshareSubmissionLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { MapshareSubmissionLocalization } from "@localization/interactions/modals/osu! and osu!droid/mapshare-postsubmission/MapshareSubmissionLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { MapInfo, RankedStatus } from "@rian8337/osu-base";
 
 export const run: ModalCommand["run"] = async (_, interaction) => {

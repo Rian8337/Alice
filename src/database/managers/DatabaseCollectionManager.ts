@@ -1,6 +1,6 @@
 import { BaseDocument } from "structures/database/BaseDocument";
 import { OperationResult } from "structures/core/OperationResult";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { Collection as DiscordCollection } from "discord.js";
 import {
     Collection as MongoDBCollection,

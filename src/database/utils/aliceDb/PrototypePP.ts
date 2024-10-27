@@ -1,8 +1,8 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabasePrototypePP } from "structures/database/aliceDb/DatabasePrototypePP";
-import { PrototypePPEntry } from "@alice-structures/dpp/PrototypePPEntry";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { PrototypePPEntry } from "@structures/dpp/PrototypePPEntry";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 

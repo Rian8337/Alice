@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { Challenge } from "@alice-database/utils/aliceDb/Challenge";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { Challenge } from "@database/utils/aliceDb/Challenge";
 import { DatabaseChallenge } from "structures/database/aliceDb/DatabaseChallenge";
 import { ChallengeType } from "structures/challenge/ChallengeType";
 
@@ -11,7 +11,7 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<
     Challenge
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseChallenge
+        data: DatabaseChallenge,
     ) => Challenge = Challenge;
 
     override get defaultDocument(): DatabaseChallenge {
@@ -56,7 +56,7 @@ export class ChallengeCollectionManager extends DatabaseCollectionManager<
                     challengeid: {
                         $regex: new RegExp(
                             `${type === "weekly" ? "w" : "d"}\\d{1,}`,
-                            "g"
+                            "g",
                         ),
                     },
                 },

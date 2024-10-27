@@ -1,9 +1,9 @@
 import { GuildMember, EmbedBuilder, User, hyperlink } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const user: User = interaction.options.getUser("user") ?? interaction.user;

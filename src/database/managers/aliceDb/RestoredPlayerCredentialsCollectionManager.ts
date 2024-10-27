@@ -1,4 +1,4 @@
-import { RestoredPlayerCredentials } from "@alice-database/utils/aliceDb/RestoredPlayerCredentials";
+import { RestoredPlayerCredentials } from "@database/utils/aliceDb/RestoredPlayerCredentials";
 import { DatabaseRestoredPlayerCredentials } from "structures/database/aliceDb/DatabaseRestoredPlayerCredentials";
 import { FindOptions } from "mongodb";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
@@ -11,7 +11,7 @@ export class RestoredPlayerCredentialsCollectionManager extends DatabaseCollecti
     RestoredPlayerCredentials
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseRestoredPlayerCredentials
+        data: DatabaseRestoredPlayerCredentials,
     ) => RestoredPlayerCredentials = RestoredPlayerCredentials;
 
     override get defaultDocument(): DatabaseRestoredPlayerCredentials {
@@ -36,7 +36,7 @@ export class RestoredPlayerCredentialsCollectionManager extends DatabaseCollecti
     }
 
     protected override processFindOptions(
-        options?: FindOptions<DatabaseRestoredPlayerCredentials>
+        options?: FindOptions<DatabaseRestoredPlayerCredentials>,
     ): FindOptions<DatabaseRestoredPlayerCredentials> | undefined {
         if (options?.projection) {
             options.projection.Id = 1;

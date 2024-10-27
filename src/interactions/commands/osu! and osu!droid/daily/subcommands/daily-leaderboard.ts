@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { DailyLocalization } from "@localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import { Collection } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

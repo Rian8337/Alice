@@ -1,7 +1,7 @@
 import { DisabledCommand } from "structures/moderation/DisabledCommand";
 import { DisabledEventUtil } from "structures/moderation/DisabledEventUtil";
 import { GuildChannelSettings } from "structures/moderation/GuildChannelSettings";
-import { Language } from "@alice-localization/base/Language";
+import { Language } from "@localization/base/Language";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 

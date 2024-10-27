@@ -1,14 +1,14 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { Constants } from "@alice-core/Constants";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { ProfileManager } from "@alice-utils/managers/ProfileManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { Language } from "@alice-localization/base/Language";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { Constants } from "@core/Constants";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { ProfileManager } from "@utils/managers/ProfileManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { Language } from "@localization/base/Language";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const language: Language = CommandHelper.getLocale(interaction);

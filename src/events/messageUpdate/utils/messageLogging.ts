@@ -6,12 +6,12 @@ import {
     hyperlink,
 } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
 
 export const run: EventUtil["run"] = async (
     _,
     oldMessage: Message,
-    newMessage: Message
+    newMessage: Message,
 ) => {
     try {
         await newMessage.fetch();
@@ -27,7 +27,7 @@ export const run: EventUtil["run"] = async (
 
     const logChannel: GuildChannel | ThreadChannel | undefined =
         newMessage.guild?.channels.cache.find(
-            (c) => c.id === "643770576238018570"
+            (c) => c.id === "643770576238018570",
         );
 
     if (!logChannel?.isTextBased()) {
@@ -45,7 +45,7 @@ export const run: EventUtil["run"] = async (
         name: "Channel",
         value: `${oldMessage.channel} | ${hyperlink(
             "Go to Message",
-            oldMessage.url
+            oldMessage.url,
         )}`,
     });
 

@@ -1,7 +1,7 @@
 import wordsCount from "words-count";
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Manager } from "@alice-utils/base/Manager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Manager } from "@utils/base/Manager";
 import {
     Collection,
     FetchedThreads,
@@ -15,7 +15,7 @@ import {
     ThreadChannel,
 } from "discord.js";
 import { HelperFunctions } from "./HelperFunctions";
-import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
+import { ChannelActivityData } from "@structures/utils/ChannelActivityData";
 
 /**
  * A helper for the bot's message analytics.
@@ -67,7 +67,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
      */
     static async fetchDaily(newDailyTime: number): Promise<void> {
         const guild: Guild = await this.client.guilds.fetch(
-            Constants.mainServer
+            Constants.mainServer,
         );
         const previousDay: number = newDailyTime - 86400 * 1000;
         const channelData: Collection<Snowflake, ChannelActivityData> =
@@ -86,11 +86,11 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 await this.getChannelActivity(
                     channel,
                     previousDay,
-                    newDailyTime
+                    newDailyTime,
                 );
 
             const existingData: ChannelActivityData = channelData.get(
-                channel.id
+                channel.id,
             ) ?? {
                 channelId: channel.id,
                 messageCount: 0,
@@ -114,7 +114,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
                     channels: [...channelData.values()],
                 },
             },
-            { upsert: true }
+            { upsert: true },
         );
     }
 
@@ -130,7 +130,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
     static async getChannelActivity(
         channel: GuildTextBasedChannel,
         fetchStartTime: number,
-        fetchEndTime: number
+        fetchEndTime: number,
     ): Promise<Collection<number, ChannelActivityData>> {
         const finalCollection: Collection<number, ChannelActivityData> =
             new Collection();
@@ -139,7 +139,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
             await this.fetchChannelActivity(
                 channel,
                 fetchStartTime,
-                fetchEndTime
+                fetchEndTime,
             );
 
         for (const [date, data] of channelCollection) {
@@ -148,7 +148,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
 
         if (channel instanceof TextChannel) {
             const fetchThreadActivity = async (
-                fetchedThreads: FetchedThreads
+                fetchedThreads: FetchedThreads,
             ) => {
                 for (const thread of fetchedThreads.threads.values()) {
                     const threadCollection: Collection<
@@ -157,12 +157,12 @@ export abstract class MessageAnalyticsHelper extends Manager {
                     > = await this.fetchChannelActivity(
                         thread,
                         fetchStartTime,
-                        fetchEndTime
+                        fetchEndTime,
                     );
 
                     for (const [date, threadData] of threadCollection) {
                         const data: ChannelActivityData = finalCollection.get(
-                            date
+                            date,
                         ) ?? {
                             channelId: channel.id,
                             messageCount: 0,
@@ -180,7 +180,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
             // Count threads for text channels.
             await fetchThreadActivity(await channel.threads.fetchActive());
             await fetchThreadActivity(
-                await channel.threads.fetchArchived({ fetchAll: true })
+                await channel.threads.fetchArchived({ fetchAll: true }),
             );
         }
 
@@ -215,7 +215,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
     private static async fetchChannelActivity(
         channel: GuildTextBasedChannel,
         fetchStartTime: number,
-        fetchEndTime: number
+        fetchEndTime: number,
     ): Promise<Collection<number, ChannelActivityData>> {
         const collection: Collection<number, ChannelActivityData> =
             new Collection();
@@ -284,7 +284,7 @@ export abstract class MessageAnalyticsHelper extends Manager {
                 if (!message.author.bot) {
                     ++channelActivityData.messageCount;
                     channelActivityData.wordsCount += wordsCount(
-                        message.content
+                        message.content,
                     );
                 }
             }

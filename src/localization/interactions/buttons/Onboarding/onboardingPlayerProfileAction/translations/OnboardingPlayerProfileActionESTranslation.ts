@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { hyperlink, hideLinkEmbed } from "discord.js";
 import { OnboardingPlayerProfileActionStrings } from "../OnboardingPlayerProfileActionLocalization";
 
@@ -11,7 +11,7 @@ export class OnboardingPlayerProfileActionESTranslation extends Translation<Onbo
         profileNotFound: "Lo siento, no puede encontrar tu perfil!",
         viewingProfile: `Perfil de osu!droid de ${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}:`,
     };
 }

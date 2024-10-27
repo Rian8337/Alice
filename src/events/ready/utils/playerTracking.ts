@@ -1,13 +1,13 @@
-import { Config } from "@alice-core/Config";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Config } from "@core/Config";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 import { TextChannel } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { ScoreHelper } from "@utils/helpers/ScoreHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: EventUtil["run"] = async (client) => {
     const channel = <TextChannel>(

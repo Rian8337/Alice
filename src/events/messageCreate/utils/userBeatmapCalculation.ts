@@ -1,18 +1,18 @@
-import { Config } from "@alice-core/Config";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { Config } from "@core/Config";
+import { Symbols } from "@enums/utils/Symbols";
 import { EventUtil } from "structures/core/EventUtil";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapDifficultyHelper } from "@utils/helpers/BeatmapDifficultyHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { Message, EmbedBuilder, bold, underline } from "discord.js";
 import { MapInfo, Modes, ModUtil } from "@rian8337/osu-base";
-import { UserBeatmapCalculationLocalization } from "@alice-localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { UserBeatmapCalculationLocalization } from "@localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (

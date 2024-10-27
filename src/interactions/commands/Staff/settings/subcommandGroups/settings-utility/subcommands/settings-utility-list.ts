@@ -1,11 +1,11 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { SettingsLocalization } from "@alice-localization/interactions/commands/Staff/settings/SettingsLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { SettingsLocalization } from "@localization/interactions/commands/Staff/settings/SettingsLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { PermissionHelper } from "@utils/helpers/PermissionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import { bold, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (

@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { hideLinkEmbed, hyperlink } from "discord.js";
 import { ViewDroidProfileStrings } from "../ViewDroidProfileLocalization";
 
@@ -11,7 +11,7 @@ export class ViewDroidProfileENTranslation extends Translation<ViewDroidProfileS
         userProfileNotFound: "I'm sorry, I cannot find the player's profile!",
         viewingProfile: `osu!droid profile for ${hyperlink(
             "%s",
-            hideLinkEmbed("%s")
+            hideLinkEmbed("%s"),
         )}:`,
     };
 }

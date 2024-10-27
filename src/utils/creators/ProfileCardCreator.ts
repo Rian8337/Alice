@@ -7,15 +7,15 @@ import {
 } from "canvas";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { promises } from "fs";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { Language } from "@alice-localization/base/Language";
-import { ProfileCardCreatorLocalization } from "@alice-localization/utils/creators/ProfileCardCreator/ProfileCardCreatorLocalization";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
+import { Language } from "@localization/base/Language";
+import { ProfileCardCreatorLocalization } from "@localization/utils/creators/ProfileCardCreator/ProfileCardCreatorLocalization";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { ScoreHelper } from "@utils/helpers/ScoreHelper";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * A utility to create profile cards.
@@ -269,7 +269,7 @@ export class ProfileCardCreator {
         const rank =
             this.player instanceof Player
                 ? this.player.rank
-                : (await DroidHelper.getPlayerRank(this.player.score)) ?? 0;
+                : ((await DroidHelper.getPlayerRank(this.player.score)) ?? 0);
 
         this.context.save();
 

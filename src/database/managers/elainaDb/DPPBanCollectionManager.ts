@@ -1,4 +1,4 @@
-import { DPPBan } from "@alice-database/utils/elainaDb/DPPBan";
+import { DPPBan } from "@database/utils/elainaDb/DPPBan";
 import { DatabaseDPPBan } from "structures/database/elainaDb/DatabaseDPPBan";
 import { FindOptions } from "mongodb";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
@@ -11,7 +11,7 @@ export class DPPBanCollectionManager extends DatabaseCollectionManager<
     DPPBan
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseDPPBan
+        data: DatabaseDPPBan,
     ) => DPPBan = DPPBan;
 
     override get defaultDocument(): DatabaseDPPBan {
@@ -32,7 +32,7 @@ export class DPPBanCollectionManager extends DatabaseCollectionManager<
     }
 
     protected override processFindOptions(
-        options?: FindOptions<DatabaseDPPBan>
+        options?: FindOptions<DatabaseDPPBan>,
     ): FindOptions<DatabaseDPPBan> | undefined {
         if (options?.projection) {
             options.projection.uid = 1;

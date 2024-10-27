@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { Constants } from "@alice-core/Constants";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { NameChange } from "@alice-database/utils/aliceDb/NameChange";
+import { Constants } from "@core/Constants";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { NameChange } from "@database/utils/aliceDb/NameChange";
 import { OperationResult } from "structures/core/OperationResult";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { NamechangeLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { NamechangeLocalization } from "@localization/interactions/commands/osu! and osu!droid/namechange/NamechangeLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: NamechangeLocalization = new NamechangeLocalization(

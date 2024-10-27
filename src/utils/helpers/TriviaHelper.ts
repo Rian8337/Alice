@@ -1,7 +1,7 @@
 import { readFile } from "fs/promises";
-import { TriviaQuestionCategory } from "@alice-enums/trivia/TriviaQuestionCategory";
-import { TriviaQuestionType } from "@alice-enums/trivia/TriviaQuestionType";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { TriviaQuestionCategory } from "@enums/trivia/TriviaQuestionCategory";
+import { TriviaQuestionType } from "@enums/trivia/TriviaQuestionType";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import {
     ButtonInteraction,
     Collection,
@@ -20,16 +20,16 @@ import {
     SelectMenuComponentOptionData,
 } from "discord.js";
 import { ArrayHelper } from "./ArrayHelper";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { TriviaQuestionResult } from "@alice-structures/trivia/TriviaQuestionResult";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { Language } from "@alice-localization/base/Language";
-import { TriviaHelperLocalization } from "@alice-localization/utils/helpers/TriviaHelper/TriviaHelperLocalization";
+import { Symbols } from "@enums/utils/Symbols";
+import { TriviaQuestionResult } from "@structures/trivia/TriviaQuestionResult";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { Language } from "@localization/base/Language";
+import { TriviaHelperLocalization } from "@localization/utils/helpers/TriviaHelper/TriviaHelperLocalization";
 import { InteractionHelper } from "./InteractionHelper";
-import { ModalCreator } from "@alice-utils/creators/ModalCreator";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { TriviaQuestionCachedAnswer } from "@alice-structures/trivia/TriviaQuestionCachedAnswer";
-import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
+import { ModalCreator } from "@utils/creators/ModalCreator";
+import { CacheManager } from "@utils/managers/CacheManager";
+import { TriviaQuestionCachedAnswer } from "@structures/trivia/TriviaQuestionCachedAnswer";
+import { InteractionCollectorCreator } from "@utils/base/InteractionCollectorCreator";
 
 /**
  * Helper methods for trivia-related features.
@@ -47,7 +47,7 @@ export abstract class TriviaHelper {
         interaction: RepliableInteraction,
         category?: TriviaQuestionCategory,
         type?: TriviaQuestionType,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<TriviaQuestionResult> {
         const localization: TriviaHelperLocalization =
             this.getLocalization(language);
@@ -55,16 +55,16 @@ export abstract class TriviaHelper {
         category ??= ArrayHelper.getRandomArrayElement(
             <TriviaQuestionCategory[]>(
                 Object.values(TriviaQuestionCategory).filter(
-                    (v) => typeof v === "number"
+                    (v) => typeof v === "number",
                 )
-            )
+            ),
         );
 
         const file: string = await readFile(
             `${process.cwd()}/files/trivia/${this.getCategoryFileName(
-                category
+                category,
             )}`,
-            { encoding: "utf-8" }
+            { encoding: "utf-8" },
         );
 
         const questionData: string[][] = file
@@ -151,8 +151,8 @@ export abstract class TriviaHelper {
         embed
             .setTitle(
                 `${difficulty} ${Symbols.star} | ${this.getCategoryName(
-                    category
-                )} Question`
+                    category,
+                )} Question`,
             )
             .setDescription(question);
 
@@ -161,11 +161,11 @@ export abstract class TriviaHelper {
             // There can only be one correct answer in a multiple choice question, so this
             // assumption is safe.
             correctAnswers[0] = String.fromCharCode(
-                65 + allAnswers.indexOf(correctAnswers[0])
+                65 + allAnswers.indexOf(correctAnswers[0]),
             );
 
             allAnswers = allAnswers.map(
-                (v, i) => (v = `${String.fromCharCode(65 + i)}. ${v}`)
+                (v, i) => (v = `${String.fromCharCode(65 + i)}. ${v}`),
             );
 
             embed.addFields({ name: "Answers", value: allAnswers.join("\n") });
@@ -180,7 +180,7 @@ export abstract class TriviaHelper {
 
         const options: BaseMessageOptions = {
             content: MessageCreator.createWarn(
-                localization.getTranslation("triviaQuestion")
+                localization.getTranslation("triviaQuestion"),
             ),
             components: [component],
             embeds: [embed],
@@ -196,7 +196,7 @@ export abstract class TriviaHelper {
                     .setLabel(String.fromCharCode(65 + i));
 
                 CacheManager.exemptedButtonCustomIds.add(
-                    triviaMultipleChoicePrefix + String.fromCharCode(65 + i)
+                    triviaMultipleChoicePrefix + String.fromCharCode(65 + i),
                 );
                 component.addComponents(button);
             }
@@ -207,10 +207,10 @@ export abstract class TriviaHelper {
                     .setStyle(ButtonStyle.Primary)
                     .setLabel(
                         localization.getTranslation(
-                            "fillInTheBlankAnswerPrompt"
-                        )
+                            "fillInTheBlankAnswerPrompt",
+                        ),
                     )
-                    .setEmoji(Symbols.memo)
+                    .setEmoji(Symbols.memo),
             );
 
             CacheManager.exemptedButtonCustomIds.add("answerQuestionTrivia");
@@ -218,7 +218,7 @@ export abstract class TriviaHelper {
 
         const questionMessage: Message = await InteractionHelper.reply(
             interaction,
-            options
+            options,
         );
 
         const time: number = isMultipleChoice
@@ -235,8 +235,8 @@ export abstract class TriviaHelper {
                             component.components.some(
                                 (c) =>
                                     (<APIButtonComponentWithCustomId>c.data)
-                                        .custom_id === i.customId
-                            )
+                                        .custom_id === i.customId,
+                            ),
                     );
 
                 // Use a separate collection to prevent multiple answers from users
@@ -249,7 +249,7 @@ export abstract class TriviaHelper {
                     i.reply({
                         content: MessageCreator.createAccept(
                             localization.getTranslation("latestChoiceRecorded"),
-                            i.customId.replace(triviaMultipleChoicePrefix, "")
+                            i.customId.replace(triviaMultipleChoicePrefix, ""),
                         ),
                         ephemeral: true,
                     });
@@ -268,7 +268,7 @@ export abstract class TriviaHelper {
                         type: type!,
                         correctAnswers: [
                             allAnswers.find((v) =>
-                                v.startsWith(correctAnswers[0])
+                                v.startsWith(correctAnswers[0]),
                             )!,
                         ],
                         results: answers
@@ -276,8 +276,8 @@ export abstract class TriviaHelper {
                                 (v) =>
                                     v.customId.replace(
                                         triviaMultipleChoicePrefix,
-                                        ""
-                                    ) === correctAnswers[0]
+                                        "",
+                                    ) === correctAnswers[0],
                             )
                             .map((v) => {
                                 return {
@@ -292,7 +292,7 @@ export abstract class TriviaHelper {
             } else {
                 CacheManager.questionTriviaFillInTheBlankAnswers.set(
                     interaction.channelId!,
-                    new Collection()
+                    new Collection(),
                 );
 
                 const { collector } =
@@ -302,7 +302,7 @@ export abstract class TriviaHelper {
                         (i) =>
                             (<APIButtonComponentWithCustomId>(
                                 component.components[0].data
-                            )).custom_id === i.customId
+                            )).custom_id === i.customId,
                     );
 
                 collector.on("collect", (i) => {
@@ -316,14 +316,14 @@ export abstract class TriviaHelper {
                             .setStyle(TextInputStyle.Short)
                             .setLabel(
                                 localization.getTranslation(
-                                    "fillInTheBlankModalLabel"
-                                )
+                                    "fillInTheBlankModalLabel",
+                                ),
                             )
                             .setPlaceholder(
                                 localization.getTranslation(
-                                    "fillInTheBlankModalPlaceholder"
-                                )
-                            )
+                                    "fillInTheBlankModalPlaceholder",
+                                ),
+                            ),
                     );
                 });
 
@@ -345,8 +345,8 @@ export abstract class TriviaHelper {
                         .get(interaction.channelId!)!
                         .filter((v) =>
                             lowercasedCorrectAnswers.includes(
-                                v.answer.toLowerCase()
-                            )
+                                v.answer.toLowerCase(),
+                            ),
                         );
 
                     resolve({
@@ -364,7 +364,7 @@ export abstract class TriviaHelper {
                     });
 
                     CacheManager.questionTriviaFillInTheBlankAnswers.delete(
-                        interaction.channelId!
+                        interaction.channelId!,
                     );
                 });
             }
@@ -458,7 +458,7 @@ export abstract class TriviaHelper {
     }
 
     private static getCategoryFileName(
-        category: TriviaQuestionCategory
+        category: TriviaQuestionCategory,
     ): string {
         switch (category) {
             case TriviaQuestionCategory.animal:
@@ -532,7 +532,7 @@ export abstract class TriviaHelper {
      * @param language The language to localize.
      */
     private static getLocalization(
-        language: Language
+        language: Language,
     ): TriviaHelperLocalization {
         return new TriviaHelperLocalization(language);
     }

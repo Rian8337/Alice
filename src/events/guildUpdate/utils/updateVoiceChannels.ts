@@ -1,7 +1,7 @@
-import { Constants } from "@alice-core/Constants";
-import { MainServerVoiceChannels as VoiceChannels } from "@alice-enums/utils/MainServerVoiceChannels";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { EventUtil } from "@alice-structures/core/EventUtil";
+import { Constants } from "@core/Constants";
+import { MainServerVoiceChannels as VoiceChannels } from "@enums/utils/MainServerVoiceChannels";
+import { Symbols } from "@enums/utils/Symbols";
+import { EventUtil } from "@structures/core/EventUtil";
 import { Guild, GuildPremiumTier, Snowflake } from "discord.js";
 
 interface VoiceChannelSetting {

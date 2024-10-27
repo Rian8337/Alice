@@ -1,6 +1,6 @@
-import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { MusicQueue } from "@utils/music/MusicQueue";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { HelperFunctions } from "@utils/helpers/HelperFunctions";
 import {
     AudioPlayer,
     AudioPlayerStatus,
@@ -12,8 +12,8 @@ import {
     VoiceConnectionStatus,
 } from "@discordjs/voice";
 import { GuildTextBasedChannel, Snowflake } from "discord.js";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 
 /**
  * Represents a music information for an active voice connection.

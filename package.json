@@ -74,14 +74,14 @@
     "zlib-sync": "^0.1.7"
   },
   "_moduleAliases": {
-    "@alice-core": "dist/core",
-    "@alice-database": "dist/database",
-    "@alice-enums": "dist/enums",
-    "@alice-events": "dist/events",
-    "@alice-interactions": "dist/interactions",
-    "@alice-localization": "dist/localization",
-    "@alice-structures": "dist/structures",
-    "@alice-utils": "dist/utils"
+    "@core": "dist/core",
+    "@database": "dist/database",
+    "@enums": "dist/enums",
+    "@events": "dist/events",
+    "@interactions": "dist/interactions",
+    "@localization": "dist/localization",
+    "@structures": "dist/structures",
+    "@utils": "dist/utils"
   },
   "eslintConfig": {
     "env": {

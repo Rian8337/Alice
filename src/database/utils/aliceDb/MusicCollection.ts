@@ -1,7 +1,7 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
 import { DatabaseMusicCollection } from "structures/database/aliceDb/DatabaseMusicCollection";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 
 /**
  * Represents a music collection.
@@ -17,7 +17,7 @@ export class MusicCollection
 
     constructor(
         data: DatabaseMusicCollection = DatabaseManager.aliceDb?.collections
-            .musicCollection.defaultDocument ?? {}
+            .musicCollection.defaultDocument ?? {},
     ) {
         super();
 
@@ -40,7 +40,7 @@ export class MusicCollection
                     name: this.name,
                     videoIds: this.videoIds,
                 },
-            }
+            },
         );
     }
 }

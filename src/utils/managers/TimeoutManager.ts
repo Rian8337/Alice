@@ -7,20 +7,20 @@ import {
     bold,
     channelMention,
 } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { OperationResult } from "structures/core/OperationResult";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { PunishmentManager } from "./PunishmentManager";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { GuildPunishmentConfig } from "@database/utils/aliceDb/GuildPunishmentConfig";
 import { LoungeLockManager } from "./LoungeLockManager";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { Constants } from "@alice-core/Constants";
-import { Language } from "@alice-localization/base/Language";
-import { TimeoutManagerLocalization } from "@alice-localization/utils/managers/TimeoutManager/TimeoutManagerLocalization";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { PunishmentManagerLocalization } from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { Constants } from "@core/Constants";
+import { Language } from "@localization/base/Language";
+import { TimeoutManagerLocalization } from "@localization/utils/managers/TimeoutManager/TimeoutManagerLocalization";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { PunishmentManagerLocalization } from "@localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
 
 /**
  * A manager for timeouts.

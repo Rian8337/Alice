@@ -1,12 +1,12 @@
-import { AutocompleteHandler } from "@alice-structures/core/AutocompleteHandler";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { AutocompleteHandler } from "@structures/core/AutocompleteHandler";
+import { StringHelper } from "@utils/helpers/StringHelper";
 
 export const run: AutocompleteHandler["run"] = async (client, interaction) => {
     const focusedValue: string = interaction.options.getFocused();
 
     const regExp: RegExp = new RegExp(
         StringHelper.escapeRegexCharacters(focusedValue),
-        "i"
+        "i",
     );
 
     interaction.respond(
@@ -18,7 +18,7 @@ export const run: AutocompleteHandler["run"] = async (client, interaction) => {
                     name: v,
                     value: v,
                 };
-            })
+            }),
     );
 };
 

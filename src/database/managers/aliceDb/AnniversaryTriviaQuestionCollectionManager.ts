@@ -1,6 +1,6 @@
-import { DatabaseAnniversaryTriviaQuestion } from "@alice-structures/database/aliceDb/DatabaseAnniversaryTriviaQuestion";
+import { DatabaseAnniversaryTriviaQuestion } from "@structures/database/aliceDb/DatabaseAnniversaryTriviaQuestion";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { AnniversaryTriviaQuestion } from "@alice-database/utils/aliceDb/AnniversaryTriviaQuestion";
+import { AnniversaryTriviaQuestion } from "@database/utils/aliceDb/AnniversaryTriviaQuestion";
 import { FindOptions } from "mongodb";
 
 /**

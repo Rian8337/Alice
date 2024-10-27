@@ -1,17 +1,17 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { bold } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { MatchLocalization } from "@alice-localization/interactions/commands/Tournament/match/MatchLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { Symbols } from "@enums/utils/Symbols";
+import { MatchLocalization } from "@localization/interactions/commands/Tournament/match/MatchLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { ScoreRank } from "structures/utils/ScoreRank";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.channel?.isSendable()) {

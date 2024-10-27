@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseDanCourseScore } from "@alice-structures/database/aliceDb/DatabaseDanCourseScore";
-import { Manager } from "@alice-utils/base/Manager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DatabaseDanCourseScore } from "@structures/database/aliceDb/DatabaseDanCourseScore";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "mongodb";
 
 /**
@@ -31,7 +31,7 @@ export class DanCourseScore extends Manager implements DatabaseDanCourseScore {
 
     constructor(
         data: DatabaseDanCourseScore = DatabaseManager.aliceDb?.collections
-            .danCourseScores.defaultDocument ?? {}
+            .danCourseScores.defaultDocument ?? {},
     ) {
         super();
 

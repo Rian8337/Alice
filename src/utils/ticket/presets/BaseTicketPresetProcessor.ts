@@ -1,5 +1,5 @@
-import { DatabaseSupportTicketPreset } from "@alice-structures/database/aliceDb/DatabaseSupportTicketPreset";
-import { Manager } from "@alice-utils/base/Manager";
+import { DatabaseSupportTicketPreset } from "@structures/database/aliceDb/DatabaseSupportTicketPreset";
+import { Manager } from "@utils/base/Manager";
 import { RepliableInteraction } from "discord.js";
 
 /**

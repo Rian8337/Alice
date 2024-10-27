@@ -1,12 +1,12 @@
-import { Config } from "@alice-core/Config";
-import { Constants } from "@alice-core/Constants";
-import { ReportMessageLocalization } from "@alice-localization/interactions/contextmenus/message/reportMessage/ReportMessageLocalization";
-import { MessageContextMenuCommand } from "@alice-structures/core/MessageContextMenuCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Config } from "@core/Config";
+import { Constants } from "@core/Constants";
+import { ReportMessageLocalization } from "@localization/interactions/contextmenus/message/reportMessage/ReportMessageLocalization";
+import { MessageContextMenuCommand } from "@structures/core/MessageContextMenuCommand";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import {
     PermissionsBitField,
     TextChannel,

@@ -1,15 +1,15 @@
-import { Constants } from "@alice-core/Constants";
+import { Constants } from "@core/Constants";
 import { MessageContextMenuCommand } from "structures/core/MessageContextMenuCommand";
 import { OperationResult } from "structures/core/OperationResult";
-import { TimeoutMessageAuthorLocalization } from "@alice-localization/interactions/contextmenus/message/timeoutMessageAuthor/TimeoutMessageAuthorLocalization";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
+import { TimeoutMessageAuthorLocalization } from "@localization/interactions/contextmenus/message/timeoutMessageAuthor/TimeoutMessageAuthorLocalization";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { TimeoutManager } from "@utils/managers/TimeoutManager";
 import {
     Embed,
     Guild,

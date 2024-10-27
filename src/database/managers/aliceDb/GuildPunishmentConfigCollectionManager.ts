@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { GuildPunishmentConfig } from "@database/utils/aliceDb/GuildPunishmentConfig";
 import { DatabaseGuildPunishmentConfig } from "structures/database/aliceDb/DatabaseGuildPunishmentConfig";
 import { OperationResult } from "structures/core/OperationResult";
 import { Guild, Snowflake } from "discord.js";
@@ -12,7 +12,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
     GuildPunishmentConfig
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseGuildPunishmentConfig
+        data: DatabaseGuildPunishmentConfig,
     ) => GuildPunishmentConfig = GuildPunishmentConfig;
 
     override get defaultDocument(): DatabaseGuildPunishmentConfig {
@@ -47,7 +47,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
      * @returns The guild's punishment configuration. `null` if the configuration is not found.
      */
     getGuildConfig(
-        guildOrGuildId: Snowflake | Guild
+        guildOrGuildId: Snowflake | Guild,
     ): Promise<GuildPunishmentConfig | null> {
         return this.getOne({
             guildID:
@@ -66,7 +66,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
      */
     setGuildLogChannel(
         guildId: Snowflake,
-        channelId: Snowflake
+        channelId: Snowflake,
     ): Promise<OperationResult> {
         return this.updateOne(
             { guildID: guildId },
@@ -79,7 +79,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
                     immuneTimeoutRoles: [],
                 },
             },
-            { upsert: true }
+            { upsert: true },
         );
     }
 
@@ -96,7 +96,7 @@ export class GuildPunishmentConfigCollectionManager extends DatabaseCollectionMa
                 $unset: {
                     logChannel: "",
                 },
-            }
+            },
         );
     }
 }

@@ -1,13 +1,13 @@
-import { Config } from "@alice-core/Config";
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MoveSupportTicketLocalization } from "@alice-localization/interactions/buttons/Support Ticket/moveSupportTicket/MoveSupportTicketLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Config } from "@core/Config";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { MoveSupportTicketLocalization } from "@localization/interactions/buttons/Support Ticket/moveSupportTicket/MoveSupportTicketLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import {
     ChannelType,
     ForumChannel,

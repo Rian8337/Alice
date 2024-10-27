@@ -1,7 +1,7 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseUserLocale } from "structures/database/aliceDb/DatabaseUserLocale";
-import { Language } from "@alice-localization/base/Language";
-import { Manager } from "@alice-utils/base/Manager";
+import { Language } from "@localization/base/Language";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "mongodb";
 
 /**
@@ -14,7 +14,7 @@ export class UserLocale extends Manager implements DatabaseUserLocale {
 
     constructor(
         data: DatabaseUserLocale = DatabaseManager.aliceDb?.collections
-            .userLocale.defaultDocument ?? {}
+            .userLocale.defaultDocument ?? {},
     ) {
         super();
 

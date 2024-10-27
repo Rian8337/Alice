@@ -1,17 +1,17 @@
-import { Config } from "@alice-core/Config";
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { SupportTicketStatus } from "@alice-enums/ticket/SupportTicketStatus";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { Language } from "@alice-localization/base/Language";
-import { SupportTicketLocalization } from "@alice-localization/database/utils/aliceDb/SupportTicket/SupportTicketLocalization";
-import { OperationResult } from "@alice-structures/core/OperationResult";
-import { DatabaseSupportTicket } from "@alice-structures/database/aliceDb/DatabaseSupportTicket";
-import { Manager } from "@alice-utils/base/Manager";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { Config } from "@core/Config";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { SupportTicketStatus } from "@enums/ticket/SupportTicketStatus";
+import { Symbols } from "@enums/utils/Symbols";
+import { Language } from "@localization/base/Language";
+import { SupportTicketLocalization } from "@localization/database/utils/aliceDb/SupportTicket/SupportTicketLocalization";
+import { OperationResult } from "@structures/core/OperationResult";
+import { DatabaseSupportTicket } from "@structures/database/aliceDb/DatabaseSupportTicket";
+import { Manager } from "@utils/base/Manager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import {
     ActionRowBuilder,
     AnyThreadChannel,

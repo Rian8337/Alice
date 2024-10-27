@@ -1,13 +1,13 @@
 import { User } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { Language } from "@alice-localization/base/Language";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
+import { CoinsLocalization } from "@localization/interactions/commands/Fun/coins/CoinsLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { Language } from "@localization/base/Language";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const language: Language = CommandHelper.getLocale(interaction);

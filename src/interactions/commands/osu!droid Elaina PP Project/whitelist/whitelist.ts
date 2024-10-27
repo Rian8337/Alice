@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandOrGroup(

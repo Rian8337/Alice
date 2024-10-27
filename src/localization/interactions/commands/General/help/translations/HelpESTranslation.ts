@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { userMention } from "discord.js";
 import { HelpStrings } from "../HelpLocalization";
 
@@ -10,7 +10,7 @@ export class HelpESTranslation extends Translation<HelpStrings> {
         noCommandFound: "Lo siento, no puedo encontrar el comando!",
         aliceHelp: "Ayuda de Alice Synthesis Thirty ",
         creator: `Creado por ${userMention(
-            "132783516176875520"
+            "132783516176875520",
         )} y ${userMention("386742340968120321")}.`,
         useHelpCommand:
             "Para información detallada sobre un comando, use `/help [nombre del comando]`.",

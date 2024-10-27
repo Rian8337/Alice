@@ -1,15 +1,15 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ChannelActivity } from "@alice-database/utils/aliceDb/ChannelActivity";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { ChannelActivity } from "@database/utils/aliceDb/ChannelActivity";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageanalyticsLocalization } from "@alice-localization/interactions/commands/Tools/messageanalytics/MessageanalyticsLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageAnalyticsHelper } from "@alice-utils/helpers/MessageAnalyticsHelper";
+import { MessageanalyticsLocalization } from "@localization/interactions/commands/Tools/messageanalytics/MessageanalyticsLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { MessageAnalyticsHelper } from "@utils/helpers/MessageAnalyticsHelper";
 import { Collection, Guild, GuildTextBasedChannel } from "discord.js";
 import { consola } from "consola";
-import { ChannelActivityData } from "@alice-structures/utils/ChannelActivityData";
+import { ChannelActivityData } from "@structures/utils/ChannelActivityData";
 
 export const run: SlashSubcommand<true>["run"] = async (
     client,

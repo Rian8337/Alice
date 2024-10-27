@@ -1,29 +1,29 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import {
     ApplicationCommandOptionType,
     InteractionReplyOptions,
 } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { GuildMember } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { CompareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/compare/CompareLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
+import { CompareLocalization } from "@localization/interactions/commands/osu! and osu!droid/compare/CompareLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 import { Modes } from "@rian8337/osu-base";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { ReplayHelper } from "@utils/helpers/ReplayHelper";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new CompareLocalization(

@@ -1,4 +1,4 @@
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import {
     AudioPlayerStatus,
     DiscordGatewayAdapterCreator,
@@ -14,10 +14,10 @@ import {
     VoiceChannel,
 } from "discord.js";
 import { OperationResult } from "structures/core/OperationResult";
-import { MusicInfo } from "@alice-utils/music/MusicInfo";
-import { MusicQueue } from "@alice-utils/music/MusicQueue";
-import { Language } from "@alice-localization/base/Language";
-import { MusicManagerLocalization } from "@alice-localization/utils/managers/MusicManager/MusicManagerLocalization";
+import { MusicInfo } from "@utils/music/MusicInfo";
+import { MusicQueue } from "@utils/music/MusicQueue";
+import { Language } from "@localization/base/Language";
+import { MusicManagerLocalization } from "@localization/utils/managers/MusicManager/MusicManagerLocalization";
 
 /**
  * A manager for playing music in voice channels.
@@ -43,7 +43,7 @@ export abstract class MusicManager extends Manager {
         executionChannel: GuildTextBasedChannel,
         queue: MusicQueue,
         language: Language = "en",
-        index?: number
+        index?: number,
     ): Promise<OperationResult> {
         const localization: MusicManagerLocalization =
             this.getLocalization(language);
@@ -61,7 +61,7 @@ export abstract class MusicManager extends Manager {
                     ),
                 }),
                 channel.id,
-                executionChannel
+                executionChannel,
             );
 
             this.musicInformations.set(channel.guildId, musicInformation);
@@ -71,25 +71,25 @@ export abstract class MusicManager extends Manager {
             await entersState(
                 musicInformation.connection,
                 VoiceConnectionStatus.Ready,
-                2e4
+                2e4,
             );
         } catch (error) {
             this.client.emit("error", <Error>error);
 
             return this.createOperationResult(
                 false,
-                localization.getTranslation("failedToJoinVc")
+                localization.getTranslation("failedToJoinVc"),
             );
         }
 
         if (
             musicInformation.queue.find(
-                (q) => q.information.videoId === queue.information.videoId
+                (q) => q.information.videoId === queue.information.videoId,
             )
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("videoAlreadyQueued")
+                localization.getTranslation("videoAlreadyQueued"),
             );
         }
 
@@ -97,7 +97,7 @@ export abstract class MusicManager extends Manager {
         if (musicInformation.queue.length >= 10) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("queueLimitReached")
+                localization.getTranslation("queueLimitReached"),
             );
         }
 
@@ -116,7 +116,7 @@ export abstract class MusicManager extends Manager {
     static dequeue(
         channel: VoiceChannel | StageChannel,
         index: number,
-        language: Language = "en"
+        language: Language = "en",
     ): OperationResult {
         const localization: MusicManagerLocalization =
             this.getLocalization(language);
@@ -127,14 +127,14 @@ export abstract class MusicManager extends Manager {
         if (!musicInformation) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInVc")
+                localization.getTranslation("botNotInVc"),
             );
         }
 
         if (musicInformation.voiceChannelId !== channel.id) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInUserVc")
+                localization.getTranslation("botNotInUserVc"),
             );
         }
 
@@ -152,7 +152,7 @@ export abstract class MusicManager extends Manager {
      */
     static leave(
         channel: VoiceChannel | StageChannel,
-        language: Language = "en"
+        language: Language = "en",
     ): OperationResult {
         const localization: MusicManagerLocalization =
             this.getLocalization(language);
@@ -163,14 +163,14 @@ export abstract class MusicManager extends Manager {
         if (!musicInformation) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInVc")
+                localization.getTranslation("botNotInVc"),
             );
         }
 
         if (musicInformation.voiceChannelId !== channel.id) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInUserVc")
+                localization.getTranslation("botNotInUserVc"),
             );
         }
 
@@ -195,7 +195,7 @@ export abstract class MusicManager extends Manager {
      */
     static pause(
         channel: VoiceChannel | StageChannel,
-        language: Language = "en"
+        language: Language = "en",
     ): OperationResult {
         const localization: MusicManagerLocalization =
             this.getLocalization(language);
@@ -206,7 +206,7 @@ export abstract class MusicManager extends Manager {
         if (!musicInformation) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInVc")
+                localization.getTranslation("botNotInVc"),
             );
         }
 
@@ -215,14 +215,14 @@ export abstract class MusicManager extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("noMusicPlaying")
+                localization.getTranslation("noMusicPlaying"),
             );
         }
 
         if (musicInformation.voiceChannelId !== channel.id) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInUserVc")
+                localization.getTranslation("botNotInUserVc"),
             );
         }
 
@@ -240,7 +240,7 @@ export abstract class MusicManager extends Manager {
      */
     static resume(
         channel: VoiceChannel | StageChannel,
-        language: Language = "en"
+        language: Language = "en",
     ): OperationResult {
         const localization: MusicManagerLocalization =
             this.getLocalization(language);
@@ -251,21 +251,21 @@ export abstract class MusicManager extends Manager {
         if (!musicInformation) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInVc")
+                localization.getTranslation("botNotInVc"),
             );
         }
 
         if (musicInformation.voiceChannelId !== channel.id) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInUserVc")
+                localization.getTranslation("botNotInUserVc"),
             );
         }
 
         if (musicInformation.player.state.status !== AudioPlayerStatus.Paused) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("playbackNotPaused")
+                localization.getTranslation("playbackNotPaused"),
             );
         }
 
@@ -283,7 +283,7 @@ export abstract class MusicManager extends Manager {
      */
     static async skip(
         channel: VoiceChannel | StageChannel,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         const localization: MusicManagerLocalization =
             this.getLocalization(language);
@@ -294,14 +294,14 @@ export abstract class MusicManager extends Manager {
         if (!musicInformation) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInVc")
+                localization.getTranslation("botNotInVc"),
             );
         }
 
         if (musicInformation.voiceChannelId !== channel.id) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInUserVc")
+                localization.getTranslation("botNotInUserVc"),
             );
         }
 
@@ -310,7 +310,7 @@ export abstract class MusicManager extends Manager {
         ) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("noMusicPlaying")
+                localization.getTranslation("noMusicPlaying"),
             );
         }
 
@@ -333,7 +333,7 @@ export abstract class MusicManager extends Manager {
     static setRepeat(
         channel: VoiceChannel | StageChannel,
         repeat: boolean,
-        language: Language = "en"
+        language: Language = "en",
     ): OperationResult {
         const localization: MusicManagerLocalization =
             this.getLocalization(language);
@@ -344,14 +344,14 @@ export abstract class MusicManager extends Manager {
         if (!musicInformation) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInVc")
+                localization.getTranslation("botNotInVc"),
             );
         }
 
         if (musicInformation.voiceChannelId !== channel.id) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInUserVc")
+                localization.getTranslation("botNotInUserVc"),
             );
         }
 
@@ -368,7 +368,7 @@ export abstract class MusicManager extends Manager {
      */
     static shuffle(
         channel: VoiceChannel | StageChannel,
-        language: Language = "en"
+        language: Language = "en",
     ): OperationResult {
         const localization: MusicManagerLocalization =
             this.getLocalization(language);
@@ -379,14 +379,14 @@ export abstract class MusicManager extends Manager {
         if (!musicInformation) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInVc")
+                localization.getTranslation("botNotInVc"),
             );
         }
 
         if (musicInformation.voiceChannelId !== channel.id) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("botNotInUserVc")
+                localization.getTranslation("botNotInUserVc"),
             );
         }
 
@@ -401,7 +401,7 @@ export abstract class MusicManager extends Manager {
      * @param language The language to localize.
      */
     private static getLocalization(
-        language: Language
+        language: Language,
     ): MusicManagerLocalization {
         return new MusicManagerLocalization(language);
     }

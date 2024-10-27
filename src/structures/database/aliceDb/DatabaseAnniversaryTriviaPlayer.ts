@@ -1,6 +1,6 @@
-import { AnniversaryTriviaCurrentAttemptQuestion } from "@alice-structures/utils/AnniversaryTriviaCurrentAttemptQuestion";
+import { AnniversaryTriviaCurrentAttemptQuestion } from "@structures/utils/AnniversaryTriviaCurrentAttemptQuestion";
 import { BaseDocument } from "../BaseDocument";
-import { AnniversaryTriviaAttempt } from "@alice-structures/utils/AnniversaryTriviaAttempt";
+import { AnniversaryTriviaAttempt } from "@structures/utils/AnniversaryTriviaAttempt";
 
 /**
  * Represents a player in the anniversary trivia game.

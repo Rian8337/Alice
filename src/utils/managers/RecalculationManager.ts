@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Language } from "@alice-localization/base/Language";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Language } from "@localization/base/Language";
 import {
     RecalculationManagerLocalization,
     RecalculationManagerStrings,
-} from "@alice-localization/utils/managers/RecalculationManager/RecalculationManagerLocalization";
-import { RecalculationQueue } from "@alice-structures/dpp/PrototypeRecalculationQueue";
-import { Manager } from "@alice-utils/base/Manager";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+} from "@localization/utils/managers/RecalculationManager/RecalculationManagerLocalization";
+import { RecalculationQueue } from "@structures/dpp/PrototypeRecalculationQueue";
+import { Manager } from "@utils/base/Manager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import {
     Collection,
     Snowflake,

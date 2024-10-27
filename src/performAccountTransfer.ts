@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { officialPool } from "@alice-database/official/OfficialDatabasePool";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { officialPool } from "@database/official/OfficialDatabasePool";
 import {
     constructOfficialDatabaseTable,
     OfficialDatabaseTables,
-} from "@alice-database/official/OfficialDatabaseTables";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+} from "@database/official/OfficialDatabaseTables";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 import { RowDataPacket } from "mysql2";
 
 Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {

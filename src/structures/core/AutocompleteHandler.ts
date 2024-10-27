@@ -1,4 +1,4 @@
-import { Bot } from "@alice-core/Bot";
+import { Bot } from "@core/Bot";
 import { AutocompleteInteraction } from "discord.js";
 
 /**

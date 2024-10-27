@@ -1,21 +1,21 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { MessageContextMenuCommand } from "structures/core/MessageContextMenuCommand";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { CompareScoreLocalization } from "@alice-localization/interactions/contextmenus/message/compareScore/CompareScoreLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { CompareScoreLocalization } from "@localization/interactions/contextmenus/message/compareScore/CompareScoreLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { Modes } from "@rian8337/osu-base";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { GuildMember, InteractionReplyOptions } from "discord.js";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { ReplayHelper } from "@alice-utils/helpers/ReplayHelper";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { ReplayHelper } from "@utils/helpers/ReplayHelper";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     const localization = new CompareScoreLocalization(

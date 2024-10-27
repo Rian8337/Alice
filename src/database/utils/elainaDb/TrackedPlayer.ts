@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseTrackedPlayer } from "structures/database/elainaDb/DatabaseTrackedPlayer";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 
 /**
@@ -12,7 +12,7 @@ export class TrackedPlayer extends Manager implements DatabaseTrackedPlayer {
 
     constructor(
         data: DatabaseTrackedPlayer = DatabaseManager.elainaDb?.collections
-            .playerTracking.defaultDocument ?? {}
+            .playerTracking.defaultDocument ?? {},
     ) {
         super();
 

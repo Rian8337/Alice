@@ -1,8 +1,8 @@
 import { Message, EmbedBuilder, hyperlink } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
-import { Constants } from "@alice-core/Constants";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { Constants } from "@core/Constants";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { StringHelper } from "@utils/helpers/StringHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (

@@ -1,5 +1,5 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { MapShare } from "@alice-database/utils/aliceDb/MapShare";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { MapShare } from "@database/utils/aliceDb/MapShare";
 import { DatabaseMapShare } from "structures/database/aliceDb/DatabaseMapShare";
 import { MapShareSubmissionStatus } from "structures/utils/MapShareSubmissionStatus";
 import { Collection as DiscordCollection } from "discord.js";
@@ -12,7 +12,7 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<
     MapShare
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseMapShare
+        data: DatabaseMapShare,
     ) => MapShare = MapShare;
 
     override get defaultDocument(): DatabaseMapShare {
@@ -34,7 +34,7 @@ export class MapShareCollectionManager extends DatabaseCollectionManager<
      * @returns The map share submissions, mapped by beatmap ID.
      */
     getByStatus(
-        status: MapShareSubmissionStatus
+        status: MapShareSubmissionStatus,
     ): Promise<DiscordCollection<number, MapShare>> {
         return this.get("beatmap_id", { status: status });
     }

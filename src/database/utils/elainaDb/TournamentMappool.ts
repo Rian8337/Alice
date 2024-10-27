@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseTournamentMappool } from "structures/database/elainaDb/DatabaseTournamentMappool";
 import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
-import { TournamentScore } from "@alice-structures/tournament/TournamentScore";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { ScoreHelper } from "@alice-utils/helpers/ScoreHelper";
+import { TournamentScore } from "@structures/tournament/TournamentScore";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { ScoreHelper } from "@utils/helpers/ScoreHelper";
 import { Mod } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { ObjectId } from "bson";
@@ -31,7 +31,7 @@ export class TournamentMappool extends Manager {
 
     constructor(
         data: DatabaseTournamentMappool = DatabaseManager.elainaDb?.collections
-            .tournamentMappool.defaultDocument ?? {}
+            .tournamentMappool.defaultDocument ?? {},
     ) {
         super();
 
@@ -55,10 +55,10 @@ export class TournamentMappool extends Manager {
         score: number,
         accuracy: number,
         misses: number,
-        mods: Mod[]
+        mods: Mod[],
     ): number {
         const pickData: TournamentBeatmap | undefined = this.maps.get(
-            pick.toUpperCase()
+            pick.toUpperCase(),
         );
 
         if (!pickData) {
@@ -71,7 +71,7 @@ export class TournamentMappool extends Manager {
             misses,
             pickData.maxScore,
             mods,
-            pickData.scorePortion
+            pickData.scorePortion,
         );
     }
 
@@ -88,10 +88,10 @@ export class TournamentMappool extends Manager {
         pick: string,
         score: number,
         misses: number,
-        mods: Mod[]
+        mods: Mod[],
     ): number {
         const pickData: TournamentBeatmap | undefined = this.maps.get(
-            pick.toUpperCase()
+            pick.toUpperCase(),
         );
 
         if (!pickData) {
@@ -103,7 +103,7 @@ export class TournamentMappool extends Manager {
             misses,
             pickData.maxScore,
             mods,
-            pickData.scorePortion
+            pickData.scorePortion,
         );
     }
 
@@ -120,10 +120,10 @@ export class TournamentMappool extends Manager {
         pick: string,
         accuracy: number,
         misses: number,
-        mods: Mod[]
+        mods: Mod[],
     ): number {
         const pickData: TournamentBeatmap | undefined = this.maps.get(
-            pick.toUpperCase()
+            pick.toUpperCase(),
         );
 
         if (!pickData) {
@@ -134,7 +134,7 @@ export class TournamentMappool extends Manager {
             accuracy,
             misses,
             mods,
-            1 - pickData.scorePortion
+            1 - pickData.scorePortion,
         );
     }
 
@@ -166,7 +166,7 @@ export class TournamentMappool extends Manager {
      */
     async getBeatmapLeaderboard(pick: string): Promise<TournamentScore[]> {
         const pickData: TournamentBeatmap | undefined = this.maps.get(
-            pick.toUpperCase()
+            pick.toUpperCase(),
         );
 
         if (!pickData) {
@@ -180,7 +180,7 @@ export class TournamentMappool extends Manager {
         while (
             (retrievedScores = await ScoreHelper.fetchDroidLeaderboard(
                 pickData.hash,
-                page++
+                page++,
             )).length > 0
         ) {
             scores.push(
@@ -191,11 +191,11 @@ export class TournamentMappool extends Manager {
                             v.score,
                             v.accuracy.value(),
                             v.accuracy.nmiss,
-                            v.mods
+                            v.mods,
                         ),
                         score: v,
                     };
-                })
+                }),
             );
         }
 

@@ -1,21 +1,21 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { Symbols } from "@alice-enums/utils/Symbols";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { Symbols } from "@enums/utils/Symbols";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { bold, GuildMember } from "discord.js";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { PPLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
-import { PPSubmissionStatus } from "@alice-structures/dpp/PPSubmissionStatus";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { PPLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
+import { PPSubmissionStatus } from "@structures/dpp/PPSubmissionStatus";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 import { Accuracy } from "@rian8337/osu-base";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
@@ -177,7 +177,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     )} | ${bold(
                         status?.success
                             ? "Success"
-                            : status?.reason ?? "Unknown",
+                            : (status?.reason ?? "Unknown"),
                     )}`,
                 };
             }),

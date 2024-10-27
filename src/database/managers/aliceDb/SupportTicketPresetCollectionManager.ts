@@ -1,6 +1,6 @@
-import { DatabaseSupportTicketPreset } from "@alice-structures/database/aliceDb/DatabaseSupportTicketPreset";
+import { DatabaseSupportTicketPreset } from "@structures/database/aliceDb/DatabaseSupportTicketPreset";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { SupportTicketPreset } from "@alice-database/utils/aliceDb/SupportTicketPreset";
+import { SupportTicketPreset } from "@database/utils/aliceDb/SupportTicketPreset";
 import { ApplicationCommandOptionChoiceData } from "discord.js";
 
 export class SupportTicketPresetCollectionManager extends DatabaseCollectionManager<

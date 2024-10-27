@@ -1,4 +1,4 @@
-import { PartialProfileBackground } from "@alice-structures/profile/PartialProfileBackground";
+import { PartialProfileBackground } from "@structures/profile/PartialProfileBackground";
 import { BaseDocument } from "../BaseDocument";
 
 /**

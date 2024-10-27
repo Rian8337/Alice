@@ -1,7 +1,7 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MapshareLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
-import { ModalCreator } from "@alice-utils/creators/ModalCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MapshareLocalization } from "@localization/interactions/commands/osu! and osu!droid/mapshare/MapshareLocalization";
+import { ModalCreator } from "@utils/creators/ModalCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { TextInputBuilder, TextInputStyle } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

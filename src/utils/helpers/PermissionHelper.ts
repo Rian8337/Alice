@@ -1,9 +1,9 @@
 import { Collection, Guild, GuildMember, Role, Snowflake } from "discord.js";
 import { GuildMemberPermissionComparison } from "structures/utils/GuildMemberPermissionComparison";
 import { Permission } from "structures/core/Permission";
-import { Constants } from "@alice-core/Constants";
-import { Bot } from "@alice-core/Bot";
-import { Config } from "@alice-core/Config";
+import { Constants } from "@core/Constants";
+import { Bot } from "@core/Bot";
+import { Config } from "@core/Config";
 
 /**
  * Helper utilities to work with Discord permissions.
@@ -19,10 +19,10 @@ export abstract class PermissionHelper {
      */
     static comparePosition(
         member: GuildMember,
-        toCompare: GuildMember
+        toCompare: GuildMember,
     ): GuildMemberPermissionComparison {
         const position: number = member.roles.highest.comparePositionTo(
-            toCompare.roles.highest
+            toCompare.roles.highest,
         );
 
         if (position < 0) {
@@ -55,12 +55,12 @@ export abstract class PermissionHelper {
                     break;
                 case "UseVAD":
                     permissionsString.push(
-                        "Use VAD (Voice Activity Detection)"
+                        "Use VAD (Voice Activity Detection)",
                     );
                     break;
                 default:
                     permissionsString.push(
-                        permission.split(/(?=[A-Z])/g).join(" ")
+                        permission.split(/(?=[A-Z])/g).join(" "),
                     );
             }
         });
@@ -74,7 +74,7 @@ export abstract class PermissionHelper {
      * @param client The instance of the bot.
      */
     static async getMainGuildStaffMembers(
-        client: Bot
+        client: Bot,
     ): Promise<Collection<Snowflake, GuildMember>> {
         const guild: Guild = await client.guilds.fetch(Constants.mainServer);
 

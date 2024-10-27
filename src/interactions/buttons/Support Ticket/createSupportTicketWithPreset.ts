@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { CreateSupportTicketWithPresetLocalization } from "@alice-localization/interactions/buttons/Support Ticket/createSupportTicketWithPreset/CreateSupportTicketWithPresetLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { CreateSupportTicketWithPresetLocalization } from "@localization/interactions/buttons/Support Ticket/createSupportTicketWithPreset/CreateSupportTicketWithPresetLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const dbManager = DatabaseManager.aliceDb.collections.supportTicketPreset;

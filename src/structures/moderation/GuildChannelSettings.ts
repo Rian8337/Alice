@@ -1,4 +1,4 @@
-import { Language } from "@alice-localization/base/Language";
+import { Language } from "@localization/base/Language";
 import { Snowflake } from "discord.js";
 import { DisabledCommand } from "./DisabledCommand";
 import { DisabledEventUtil } from "./DisabledEventUtil";

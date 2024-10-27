@@ -1,6 +1,6 @@
-import { Config } from "@alice-core/Config";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
-import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
+import { Config } from "@core/Config";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
+import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
 import { ReplayAnalyzer } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { readFile } from "fs/promises";

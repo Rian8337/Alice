@@ -1,9 +1,9 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UnassignSupportTicketLocalization } from "@alice-localization/interactions/buttons/Support Ticket/unassignSupportTicket/UnassignSupportTicketLocalization";
-import { ButtonCommand } from "@alice-structures/core/ButtonCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UnassignSupportTicketLocalization } from "@localization/interactions/buttons/Support Ticket/unassignSupportTicket/UnassignSupportTicketLocalization";
+import { ButtonCommand } from "@structures/core/ButtonCommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: ButtonCommand["run"] = async (_, interaction) => {
     const language = CommandHelper.getLocale(interaction);

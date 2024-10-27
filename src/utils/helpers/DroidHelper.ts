@@ -1,12 +1,12 @@
-import { Config } from "@alice-core/Config";
-import { officialPool } from "@alice-database/official/OfficialDatabasePool";
+import { Config } from "@core/Config";
+import { officialPool } from "@database/official/OfficialDatabasePool";
 import {
     constructOfficialDatabaseTable,
     OfficialDatabaseTables,
-} from "@alice-database/official/OfficialDatabaseTables";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
-import { OfficialDatabaseScoreMods } from "@alice-structures/utils/OfficialDatabaseScoreMods";
+} from "@database/official/OfficialDatabaseTables";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { OfficialDatabaseScoreMods } from "@structures/utils/OfficialDatabaseScoreMods";
 import { DroidAPIRequestBuilder, ModUtil } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { RowDataPacket } from "mysql2";

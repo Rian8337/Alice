@@ -3,7 +3,7 @@ import {
     If,
     StringSelectMenuInteraction,
 } from "discord.js";
-import { Bot } from "@alice-core/Bot";
+import { Bot } from "@core/Bot";
 import { Permission } from "structures/core/Permission";
 
 /**

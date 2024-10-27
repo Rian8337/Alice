@@ -1,4 +1,4 @@
-import { Bot } from "@alice-core/Bot";
+import { Bot } from "@core/Bot";
 import { OperationResult } from "structures/core/OperationResult";
 
 /**

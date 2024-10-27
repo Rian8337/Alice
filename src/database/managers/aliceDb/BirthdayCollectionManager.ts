@@ -1,11 +1,11 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { Birthday } from "@alice-database/utils/aliceDb/Birthday";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { Birthday } from "@database/utils/aliceDb/Birthday";
 import { DatabaseBirthday } from "structures/database/aliceDb/DatabaseBirthday";
 import { OperationResult } from "structures/core/OperationResult";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { Snowflake } from "discord.js";
-import { BirthdayCollectionManagerLocalization } from "@alice-localization/database/managers/aliceDb/BirthdayCollectionManager/BirthdayCollectionManagerLocalization";
-import { Language } from "@alice-localization/base/Language";
+import { BirthdayCollectionManagerLocalization } from "@localization/database/managers/aliceDb/BirthdayCollectionManager/BirthdayCollectionManagerLocalization";
+import { Language } from "@localization/base/Language";
 
 /**
  * A manager for the `birthday` collection.
@@ -15,7 +15,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
     Birthday
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseBirthday
+        data: DatabaseBirthday,
     ) => Birthday = Birthday;
 
     override get defaultDocument(): DatabaseBirthday {
@@ -55,7 +55,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
         month: number,
         timezone: number,
         language: Language = "en",
-        force?: boolean
+        force?: boolean,
     ): Promise<OperationResult> {
         const localization: BirthdayCollectionManagerLocalization =
             this.getLocalization(language);
@@ -63,7 +63,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
         if ((await this.hasSet(userId)) && !force) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("birthdayIsSet")
+                localization.getTranslation("birthdayIsSet"),
             );
         }
 
@@ -83,21 +83,21 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
         if (!NumberHelper.isNumberInRange(date, 1, maxDate, true)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("invalidDate")
+                localization.getTranslation("invalidDate"),
             );
         }
 
         if (!NumberHelper.isNumberInRange(month, 0, 11, true)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("invalidMonth")
+                localization.getTranslation("invalidMonth"),
             );
         }
 
         if (!NumberHelper.isNumberInRange(timezone, -12, 14, true)) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("invalidTimezone")
+                localization.getTranslation("invalidTimezone"),
             );
         }
 
@@ -118,7 +118,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
                     isLeapYear: isLeapYear,
                 },
             },
-            { upsert: true }
+            { upsert: true },
         );
 
         return this.createOperationResult(true);
@@ -140,7 +140,7 @@ export class BirthdayCollectionManager extends DatabaseCollectionManager<
      * @param language The language to localize.
      */
     private getLocalization(
-        language: Language
+        language: Language,
     ): BirthdayCollectionManagerLocalization {
         return new BirthdayCollectionManagerLocalization(language);
     }

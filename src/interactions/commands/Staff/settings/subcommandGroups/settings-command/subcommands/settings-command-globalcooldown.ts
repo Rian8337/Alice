@@ -1,9 +1,9 @@
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { SettingsLocalization } from "@alice-localization/interactions/commands/Staff/settings/SettingsLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { SettingsLocalization } from "@localization/interactions/commands/Staff/settings/SettingsLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     CommandUtilManager.globalCommandCooldown = interaction.options.getNumber(

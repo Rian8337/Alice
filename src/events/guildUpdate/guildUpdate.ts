@@ -1,4 +1,4 @@
-import { EventHelper } from "@alice-utils/helpers/EventHelper";
+import { EventHelper } from "@utils/helpers/EventHelper";
 import { Guild } from "discord.js";
 import { Event } from "structures/core/Event";
 

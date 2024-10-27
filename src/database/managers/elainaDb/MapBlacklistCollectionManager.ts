@@ -1,4 +1,4 @@
-import { MapBlacklist } from "@alice-database/utils/elainaDb/MapBlacklist";
+import { MapBlacklist } from "@database/utils/elainaDb/MapBlacklist";
 import { DatabaseMapBlacklist } from "structures/database/elainaDb/DatabaseMapBlacklist";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
@@ -10,7 +10,7 @@ export class MapBlacklistCollectionManager extends DatabaseCollectionManager<
     MapBlacklist
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseMapBlacklist
+        data: DatabaseMapBlacklist,
     ) => MapBlacklist = MapBlacklist;
 
     override get defaultDocument(): DatabaseMapBlacklist {

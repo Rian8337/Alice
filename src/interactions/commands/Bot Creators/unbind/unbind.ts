@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { ApplicationCommandOptionType } from "discord.js";
-import { Constants } from "@alice-core/Constants";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { UnbindLocalization } from "@alice-localization/interactions/commands/Bot Creators/unbind/UnbindLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Constants } from "@core/Constants";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { UnbindLocalization } from "@localization/interactions/commands/Bot Creators/unbind/UnbindLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new UnbindLocalization(

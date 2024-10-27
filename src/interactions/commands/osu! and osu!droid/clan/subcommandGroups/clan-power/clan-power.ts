@@ -1,10 +1,10 @@
-import { Constants } from "@alice-core/Constants";
+import { Constants } from "@core/Constants";
 import { SlashSubcommandGroup } from "structures/core/SlashSubcommandGroup";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { PermissionHelper } from "@utils/helpers/PermissionHelper";
 import { Collection, GuildMember, Snowflake } from "discord.js";
 
 export const run: SlashSubcommandGroup["run"] = async (client, interaction) => {

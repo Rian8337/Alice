@@ -1,8 +1,8 @@
-import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
+import { ProfileBadge } from "@database/utils/aliceDb/ProfileBadge";
 import { DatabaseProfileBadge } from "structures/database/aliceDb/DatabaseProfileBadge";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Collection as DiscordCollection } from "discord.js";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 
 /**
  * A manager for the `profilebadges` collection.
@@ -12,7 +12,7 @@ export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<
     ProfileBadge
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseProfileBadge
+        data: DatabaseProfileBadge,
     ) => ProfileBadge = ProfileBadge;
 
     override get defaultDocument(): DatabaseProfileBadge {
@@ -34,14 +34,14 @@ export class ProfileBadgeCollectionManager extends DatabaseCollectionManager<
         const badges: DatabaseProfileBadge[] = await this.collection
             .find(
                 {},
-                { projection: { _id: 0, id: 1, name: 1, description: 1 } }
+                { projection: { _id: 0, id: 1, name: 1, description: 1 } },
             )
             .sort({ type: 1, name: 1 })
             .toArray();
 
         return ArrayHelper.arrayToCollection(
             badges.map((v) => new ProfileBadge(v)),
-            "id"
+            "id",
         );
     }
 }

@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseDPPAPIKey } from "structures/database/aliceDb/DatabaseDPPAPIKey";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 
 /**
@@ -13,7 +13,7 @@ export class DPPAPIKey extends Manager implements DatabaseDPPAPIKey {
 
     constructor(
         data: DatabaseDPPAPIKey = DatabaseManager.aliceDb?.collections.dppAPIKey
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 

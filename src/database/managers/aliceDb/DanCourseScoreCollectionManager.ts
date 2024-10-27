@@ -1,5 +1,5 @@
-import { DanCourseScore } from "@alice-database/utils/aliceDb/DanCourseScore";
-import { DatabaseDanCourseScore } from "@alice-structures/database/aliceDb/DatabaseDanCourseScore";
+import { DanCourseScore } from "@database/utils/aliceDb/DanCourseScore";
+import { DatabaseDanCourseScore } from "@structures/database/aliceDb/DatabaseDanCourseScore";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 
 /**
@@ -12,7 +12,7 @@ export class DanCourseScoreCollectionManager extends DatabaseCollectionManager<
     DanCourseScore
 > {
     protected override utilityInstance: new (
-        data: DatabaseDanCourseScore
+        data: DatabaseDanCourseScore,
     ) => DanCourseScore = DanCourseScore;
     override get defaultDocument(): DatabaseDanCourseScore {
         return {
@@ -52,7 +52,7 @@ export class DanCourseScoreCollectionManager extends DatabaseCollectionManager<
         const score: DatabaseDanCourseScore | null =
             await this.collection.findOne(
                 { uid: uid, hash: hash },
-                { projection: { _id: 0, uid: 1 } }
+                { projection: { _id: 0, uid: 1 } },
             );
 
         return score !== null;

@@ -1,4 +1,4 @@
-import { SupportTicketStatus } from "@alice-enums/ticket/SupportTicketStatus";
+import { SupportTicketStatus } from "@enums/ticket/SupportTicketStatus";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 

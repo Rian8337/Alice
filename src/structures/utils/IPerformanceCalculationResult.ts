@@ -1,4 +1,4 @@
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
 import {
     DifficultyAttributes,
     DifficultyCalculator,

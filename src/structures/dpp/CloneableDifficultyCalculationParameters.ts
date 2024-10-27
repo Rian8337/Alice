@@ -1,4 +1,4 @@
-import { Optional } from "@alice-structures/utils/Optional";
+import { Optional } from "@structures/utils/Optional";
 
 /**
  * Represents a parameter to alter difficulty calculation result that can be cloned

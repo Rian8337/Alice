@@ -1,13 +1,13 @@
 import { GuildMember, EmbedBuilder, bold } from "discord.js";
 import { DroidAPIRequestBuilder, RequestResponse } from "@rian8337/osu-base";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { GamestatsLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/gamestats/GamestatsLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { GamestatsLocalization } from "@localization/interactions/commands/osu! and osu!droid/gamestats/GamestatsLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: GamestatsLocalization = new GamestatsLocalization(

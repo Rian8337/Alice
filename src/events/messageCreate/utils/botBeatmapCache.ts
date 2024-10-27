@@ -1,7 +1,7 @@
 import { Message, EmbedBuilder } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
 import { EventUtil } from "structures/core/EventUtil";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (!message.author.bot) {
@@ -28,7 +28,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
     const beatmapInfo: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID,
-        { checkFile: false }
+        { checkFile: false },
     );
 
     if (!beatmapInfo) {
@@ -37,7 +37,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
 
     BeatmapManager.setChannelLatestBeatmap(
         message.channel.id,
-        beatmapInfo.hash
+        beatmapInfo.hash,
     );
 };
 

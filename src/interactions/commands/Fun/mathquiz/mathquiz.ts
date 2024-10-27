@@ -1,12 +1,12 @@
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { MathEquationCreator } from "@utils/creators/MathEquationCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { ApplicationCommandOptionType } from "discord.js";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { MathquizLocalization } from "@alice-localization/interactions/commands/Fun/mathquiz/MathquizLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { CacheManager } from "@utils/managers/CacheManager";
+import { MathquizLocalization } from "@localization/interactions/commands/Fun/mathquiz/MathquizLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new MathquizLocalization(

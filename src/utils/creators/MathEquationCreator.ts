@@ -1,6 +1,6 @@
-import { MathEquation } from "@alice-structures/utils/MathEquation";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { MathEquation } from "@structures/utils/MathEquation";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 
 /**
  * A generator to create math equations.
@@ -18,7 +18,7 @@ export class MathEquationCreator {
         const prevOperatorAmount: number = NumberHelper.clamp(
             operatorAmount,
             1,
-            10
+            10,
         );
         let equation: string = "";
         let realEquation: string = "";
@@ -64,7 +64,7 @@ export class MathEquationCreator {
                     }
 
                     equation += `${this.calculateFactorial(
-                        number
+                        number,
                     )} ${operator} `;
                     realEquation += `${number}! ${operator} `;
                 } else {
@@ -106,7 +106,7 @@ export class MathEquationCreator {
 
             const minMulDivThreshold: number = Math.min(
                 operatorAmount + 1,
-                Math.floor(level / 10)
+                Math.floor(level / 10),
             );
             const maxMulDivThreshold: number = level / 5;
             const mulDivAmount: number = (equation.match(/[/*]/g) || []).length;
@@ -153,7 +153,7 @@ export class MathEquationCreator {
             case "-":
                 return this.createRandomNumber(
                     Math.random() * 2.5 * level,
-                    Math.max(2.5 * level, Math.random() * 7.5 * level)
+                    Math.max(2.5 * level, Math.random() * 7.5 * level),
                 );
             case "/":
             case "*":
@@ -163,7 +163,7 @@ export class MathEquationCreator {
                         Math.max(1, (Math.random() * level) / 2),
                     Math.random() *
                         10 *
-                        Math.max(1, (Math.random() * level) / 2)
+                        Math.max(1, (Math.random() * level) / 2),
                 );
             default:
                 return this.createRandomNumber(
@@ -172,8 +172,8 @@ export class MathEquationCreator {
                         3 *
                         Math.max(
                             1 + (level - 10) / 5,
-                            (Math.random() * (level - 10)) / 5
-                        )
+                            (Math.random() * (level - 10)) / 5,
+                        ),
                 );
         }
     }

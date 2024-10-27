@@ -1,16 +1,16 @@
 import { Message, EmbedBuilder, bold, underscore } from "discord.js";
 import { EventUtil } from "structures/core/EventUtil";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { BeatmapDifficultyHelper } from "@alice-utils/helpers/BeatmapDifficultyHelper";
-import { YouTubeRESTManager } from "@alice-utils/managers/YouTubeRESTManager";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { Symbols } from "@enums/utils/Symbols";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { BeatmapDifficultyHelper } from "@utils/helpers/BeatmapDifficultyHelper";
+import { YouTubeRESTManager } from "@utils/managers/YouTubeRESTManager";
 import { Modes } from "@rian8337/osu-base";
-import { YoutubeBeatmapFinderLocalization } from "@alice-localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
+import { YoutubeBeatmapFinderLocalization } from "@localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.author.bot || !message.channel.isSendable()) {

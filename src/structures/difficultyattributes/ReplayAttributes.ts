@@ -1,4 +1,4 @@
-import { SliderTickInformation } from "@alice-structures/dpp/SliderTickInformation";
+import { SliderTickInformation } from "@structures/dpp/SliderTickInformation";
 import { HitErrorInformation } from "@rian8337/osu-droid-replay-analyzer";
 
 /**

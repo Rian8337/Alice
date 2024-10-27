@@ -1,7 +1,7 @@
 import { Collection, Message, Snowflake } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { EventUtil } from "structures/core/EventUtil";
-import { EmojiStatistics } from "@alice-database/utils/aliceDb/EmojiStatistics";
+import { EmojiStatistics } from "@database/utils/aliceDb/EmojiStatistics";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (message.channel.isDMBased() || message.author.bot) {

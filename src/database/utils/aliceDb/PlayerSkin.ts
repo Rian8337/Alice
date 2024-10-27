@@ -1,11 +1,11 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabasePlayerSkin } from "structures/database/aliceDb/DatabasePlayerSkin";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 import { Channel, Snowflake } from "discord.js";
-import { SkinPreview } from "@alice-structures/skins/SkinPreview";
-import { OperationResult } from "@alice-structures/core/OperationResult";
-import { Constants } from "@alice-core/Constants";
+import { SkinPreview } from "@structures/skins/SkinPreview";
+import { OperationResult } from "@structures/core/OperationResult";
+import { Constants } from "@core/Constants";
 
 /**
  * Represents an information about a Discord user's osu!/osu!droid skin.
@@ -20,7 +20,7 @@ export class PlayerSkin extends Manager implements DatabasePlayerSkin {
 
     constructor(
         data: DatabasePlayerSkin = DatabaseManager.aliceDb?.collections
-            .playerSkins.defaultDocument ?? {}
+            .playerSkins.defaultDocument ?? {},
     ) {
         super();
 

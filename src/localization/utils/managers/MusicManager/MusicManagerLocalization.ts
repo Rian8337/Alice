@@ -1,5 +1,5 @@
-import { Localization } from "@alice-localization/base/Localization";
-import { Translations } from "@alice-localization/base/Translations";
+import { Localization } from "@localization/base/Localization";
+import { Translations } from "@localization/base/Translations";
 import { MusicManagerENTranslation } from "./translations/MusicManagerENTranslation";
 import { MusicManagerESTranslation } from "./translations/MusicManagerESTranslation";
 import { MusicManagerIDTranslation } from "./translations/MusicManagerIDTranslation";

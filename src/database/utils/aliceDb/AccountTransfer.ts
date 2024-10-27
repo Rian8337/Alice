@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseAccountTransfer } from "@alice-structures/database/aliceDb/DatabaseAccountTransfer";
-import { Manager } from "@alice-utils/base/Manager";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DatabaseAccountTransfer } from "@structures/database/aliceDb/DatabaseAccountTransfer";
+import { Manager } from "@utils/base/Manager";
 import { Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 

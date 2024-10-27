@@ -1,6 +1,6 @@
 import request, { CoreOptions } from "request";
 import { RequestResponse } from "@rian8337/osu-base";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { Image, loadImage } from "canvas";
 
 export abstract class RESTManager extends Manager {
@@ -13,7 +13,7 @@ export abstract class RESTManager extends Manager {
      */
     static request(
         url: string | URL,
-        options?: CoreOptions
+        options?: CoreOptions,
     ): Promise<RequestResponse> {
         return new Promise((resolve, reject) => {
             const dataArray: Buffer[] = [];

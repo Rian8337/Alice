@@ -1,15 +1,15 @@
 import { Player } from "@rian8337/osu-droid-utilities";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { CoinsLocalization } from "@localization/interactions/commands/Fun/coins/CoinsLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new CoinsLocalization(
@@ -137,7 +137,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const rank =
         player instanceof Player
             ? player.rank
-            : (await DroidHelper.getPlayerRank(player.score)) ?? 0;
+            : ((await DroidHelper.getPlayerRank(player.score)) ?? 0);
 
     let limit: number;
 

@@ -1,14 +1,14 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { GuildMember } from "discord.js";
 import { OperationResult } from "structures/core/OperationResult";
-import { TimeoutManager } from "@alice-utils/managers/TimeoutManager";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { TimeoutLocalization } from "@alice-localization/interactions/commands/Staff/timeout/TimeoutLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { TimeoutManager } from "@utils/managers/TimeoutManager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { TimeoutLocalization } from "@localization/interactions/commands/Staff/timeout/TimeoutLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization: TimeoutLocalization = new TimeoutLocalization(

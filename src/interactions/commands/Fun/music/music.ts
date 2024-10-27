@@ -1,12 +1,12 @@
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { GuildMember } from "discord.js";
-import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
-import { Language } from "@alice-localization/base/Language";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { MusicLocalization } from "@localization/interactions/commands/Fun/music/MusicLocalization";
+import { Language } from "@localization/base/Language";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const language: Language = CommandHelper.getLocale(interaction);

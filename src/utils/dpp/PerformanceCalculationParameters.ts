@@ -8,8 +8,8 @@ import {
     DifficultyCalculationParameters,
     DifficultyCalculationParametersInit,
 } from "./DifficultyCalculationParameters";
-import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
-import { CloneablePerformanceCalculationParameters } from "@alice-structures/dpp/CloneablePerformanceCalculationParameters";
+import { RawDifficultyAttributes } from "@structures/difficultyattributes/RawDifficultyAttributes";
+import { CloneablePerformanceCalculationParameters } from "@structures/dpp/CloneablePerformanceCalculationParameters";
 
 /**
  * Represents a parameter to alter performance calculation result.

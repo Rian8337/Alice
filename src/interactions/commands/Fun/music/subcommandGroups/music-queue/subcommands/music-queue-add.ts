@@ -1,13 +1,13 @@
 import { OperationResult } from "structures/core/OperationResult";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MusicLocalization } from "@alice-localization/interactions/commands/Fun/music/MusicLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { SelectMenuCreator } from "@alice-utils/creators/SelectMenuCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { MusicManager } from "@alice-utils/managers/MusicManager";
-import { MusicQueue } from "@alice-utils/music/MusicQueue";
+import { MusicLocalization } from "@localization/interactions/commands/Fun/music/MusicLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { MusicManager } from "@utils/managers/MusicManager";
+import { MusicQueue } from "@utils/music/MusicQueue";
 import { GuildMember, StringSelectMenuInteraction } from "discord.js";
 import yts, { SearchResult, VideoSearchResult } from "yt-search";
 

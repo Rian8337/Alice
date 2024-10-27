@@ -1,14 +1,14 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { AccountTransferLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/accounttransfer/AccountTransferLocalization";
-import { OperationResult } from "@alice-structures/core/OperationResult";
-import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
-import { DatabaseAccountTransfer } from "@alice-structures/database/aliceDb/DatabaseAccountTransfer";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { AccountTransferLocalization } from "@localization/interactions/commands/osu! and osu!droid/accounttransfer/AccountTransferLocalization";
+import { OperationResult } from "@structures/core/OperationResult";
+import { SlashSubcommand } from "@structures/core/SlashSubcommand";
+import { DatabaseAccountTransfer } from "@structures/database/aliceDb/DatabaseAccountTransfer";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { FindOptions } from "mongodb";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

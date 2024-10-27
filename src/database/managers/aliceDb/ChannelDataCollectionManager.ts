@@ -1,6 +1,6 @@
-import { DatabaseCollectionManager } from "@alice-database/managers/DatabaseCollectionManager";
-import { ChannelActivity } from "@alice-database/utils/aliceDb/ChannelActivity";
-import { DatabaseChannelActivity } from "@alice-structures/database/aliceDb/DatabaseChannelActivity";
+import { DatabaseCollectionManager } from "@database/managers/DatabaseCollectionManager";
+import { ChannelActivity } from "@database/utils/aliceDb/ChannelActivity";
+import { DatabaseChannelActivity } from "@structures/database/aliceDb/DatabaseChannelActivity";
 import { Collection as DiscordCollection } from "discord.js";
 
 /**
@@ -11,7 +11,7 @@ export class ChannelActivityCollectionManager extends DatabaseCollectionManager<
     ChannelActivity
 > {
     protected override readonly utilityInstance: new (
-        data: DatabaseChannelActivity
+        data: DatabaseChannelActivity,
     ) => ChannelActivity = ChannelActivity;
 
     override get defaultDocument(): DatabaseChannelActivity {
@@ -33,7 +33,7 @@ export class ChannelActivityCollectionManager extends DatabaseCollectionManager<
      */
     getFromTimestampRange(
         from: number,
-        to: number
+        to: number,
     ): Promise<DiscordCollection<number, ChannelActivity>> {
         return this.get("timestamp", {
             timestamp: {

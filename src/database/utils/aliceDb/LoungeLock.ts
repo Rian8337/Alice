@@ -1,7 +1,7 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseLoungeLock } from "structures/database/aliceDb/DatabaseLoungeLock";
 import { OperationResult } from "structures/core/OperationResult";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
 
@@ -23,7 +23,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
 
     constructor(
         data: DatabaseLoungeLock = DatabaseManager.aliceDb?.collections
-            .loungeLock.defaultDocument ?? {}
+            .loungeLock.defaultDocument ?? {},
     ) {
         super();
 
@@ -43,13 +43,13 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
     async extend(duration: number, reason?: string): Promise<OperationResult> {
         this.expiration = Math.max(
             this.expiration + duration,
-            Date.now() + duration
+            Date.now() + duration,
         );
         this.reason = reason;
 
         return DatabaseManager.aliceDb.collections.loungeLock.updateOne(
             { discordid: this.discordid },
-            { $set: { expiration: this.expiration, reason: this.reason } }
+            { $set: { expiration: this.expiration, reason: this.reason } },
         );
     }
 
@@ -74,7 +74,7 @@ export class LoungeLock extends Manager implements DatabaseLoungeLock {
 
         return DatabaseManager.aliceDb.collections.loungeLock.updateOne(
             { discordid: this.discordid },
-            { $set: { expiration: this.expiration } }
+            { $set: { expiration: this.expiration } },
         );
     }
 }

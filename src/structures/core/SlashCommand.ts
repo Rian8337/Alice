@@ -2,8 +2,8 @@ import {
     ApplicationCommandOptionData,
     ChatInputCommandInteraction,
 } from "discord.js";
-import { Bot } from "@alice-core/Bot";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { Bot } from "@core/Bot";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { CommandScope } from "structures/core/CommandScope";
 import { Permission } from "structures/core/Permission";
 
@@ -19,7 +19,7 @@ export interface SlashCommand {
      */
     run(
         client: Bot,
-        interaction: ChatInputCommandInteraction
+        interaction: ChatInputCommandInteraction,
     ): Promise<unknown>;
 
     /**

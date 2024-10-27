@@ -1,16 +1,16 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseMapShare } from "structures/database/aliceDb/DatabaseMapShare";
 import { OperationResult } from "structures/core/OperationResult";
 import { MapShareSubmissionStatus } from "structures/utils/MapShareSubmissionStatus";
-import { Manager } from "@alice-utils/base/Manager";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { Manager } from "@utils/base/Manager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { ObjectId } from "bson";
 import { BaseMessageOptions, Snowflake, TextChannel } from "discord.js";
 import { UserBind } from "../elainaDb/UserBind";
 import { PlayerInfo } from "./PlayerInfo";
-import { Language } from "@alice-localization/base/Language";
-import { MapShareLocalization } from "@alice-localization/database/utils/aliceDb/MapShare/MapShareLocalization";
+import { Language } from "@localization/base/Language";
+import { MapShareLocalization } from "@localization/database/utils/aliceDb/MapShare/MapShareLocalization";
 
 /**
  * Represents a shared beatmap.
@@ -27,7 +27,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
 
     constructor(
         data: DatabaseMapShare = DatabaseManager.aliceDb?.collections.mapShare
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 
@@ -55,7 +55,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
                 $set: {
                     status: this.status,
                 },
-            }
+            },
         );
     }
 
@@ -73,7 +73,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
                 $set: {
                     status: this.status,
                 },
-            }
+            },
         );
     }
 
@@ -103,7 +103,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
         if (this.status !== "accepted") {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("submissionNotAccepted")
+                localization.getTranslation("submissionNotAccepted"),
             );
         }
 
@@ -113,7 +113,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
         if (!embedOptions) {
             return this.createOperationResult(
                 false,
-                localization.getTranslation("beatmapNotFound")
+                localization.getTranslation("beatmapNotFound"),
             );
         }
 
@@ -128,7 +128,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
                         _id: 0,
                         alicecoins: 1,
                     },
-                }
+                },
             );
 
         if (playerInfo) {
@@ -137,13 +137,13 @@ export class MapShare extends Manager implements DatabaseMapShare {
             const bindInfo: UserBind | null =
                 await DatabaseManager.elainaDb.collections.userBind.getFromUser(
                     this.id,
-                    { projection: { _id: 0, uid: 1, username: 1 } }
+                    { projection: { _id: 0, uid: 1, username: 1 } },
                 );
 
             if (!bindInfo) {
                 return this.createOperationResult(
                     false,
-                    localization.getTranslation("submitterNotBinded")
+                    localization.getTranslation("submitterNotBinded"),
                 );
             }
 
@@ -171,7 +171,7 @@ export class MapShare extends Manager implements DatabaseMapShare {
                 $set: {
                     status: this.status,
                 },
-            }
+            },
         );
     }
 

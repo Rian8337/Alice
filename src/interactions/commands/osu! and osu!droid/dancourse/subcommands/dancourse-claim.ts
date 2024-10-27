@@ -1,16 +1,16 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DanCourse } from "@alice-database/utils/aliceDb/DanCourse";
-import { DanCourseLeaderboardScore } from "@alice-database/utils/aliceDb/DanCourseLeaderboardScore";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
-import { Language } from "@alice-localization/base/Language";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { DanCourseLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/dancourse/DanCourseLocalization";
-import { OperationResult } from "@alice-structures/core/OperationResult";
-import { SlashSubcommand } from "@alice-structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DanCourse } from "@database/utils/aliceDb/DanCourse";
+import { DanCourseLeaderboardScore } from "@database/utils/aliceDb/DanCourseLeaderboardScore";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
+import { Language } from "@localization/base/Language";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { DanCourseLocalization } from "@localization/interactions/commands/osu! and osu!droid/dancourse/DanCourseLocalization";
+import { OperationResult } from "@structures/core/OperationResult";
+import { SlashSubcommand } from "@structures/core/SlashSubcommand";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { Role } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

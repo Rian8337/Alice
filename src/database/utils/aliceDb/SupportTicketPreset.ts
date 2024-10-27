@@ -1,9 +1,9 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { DatabaseSupportTicketPreset } from "@alice-structures/database/aliceDb/DatabaseSupportTicketPreset";
-import { Manager } from "@alice-utils/base/Manager";
-import { AccountRebindTicketPresetProcessor } from "@alice-utils/ticket/presets/AccountRebindTicketPresetProcessor";
-import { BaseTicketPresetProcessor } from "@alice-utils/ticket/presets/BaseTicketPresetProcessor";
-import { RecalcTicketPresetProcessor } from "@alice-utils/ticket/presets/RecalcTicketPresetProcessor";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { DatabaseSupportTicketPreset } from "@structures/database/aliceDb/DatabaseSupportTicketPreset";
+import { Manager } from "@utils/base/Manager";
+import { AccountRebindTicketPresetProcessor } from "@utils/ticket/presets/AccountRebindTicketPresetProcessor";
+import { BaseTicketPresetProcessor } from "@utils/ticket/presets/BaseTicketPresetProcessor";
+import { RecalcTicketPresetProcessor } from "@utils/ticket/presets/RecalcTicketPresetProcessor";
 import { ObjectId } from "mongodb";
 
 export class SupportTicketPreset

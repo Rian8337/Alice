@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseWarning } from "structures/database/aliceDb/DatabaseWarning";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 
@@ -48,7 +48,7 @@ export class Warning extends Manager implements DatabaseWarning {
     }
     constructor(
         data: DatabaseWarning = DatabaseManager.aliceDb?.collections.userWarning
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 

@@ -1,7 +1,7 @@
 import { Attachment, Message, TextChannel } from "discord.js";
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { EventUtil } from "structures/core/EventUtil";
-import { Constants } from "@alice-core/Constants";
+import { Constants } from "@core/Constants";
 
 export const run: EventUtil["run"] = async (client, message: Message) => {
     if (

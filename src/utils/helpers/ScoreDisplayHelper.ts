@@ -1,8 +1,8 @@
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
 import { ScoreRank } from "structures/utils/ScoreRank";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import {
     Collection,
     GuildMember,
@@ -15,13 +15,13 @@ import {
 } from "discord.js";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { NumberHelper } from "./NumberHelper";
-import { Language } from "@alice-localization/base/Language";
-import { ScoreDisplayHelperLocalization } from "@alice-localization/utils/helpers/ScoreDisplayHelper/ScoreDisplayHelperLocalization";
+import { Language } from "@localization/base/Language";
+import { ScoreDisplayHelperLocalization } from "@localization/utils/helpers/ScoreDisplayHelper/ScoreDisplayHelperLocalization";
 import { StringHelper } from "./StringHelper";
 import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
 import { LocaleHelper } from "./LocaleHelper";
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
+import { Symbols } from "@enums/utils/Symbols";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 import { Accuracy, Modes } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
@@ -30,13 +30,13 @@ import {
 import { InteractionHelper } from "./InteractionHelper";
 import { ScoreHelper } from "./ScoreHelper";
 import { CommandHelper } from "./CommandHelper";
-import { CompleteCalculationAttributes } from "@alice-structures/difficultyattributes/CompleteCalculationAttributes";
-import { DroidPerformanceAttributes } from "@alice-structures/difficultyattributes/DroidPerformanceAttributes";
-import { OsuPerformanceAttributes } from "@alice-structures/difficultyattributes/OsuPerformanceAttributes";
-import { DPPProcessorRESTManager } from "@alice-utils/managers/DPPProcessorRESTManager";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { RecentPlay } from "@alice-database/utils/aliceDb/RecentPlay";
-import { OfficialDatabaseScore } from "@alice-database/official/schema/OfficialDatabaseScore";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
+import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 import { DroidHelper } from "./DroidHelper";
 
 /**

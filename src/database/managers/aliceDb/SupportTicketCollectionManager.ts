@@ -1,7 +1,7 @@
-import { DatabaseSupportTicket } from "@alice-structures/database/aliceDb/DatabaseSupportTicket";
+import { DatabaseSupportTicket } from "@structures/database/aliceDb/DatabaseSupportTicket";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { SupportTicket } from "@alice-database/utils/aliceDb/SupportTicket";
-import { SupportTicketStatus } from "@alice-enums/ticket/SupportTicketStatus";
+import { SupportTicket } from "@database/utils/aliceDb/SupportTicket";
+import { SupportTicketStatus } from "@enums/ticket/SupportTicketStatus";
 import { FindOptions } from "mongodb";
 import { Snowflake } from "discord.js";
 

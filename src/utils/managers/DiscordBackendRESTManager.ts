@@ -1,4 +1,4 @@
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { RequestResponse } from "@rian8337/osu-base";
 import { RESTManager } from "./RESTManager";
 

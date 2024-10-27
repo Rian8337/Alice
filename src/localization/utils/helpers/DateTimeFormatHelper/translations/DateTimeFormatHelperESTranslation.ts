@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { DateTimeFormatHelperStrings } from "../DateTimeFormatHelperLocalization";
 
 export class DateTimeFormatHelperESTranslation extends Translation<DateTimeFormatHelperStrings> {

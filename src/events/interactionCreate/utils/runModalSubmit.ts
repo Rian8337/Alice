@@ -1,10 +1,10 @@
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { EventUtil } from "structures/core/EventUtil";
-import { RunModalSubmitLocalization } from "@alice-localization/events/interactionCreate/runModalSubmit/RunModalSubmitLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { RunModalSubmitLocalization } from "@localization/events/interactionCreate/runModalSubmit/RunModalSubmitLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import { ModalSubmitInteraction } from "discord.js";
 import { consola } from "consola";
 

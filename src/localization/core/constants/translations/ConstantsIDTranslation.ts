@@ -1,4 +1,4 @@
-import { Translation } from "@alice-localization/base/Translation";
+import { Translation } from "@localization/base/Translation";
 import { chatInputApplicationCommandMention } from "discord.js";
 import { ConstantsStrings } from "../ConstantsLocalization";
 
@@ -12,7 +12,7 @@ export class ConstantsIDTranslation extends Translation<ConstantsStrings> {
         selfAccountNotBinded: `Maaf, akun kamu belum terhubung. Kamu perlu menghubungkan akunmu menggunakan ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083"
+            "881019231863468083",
         )} terlebih dahulu.`,
         commandNotAvailableInServer:
             "Maaf, perintah ini tidak tersedia untuk server ini.",
@@ -21,7 +21,7 @@ export class ConstantsIDTranslation extends Translation<ConstantsStrings> {
         userAccountNotBinded: `Maaf, akun tersebut belum terhubung. Pemilik akun tersebut perlu menghubungkan akunnya menggunakan ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083"
+            "881019231863468083",
         )} terlebih dahulu.`,
     };
 }

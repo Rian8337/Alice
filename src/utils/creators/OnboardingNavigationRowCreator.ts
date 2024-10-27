@@ -1,6 +1,6 @@
-import { Symbols } from "@alice-enums/utils/Symbols";
-import { Language } from "@alice-localization/base/Language";
-import { OnboardingNavigationRowCreatorLocalization } from "@alice-localization/utils/creators/OnboardingNavigationRowCreator/OnboardingNavigationRowCreatorLocalization";
+import { Symbols } from "@enums/utils/Symbols";
+import { Language } from "@localization/base/Language";
+import { OnboardingNavigationRowCreatorLocalization } from "@localization/utils/creators/OnboardingNavigationRowCreator/OnboardingNavigationRowCreatorLocalization";
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 /**

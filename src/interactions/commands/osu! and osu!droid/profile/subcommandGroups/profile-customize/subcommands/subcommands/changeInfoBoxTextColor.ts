@@ -1,21 +1,21 @@
-import { Constants } from "@alice-core/Constants";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { PlayerInfoCollectionManager } from "@alice-database/managers/aliceDb/PlayerInfoCollectionManager";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { Constants } from "@core/Constants";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { PlayerInfoCollectionManager } from "@database/managers/aliceDb/PlayerInfoCollectionManager";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ProfileImageConfig } from "@alice-structures/profile/ProfileImageConfig";
-import { ProfileLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MessageInputCreator } from "@alice-utils/creators/MessageInputCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { ProfileManager } from "@alice-utils/managers/ProfileManager";
+import { ProfileImageConfig } from "@structures/profile/ProfileImageConfig";
+import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MessageInputCreator } from "@utils/creators/MessageInputCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { ProfileManager } from "@utils/managers/ProfileManager";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const localization: ProfileLocalization = new ProfileLocalization(

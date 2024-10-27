@@ -1,15 +1,15 @@
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { ContextMenuCommand } from "structures/core/ContextMenuCommand";
 import { EventUtil } from "structures/core/EventUtil";
-import { RunContextMenuLocalization } from "@alice-localization/events/interactionCreate/runContextMenu/RunContextMenuLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { RunContextMenuLocalization } from "@localization/events/interactionCreate/runContextMenu/RunContextMenuLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
 import { BaseInteraction } from "discord.js";
 import { consola } from "consola";
-import { GlobalCooldownKey } from "@alice-structures/core/CooldownKey";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { GlobalCooldownKey } from "@structures/core/CooldownKey";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 
 export const run: EventUtil["run"] = async (
     client,

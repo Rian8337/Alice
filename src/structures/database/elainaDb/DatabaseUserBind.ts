@@ -1,5 +1,5 @@
-import { PPEntry } from "@alice-structures/dpp/PPEntry";
-import { RecalculationProgress } from "@alice-structures/dpp/RecalculationProgress";
+import { PPEntry } from "@structures/dpp/PPEntry";
+import { RecalculationProgress } from "@structures/dpp/RecalculationProgress";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 

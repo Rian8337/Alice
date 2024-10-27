@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { DailyLocalization } from "@alice-localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
+import { DailyLocalization } from "@localization/interactions/commands/osu! and osu!droid/daily/DailyLocalization";
 import { PassRequirementType } from "structures/challenge/PassRequirementType";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { MapInfo, ModUtil } from "@rian8337/osu-base";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {

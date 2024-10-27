@@ -1,7 +1,7 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseGuildTag } from "structures/database/aliceDb/DatabaseGuildTag";
 import { OperationResult } from "structures/core/OperationResult";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 
 /**
@@ -23,7 +23,7 @@ export class GuildTag extends Manager implements DatabaseGuildTag {
 
     constructor(
         data: DatabaseGuildTag = DatabaseManager.aliceDb?.collections.guildTags
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 
@@ -57,7 +57,7 @@ export class GuildTag extends Manager implements DatabaseGuildTag {
                     attachment_message: this.attachment_message,
                     attachments: this.attachments,
                 },
-            }
+            },
         );
     }
 }

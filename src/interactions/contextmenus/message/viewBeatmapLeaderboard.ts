@@ -1,10 +1,10 @@
 import { MessageContextMenuCommand } from "structures/core/MessageContextMenuCommand";
-import { ViewBeatmapLeaderboardLocalization } from "@alice-localization/interactions/contextmenus/message/viewBeatmapLeaderboard/ViewBeatmapLeaderboardLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
-import { ScoreDisplayHelper } from "@alice-utils/helpers/ScoreDisplayHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
+import { ViewBeatmapLeaderboardLocalization } from "@localization/interactions/contextmenus/message/viewBeatmapLeaderboard/ViewBeatmapLeaderboardLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { ScoreDisplayHelper } from "@utils/helpers/ScoreDisplayHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { MapInfo } from "@rian8337/osu-base";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {

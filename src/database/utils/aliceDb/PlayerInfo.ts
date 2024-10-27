@@ -1,20 +1,20 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { ChallengeCompletionData } from "structures/challenge/ChallengeCompletionData";
 import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerInfo";
 import { OperationResult } from "structures/core/OperationResult";
-import { ProfileImageConfig } from "@alice-structures/profile/ProfileImageConfig";
-import { Manager } from "@alice-utils/base/Manager";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
+import { ProfileImageConfig } from "@structures/profile/ProfileImageConfig";
+import { Manager } from "@utils/base/Manager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 import { Player } from "@rian8337/osu-droid-utilities";
-import { PlayerInfoLocalization } from "@alice-localization/database/utils/aliceDb/PlayerInfo/PlayerInfoLocalization";
-import { Language } from "@alice-localization/base/Language";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { OfficialDatabaseUser } from "@alice-database/official/schema/OfficialDatabaseUser";
-import { DroidHelper } from "@alice-utils/helpers/DroidHelper";
+import { PlayerInfoLocalization } from "@localization/database/utils/aliceDb/PlayerInfo/PlayerInfoLocalization";
+import { Language } from "@localization/base/Language";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * Represents an information about a Discord user regarding the bot (amount of Alice coins and its streak, daily/weekly challenges status, profile picture format, etc).
@@ -221,7 +221,8 @@ export class PlayerInfo extends Manager {
             const rank =
                 thisPlayer instanceof Player
                     ? thisPlayer.rank
-                    : (await DroidHelper.getPlayerRank(thisPlayer.score)) ?? 0;
+                    : ((await DroidHelper.getPlayerRank(thisPlayer.score)) ??
+                      0);
 
             switch (true) {
                 case rank < 10:

@@ -1,6 +1,6 @@
 import { Snowflake } from "discord.js";
 import { ChallengeCompletionData } from "structures/challenge/ChallengeCompletionData";
-import { ProfileImageConfig } from "@alice-structures/profile/ProfileImageConfig";
+import { ProfileImageConfig } from "@structures/profile/ProfileImageConfig";
 import { BaseDocument } from "../BaseDocument";
 
 /**

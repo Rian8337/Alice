@@ -3,10 +3,10 @@ import { join } from "path";
 import { Collection } from "@discordjs/collection";
 import { MapInfo, Mod, Modes } from "@rian8337/osu-base";
 import { CacheableDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { RawDifficultyAttributes } from "@alice-structures/difficultyattributes/RawDifficultyAttributes";
-import { CachedDifficultyAttributes } from "@alice-structures/difficultyattributes/CachedDifficultyAttributes";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { RawDifficultyAttributes } from "@structures/difficultyattributes/RawDifficultyAttributes";
+import { CachedDifficultyAttributes } from "@structures/difficultyattributes/CachedDifficultyAttributes";
+import { StringHelper } from "@utils/helpers/StringHelper";
 
 /**
  * A cache manager for difficulty attributes.

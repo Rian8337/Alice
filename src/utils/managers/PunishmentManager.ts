@@ -1,18 +1,18 @@
-import { Manager } from "@alice-utils/base/Manager";
-import { GuildPunishmentConfigCollectionManager } from "@alice-database/managers/aliceDb/GuildPunishmentConfigCollectionManager";
+import { Manager } from "@utils/base/Manager";
+import { GuildPunishmentConfigCollectionManager } from "@database/managers/aliceDb/GuildPunishmentConfigCollectionManager";
 import {
     PunishmentManagerLocalization,
     PunishmentManagerStrings,
-} from "@alice-localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
-import { Language } from "@alice-localization/base/Language";
+} from "@localization/utils/managers/PunishmentManager/PunishmentManagerLocalization";
+import { Language } from "@localization/base/Language";
 import {
     Collection,
     GuildMember,
     PermissionsBitField,
     Snowflake,
 } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { GuildPunishmentConfig } from "@alice-database/utils/aliceDb/GuildPunishmentConfig";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { GuildPunishmentConfig } from "@database/utils/aliceDb/GuildPunishmentConfig";
 import { RoleTimeoutPermission } from "structures/moderation/RoleTimeoutPermission";
 
 /**
@@ -46,7 +46,7 @@ export abstract class PunishmentManager extends Manager {
      */
     static async userCanTimeout(
         member: GuildMember,
-        duration: number
+        duration: number,
     ): Promise<boolean> {
         if (member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
             return true;
@@ -54,7 +54,7 @@ export abstract class PunishmentManager extends Manager {
 
         const guildConfig: GuildPunishmentConfig | null =
             await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-                member.guild
+                member.guild,
             );
 
         if (!guildConfig) {
@@ -104,7 +104,7 @@ export abstract class PunishmentManager extends Manager {
 
         const guildConfig: GuildPunishmentConfig | null =
             await DatabaseManager.aliceDb.collections.guildPunishmentConfig.getGuildConfig(
-                member.guild
+                member.guild,
             );
 
         if (!guildConfig) {
@@ -120,7 +120,7 @@ export abstract class PunishmentManager extends Manager {
      * @param language The language to localize.
      */
     protected static getPunishmentManagerLocalization(
-        language: Language
+        language: Language,
     ): PunishmentManagerLocalization {
         return new PunishmentManagerLocalization(language);
     }

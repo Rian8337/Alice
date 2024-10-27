@@ -15,14 +15,14 @@ import {
     ChannelSelectMenuInteraction,
     ChannelSelectMenuComponent,
 } from "discord.js";
-import { InteractionCollectorCreator } from "@alice-utils/base/InteractionCollectorCreator";
+import { InteractionCollectorCreator } from "@utils/base/InteractionCollectorCreator";
 import { MessageCreator } from "./MessageCreator";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
 import { MessageButtonCreator } from "./MessageButtonCreator";
-import { Language } from "@alice-localization/base/Language";
-import { SelectMenuCreatorLocalization } from "@alice-localization/utils/creators/SelectMenuCreator/SelectMenuCreatorLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { Language } from "@localization/base/Language";
+import { SelectMenuCreatorLocalization } from "@localization/utils/creators/SelectMenuCreator/SelectMenuCreatorLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 /**
  * A utility to create message select menus.

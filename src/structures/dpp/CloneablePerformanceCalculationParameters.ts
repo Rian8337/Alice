@@ -1,6 +1,6 @@
 import { SliderCheeseInformation } from "@rian8337/osu-droid-replay-analyzer";
 import { CloneableDifficultyCalculationParameters } from "./CloneableDifficultyCalculationParameters";
-import { Optional } from "@alice-structures/utils/Optional";
+import { Optional } from "@structures/utils/Optional";
 import { CloneableAccuracy } from "./CloneableAccuracy";
 
 /**

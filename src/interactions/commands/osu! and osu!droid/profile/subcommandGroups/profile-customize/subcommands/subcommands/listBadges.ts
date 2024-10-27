@@ -1,13 +1,13 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
 import { Collection, GuildMember, EmbedBuilder } from "discord.js";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { ProfileBadgeOwnerInfo } from "structures/interactions/commands/osu! and osu!droid/ProfileBadgeOwnerInfo";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
-import { ProfileBadge } from "@alice-database/utils/aliceDb/ProfileBadge";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
-import { PartialProfileBackground } from "@alice-structures/profile/PartialProfileBackground";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
+import { ProfileBadge } from "@database/utils/aliceDb/ProfileBadge";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
+import { PartialProfileBackground } from "@structures/profile/PartialProfileBackground";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
     const badgeList: Collection<string, ProfileBadge> =
@@ -21,7 +21,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     _id: 0,
                     "picture_config.badges": 1,
                 },
-            }
+            },
         );
 
     const userBadges: PartialProfileBackground[] =
@@ -68,7 +68,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         1,
         Math.ceil(finalBadgeList.length / 5),
         150,
-        onPageChange
+        onPageChange,
     );
 };
 

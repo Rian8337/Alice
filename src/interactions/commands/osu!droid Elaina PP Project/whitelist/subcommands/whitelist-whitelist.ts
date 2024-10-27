@@ -1,11 +1,11 @@
-import { Constants } from "@alice-core/Constants";
+import { Constants } from "@core/Constants";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { OperationResult } from "structures/core/OperationResult";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { BeatmapManager } from "@alice-utils/managers/BeatmapManager";
-import { WhitelistManager } from "@alice-utils/managers/WhitelistManager";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { BeatmapManager } from "@utils/managers/BeatmapManager";
+import { WhitelistManager } from "@utils/managers/WhitelistManager";
 import {
     EmbedBuilder,
     GuildMember,
@@ -13,9 +13,9 @@ import {
     bold,
 } from "discord.js";
 import { MapInfo } from "@rian8337/osu-base";
-import { WhitelistLocalization } from "@alice-localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
-import { ConstantsLocalization } from "@alice-localization/core/constants/ConstantsLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { WhitelistLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/whitelist/WhitelistLocalization";
+import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: WhitelistLocalization = new WhitelistLocalization(

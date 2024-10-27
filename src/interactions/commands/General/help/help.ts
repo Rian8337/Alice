@@ -7,18 +7,18 @@ import {
     EmbedBuilder,
     bold,
 } from "discord.js";
-import { Bot } from "@alice-core/Bot";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { Bot } from "@core/Bot";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { OnButtonPageChange } from "@alice-structures/utils/OnButtonPageChange";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { PermissionHelper } from "@alice-utils/helpers/PermissionHelper";
-import { MessageButtonCreator } from "@alice-utils/creators/MessageButtonCreator";
+import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { PermissionHelper } from "@utils/helpers/PermissionHelper";
+import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { ApplicationCommandOptionType } from "discord.js";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { HelpLocalization } from "@alice-localization/interactions/commands/General/help/HelpLocalization";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { HelpLocalization } from "@localization/interactions/commands/General/help/HelpLocalization";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 /**
  * Gets the list of commands that the bot has.

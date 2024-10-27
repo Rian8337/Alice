@@ -1,4 +1,4 @@
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Filter, FindOptions, WithId } from "mongodb";
@@ -8,9 +8,9 @@ import {
     Snowflake,
     User,
 } from "discord.js";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { OperationResult } from "@alice-structures/core/OperationResult";
-import { Constants } from "@alice-core/Constants";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { OperationResult } from "@structures/core/OperationResult";
+import { Constants } from "@core/Constants";
 
 /**
  * A manager for the `userbind` collection.

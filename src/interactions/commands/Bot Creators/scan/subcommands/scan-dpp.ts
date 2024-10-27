@@ -1,11 +1,11 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
-import { UserBind } from "@alice-database/utils/elainaDb/UserBind";
+import { DatabaseManager } from "@database/DatabaseManager";
+import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ScanLocalization } from "@alice-localization/interactions/commands/Bot Creators/scan/ScanLocalization";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { ScanLocalization } from "@localization/interactions/commands/Bot Creators/scan/ScanLocalization";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { Collection, Snowflake } from "discord.js";
 import { consola } from "consola";
 

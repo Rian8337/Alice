@@ -1,10 +1,10 @@
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseBirthday } from "structures/database/aliceDb/DatabaseBirthday";
 import { OperationResult } from "structures/core/OperationResult";
-import { Manager } from "@alice-utils/base/Manager";
+import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "bson";
 import { Snowflake } from "discord.js";
-import { Language } from "@alice-localization/base/Language";
+import { Language } from "@localization/base/Language";
 
 /**
  * Represents an information about a Discord user's birthday.
@@ -19,7 +19,7 @@ export class Birthday extends Manager implements DatabaseBirthday {
 
     constructor(
         data: DatabaseBirthday = DatabaseManager.aliceDb?.collections.birthday
-            .defaultDocument ?? {}
+            .defaultDocument ?? {},
     ) {
         super();
 
@@ -44,7 +44,7 @@ export class Birthday extends Manager implements DatabaseBirthday {
         date: number,
         month: number,
         timezone?: number,
-        language: Language = "en"
+        language: Language = "en",
     ): Promise<OperationResult> {
         this.date = date;
         this.month = month;
@@ -56,7 +56,7 @@ export class Birthday extends Manager implements DatabaseBirthday {
             this.month,
             this.timezone,
             language,
-            true
+            true,
         );
     }
 }

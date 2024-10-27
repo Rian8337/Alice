@@ -1,7 +1,7 @@
-import { Config } from "@alice-core/Config";
+import { Config } from "@core/Config";
 import { EventUtil } from "structures/core/EventUtil";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { CommandUtilManager } from "@alice-utils/managers/CommandUtilManager";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 import { ActivityType } from "discord.js";
 
 export const run: EventUtil["run"] = async (client) => {

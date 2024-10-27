@@ -1,4 +1,4 @@
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
 import { DatabasePlayerInfo } from "structures/database/aliceDb/DatabasePlayerInfo";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake, User } from "discord.js";

@@ -1,14 +1,14 @@
 import { User } from "discord.js";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { NumberHelper } from "@alice-utils/helpers/NumberHelper";
-import { PlayerInfo } from "@alice-database/utils/aliceDb/PlayerInfo";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { NumberHelper } from "@utils/helpers/NumberHelper";
+import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
 import { OperationResult } from "structures/core/OperationResult";
-import { CoinsLocalization } from "@alice-localization/interactions/commands/Fun/coins/CoinsLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { LocaleHelper } from "@alice-utils/helpers/LocaleHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { CoinsLocalization } from "@localization/interactions/commands/Fun/coins/CoinsLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { LocaleHelper } from "@utils/helpers/LocaleHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization: CoinsLocalization = new CoinsLocalization(

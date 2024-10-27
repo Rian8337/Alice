@@ -1,5 +1,5 @@
-import { AnniversaryTriviaPlayer } from "@alice-database/utils/aliceDb/AnniversaryTriviaPlayer";
-import { DatabaseAnniversaryTriviaPlayer } from "@alice-structures/database/aliceDb/DatabaseAnniversaryTriviaPlayer";
+import { AnniversaryTriviaPlayer } from "@database/utils/aliceDb/AnniversaryTriviaPlayer";
+import { DatabaseAnniversaryTriviaPlayer } from "@structures/database/aliceDb/DatabaseAnniversaryTriviaPlayer";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
 import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";

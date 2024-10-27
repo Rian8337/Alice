@@ -1,18 +1,18 @@
 import { BaseMessageOptions, Snowflake, TextChannel } from "discord.js";
 import { MapInfo, RankedStatus } from "@rian8337/osu-base";
-import { DatabaseManager } from "@alice-database/DatabaseManager";
+import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabaseMapWhitelist } from "structures/database/elainaDb/DatabaseMapWhitelist";
 import { OperationResult } from "structures/core/OperationResult";
-import { Constants } from "@alice-core/Constants";
-import { Manager } from "@alice-utils/base/Manager";
+import { Constants } from "@core/Constants";
+import { Manager } from "@utils/base/Manager";
 import { WhitelistStatus } from "structures/dpp/WhitelistStatus";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { MapWhitelist } from "@alice-database/utils/elainaDb/MapWhitelist";
-import { DPPHelper } from "@alice-utils/helpers/DPPHelper";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { MapWhitelist } from "@database/utils/elainaDb/MapWhitelist";
+import { DPPHelper } from "@utils/helpers/DPPHelper";
 import { UpdateFilter } from "mongodb";
-import { WhitelistManagerLocalization } from "@alice-localization/utils/managers/WhitelistManager/WhitelistManagerLocalization";
-import { Language } from "@alice-localization/base/Language";
+import { WhitelistManagerLocalization } from "@localization/utils/managers/WhitelistManager/WhitelistManagerLocalization";
+import { Language } from "@localization/base/Language";
 
 /**
  * A manager for whitelisted and blacklisted beatmaps.

@@ -1,6 +1,6 @@
-import { PPCalculationMethod } from "@alice-enums/utils/PPCalculationMethod";
-import { DifficultyCalculationParameters } from "@alice-utils/dpp/DifficultyCalculationParameters";
-import { PerformanceCalculationParameters } from "@alice-utils/dpp/PerformanceCalculationParameters";
+import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
+import { DifficultyCalculationParameters } from "@utils/dpp/DifficultyCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
 import { Beatmap, Modes } from "@rian8337/osu-base";
 import {
     DroidDifficultyCalculator,

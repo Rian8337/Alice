@@ -6,22 +6,22 @@ import {
     bold,
     userMention,
 } from "discord.js";
-import { CommandCategory } from "@alice-enums/core/CommandCategory";
+import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { MathEquation } from "@alice-structures/utils/MathEquation";
+import { MathEquation } from "@structures/utils/MathEquation";
 import { MathGameType } from "structures/commands/Fun/MathGameType";
-import { EmbedCreator } from "@alice-utils/creators/EmbedCreator";
-import { MathEquationCreator } from "@alice-utils/creators/MathEquationCreator";
-import { MessageCreator } from "@alice-utils/creators/MessageCreator";
-import { HelperFunctions } from "@alice-utils/helpers/HelperFunctions";
+import { EmbedCreator } from "@utils/creators/EmbedCreator";
+import { MathEquationCreator } from "@utils/creators/MathEquationCreator";
+import { MessageCreator } from "@utils/creators/MessageCreator";
+import { HelperFunctions } from "@utils/helpers/HelperFunctions";
 import { ApplicationCommandOptionType } from "discord.js";
-import { DateTimeFormatHelper } from "@alice-utils/helpers/DateTimeFormatHelper";
-import { StringHelper } from "@alice-utils/helpers/StringHelper";
-import { ArrayHelper } from "@alice-utils/helpers/ArrayHelper";
-import { CacheManager } from "@alice-utils/managers/CacheManager";
-import { MathgameLocalization } from "@alice-localization/interactions/commands/Fun/mathgame/MathgameLocalization";
-import { CommandHelper } from "@alice-utils/helpers/CommandHelper";
-import { InteractionHelper } from "@alice-utils/helpers/InteractionHelper";
+import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
+import { StringHelper } from "@utils/helpers/StringHelper";
+import { ArrayHelper } from "@utils/helpers/ArrayHelper";
+import { CacheManager } from "@utils/managers/CacheManager";
+import { MathgameLocalization } from "@localization/interactions/commands/Fun/mathgame/MathgameLocalization";
+import { CommandHelper } from "@utils/helpers/CommandHelper";
+import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 /**
  * Generates an equation and loops the game.
