@@ -90,7 +90,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             answer = ArrayHelper.getRandomArrayElement(res.response);
     }
 
-    if (!Config.botOwners.includes(message.author.id) && Math.random() < 0.25) {
+    if (!Config.botOwners.includes(message.author.id) && Math.random() < 0.1) {
         answer = `No... you ${italic("baka")}.`;
     }
 
