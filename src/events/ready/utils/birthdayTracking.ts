@@ -112,14 +112,15 @@ export const run: EventUtil["run"] = async (client) => {
 
             // Give coins as gift
             await user
-                .send(
-                    MessageCreator.createPrefixedMessage(
+                .send({
+                    content: MessageCreator.createPrefixedMessage(
                         new BirthdayTrackingLocalization(
                             CommandHelper.getLocale(user.id),
                         ).getTranslation("happyBirthday"),
                         Symbols.cake,
                     ),
-                )
+                    stickers: ["1300388352888934421"],
+                })
                 .catch(consola.error);
 
             await DatabaseManager.aliceDb.collections.playerInfo.updateOne(
