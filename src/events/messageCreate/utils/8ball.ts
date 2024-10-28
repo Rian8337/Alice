@@ -1,4 +1,4 @@
-import { Message, bold } from "discord.js";
+import { Message, bold, italic } from "discord.js";
 import { Config } from "@core/Config";
 import { DatabaseManager } from "@database/DatabaseManager";
 import { EightBallResponseType } from "@enums/utils/EightBallResponseType";
@@ -90,8 +90,8 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             answer = ArrayHelper.getRandomArrayElement(res.response);
     }
 
-    if (!Config.botOwners.includes(message.author.id) && Math.random() < 0.1) {
-        answer = "No... you dummy.";
+    if (!Config.botOwners.includes(message.author.id) && Math.random() < 0.25) {
+        answer = `No... you ${italic("baka")}.`;
     }
 
     embed.setDescription(
