@@ -5,7 +5,70 @@ import {
     OfficialDatabaseTables,
 } from "@database/official/OfficialDatabaseTables";
 import { OfficialDatabaseBestScore } from "@database/official/schema/OfficialDatabaseBestScore";
+import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 import { RowDataPacket } from "mysql2";
+
+function getScores(
+    id: number,
+): Promise<Map<string, Pick<OfficialDatabaseScore, "id" | "score" | "hash">>> {
+    return officialPool
+        .query<
+            RowDataPacket[]
+        >(`SELECT id, score, hash FROM ${constructOfficialDatabaseTable(OfficialDatabaseTables.score)} WHERE uid = ?`, [id])
+        .then(
+            (res) =>
+                new Map(
+                    res[0].map(
+                        (score) =>
+                            [
+                                score.hash,
+                                {
+                                    id: score.id,
+                                    score: score.score,
+                                    hash: score.hash,
+                                },
+                            ] as [
+                                string,
+                                Pick<
+                                    OfficialDatabaseScore,
+                                    "id" | "score" | "hash"
+                                >,
+                            ],
+                    ),
+                ),
+        );
+}
+
+function getBestScores(
+    id: number,
+): Promise<Map<string, Pick<OfficialDatabaseBestScore, "id" | "pp" | "hash">>> {
+    return officialPool
+        .query<
+            RowDataPacket[]
+        >(`SELECT id, pp, hash FROM ${constructOfficialDatabaseTable(OfficialDatabaseTables.bestScore)} WHERE uid = ?`, [id])
+        .then(
+            (res) =>
+                new Map(
+                    res[0].map(
+                        (score) =>
+                            [
+                                score.hash,
+                                {
+                                    id: score.id,
+                                    pp: score.pp,
+                                    hash: score.hash,
+                                },
+                            ] as [
+                                string,
+                                Pick<
+                                    OfficialDatabaseBestScore,
+                                    "id" | "pp" | "hash"
+                                >,
+                            ],
+                    ),
+                ),
+        );
+}
 
 Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
     const dbManager = DatabaseManager.aliceDb.collections.accountTransfer;
@@ -19,95 +82,206 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
         OfficialDatabaseTables.user,
     );
 
-    const scoreTables = [
+    const scoreTable = constructOfficialDatabaseTable(
         OfficialDatabaseTables.score,
-        OfficialDatabaseTables.bestScore,
-        OfficialDatabaseTables.bannedScore,
-        OfficialDatabaseTables.bestBannedScore,
-    ].map(constructOfficialDatabaseTable);
+    );
 
-    const scoreTable = scoreTables[0];
-    const bestScoreTable = scoreTables[1];
+    const bannedScoreTable = constructOfficialDatabaseTable(
+        OfficialDatabaseTables.bannedScore,
+    );
+
+    const bestScoreTable = constructOfficialDatabaseTable(
+        OfficialDatabaseTables.bestScore,
+    );
+
+    const bestBannedScoreTable = constructOfficialDatabaseTable(
+        OfficialDatabaseTables.bestBannedScore,
+    );
 
     for (const transfer of transfers.values()) {
-        const connection = await officialPool.getConnection();
+        for (const uidToTransfer of transfer.transferList) {
+            // Mark the uid as archived.
+            await officialPool.query(
+                `UPDATE ${userTable} SET archived = 1 WHERE id = ?`,
+                [uidToTransfer],
+            );
 
-        try {
-            await connection.beginTransaction();
+            // Check for duplicate scores, and only keep the best score for each beatmap.
+            const targetUidScores = await getScores(transfer.transferUid);
+            const uidTransferScores = await getScores(uidToTransfer);
 
-            for (const uidToTransfer of transfer.transferList) {
-                // Mark the uid as archived.
-                await connection.query(
-                    `UPDATE ${userTable} SET archived = 1 WHERE id = ?`,
-                    [uidToTransfer],
-                );
+            const scoreIdsToBan: number[] = [];
 
-                // Transfer the scores.
-                for (const table of scoreTables) {
-                    await connection.query(
-                        `UPDATE ${table} SET uid = ? WHERE uid = ?`,
-                        [transfer.transferUid, uidToTransfer],
-                    );
+            for (const [hash, transferScore] of uidTransferScores) {
+                const targetScore = targetUidScores.get(hash);
+
+                if (!targetScore) {
+                    continue;
+                }
+
+                if (targetScore.score > transferScore.score) {
+                    // The transfer score is better, so we move the current score to the banned table.
+                    scoreIdsToBan.push(transferScore.id);
+                } else {
+                    // The current score is better, so we move the transfer score to the banned table.
+                    scoreIdsToBan.push(targetScore.id);
                 }
             }
 
-            const valuesArr = [transfer.transferUid, transfer.transferUid];
+            let connection = await officialPool.getConnection();
 
-            await connection.query(
-                `UPDATE ${userTable} SET score = (SELECT SUM(score) FROM ${scoreTable} WHERE uid = ?) WHERE id = ?`,
-                valuesArr,
+            try {
+                await connection.beginTransaction();
+
+                for (const scoreId of scoreIdsToBan) {
+                    await connection.query(
+                        `INSERT INTO ${bannedScoreTable} SELECT * FROM ${scoreTable} WHERE id = ?`,
+                        [scoreId],
+                    );
+                }
+
+                await connection.commit();
+            } catch (e) {
+                console.error(e);
+
+                await connection.rollback();
+            } finally {
+                connection.release();
+            }
+
+            // Do the same for best scores, except now pp is the deciding factor.
+            const targetUidBestScores = await getBestScores(
+                transfer.transferUid,
             );
+            const uidTransferBestScores = await getBestScores(uidToTransfer);
 
-            const topScores = await connection
-                .query<
-                    RowDataPacket[]
-                >(`SELECT pp, accuracy FROM ${bestScoreTable} WHERE uid = ? ORDER BY pp DESC LIMIT 100`, [transfer.transferUid])
-                .then(
-                    (res) =>
-                        res[0] as Pick<
-                            OfficialDatabaseBestScore,
-                            "pp" | "accuracy"
-                        >[],
+            scoreIdsToBan.length = 0;
+
+            for (const [hash, transferScore] of uidTransferBestScores) {
+                const targetScore = targetUidBestScores.get(hash);
+
+                if (!targetScore) {
+                    continue;
+                }
+
+                if (targetScore.pp > transferScore.pp) {
+                    // The transfer score is better, so we move the current score to the banned table.
+                    scoreIdsToBan.push(transferScore.id);
+                } else {
+                    // The current score is better, so we move the transfer score to the banned table.
+                    scoreIdsToBan.push(targetScore.id);
+                }
+            }
+
+            connection = await officialPool.getConnection();
+
+            try {
+                await connection.beginTransaction();
+
+                for (const scoreId of scoreIdsToBan) {
+                    await connection.query(
+                        `INSERT INTO ${bestBannedScoreTable} SELECT * FROM ${bestScoreTable} WHERE id = ?`,
+                        [scoreId],
+                    );
+                }
+
+                await connection.commit();
+            } catch (e) {
+                console.error(e);
+
+                await connection.rollback();
+            } finally {
+                connection.release();
+            }
+
+            // Finally, change the uid of the scores to the transfer uid.
+            connection = await officialPool.getConnection();
+
+            try {
+                await connection.beginTransaction();
+
+                await connection.query(
+                    `UPDATE ${scoreTable} SET uid = ? WHERE uid = ?`,
+                    [transfer.transferUid, uidToTransfer],
                 );
 
-            let totalPP = 0;
-            let accuracy = 0;
-            let accuracyWeight = 0;
+                await connection.query(
+                    `UPDATE ${bannedScoreTable} SET uid = ? WHERE uid = ?`,
+                    [transfer.transferUid, uidToTransfer],
+                );
 
-            for (let i = 0; i < topScores.length; ++i) {
-                const score = topScores[i];
-                const weight = Math.pow(0.95, i);
+                await connection.query(
+                    `UPDATE ${bestScoreTable} SET uid = ? WHERE uid = ?`,
+                    [transfer.transferUid, uidToTransfer],
+                );
 
-                totalPP += score.pp * weight;
-                accuracy += score.accuracy * weight;
-                accuracyWeight += weight;
+                await connection.query(
+                    `UPDATE ${bestBannedScoreTable} SET uid = ? WHERE uid = ?`,
+                    [transfer.transferUid, uidToTransfer],
+                );
+
+                await connection.commit();
+            } catch (e) {
+                console.error(e);
+
+                await connection.rollback();
+            } finally {
+                connection.release();
             }
+        }
 
-            if (accuracy > 0) {
-                accuracy /= accuracyWeight;
-            } else {
-                accuracy = 1;
-            }
+        const topScores = await officialPool
+            .query<
+                RowDataPacket[]
+            >(`SELECT pp, accuracy FROM ${bestScoreTable} WHERE uid = ? ORDER BY pp DESC LIMIT 100`, [transfer.transferUid])
+            .then(
+                (res) =>
+                    res[0] as Pick<
+                        OfficialDatabaseBestScore,
+                        "pp" | "accuracy"
+                    >[],
+            );
+
+        let totalPP = 0;
+        let accuracy = 0;
+        let accuracyWeight = 0;
+
+        for (let i = 0; i < topScores.length; ++i) {
+            const score = topScores[i];
+            const weight = Math.pow(0.95, i);
+
+            totalPP += score.pp * weight;
+            accuracy += score.accuracy * weight;
+            accuracyWeight += weight;
+        }
+
+        if (accuracy > 0) {
+            accuracy /= accuracyWeight;
+        } else {
+            accuracy = 1;
+        }
+
+        const connection = await officialPool.getConnection();
+
+        try {
+            await connection.query(
+                `UPDATE ${userTable} SET score = (SELECT SUM(score) FROM ${scoreTable} WHERE uid = ?) WHERE id = ?`,
+                [transfer.transferUid, transfer.transferUid],
+            );
 
             await connection.query(
                 `UPDATE ${userTable} SET pp = ${totalPP}, accuracy = ${accuracy} WHERE id = ?`,
-                valuesArr,
+                [transfer.transferUid],
             );
 
             await connection.query(
                 `UPDATE ${userTable} SET playcount = (SELECT COUNT(*) FROM ${scoreTable} WHERE uid = ? AND score > 0) WHERE id = ?`,
-                valuesArr,
+                [transfer.transferUid, transfer.transferUid],
             );
 
             await connection.commit();
-
-            console.log(
-                `Transfer for ${transfer.discordId} has been completed.`,
-            );
         } catch (e) {
-            console.error(
-                `Failed to transfer account for ${transfer.discordId}: ${e}`,
-            );
+            console.error(e);
 
             await connection.rollback();
         } finally {
@@ -118,6 +292,8 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
             { discordId: transfer.discordId },
             { $set: { transferDone: true } },
         );
+
+        console.log(`Transfer for ${transfer.discordId} has been completed.`);
     }
 
     console.log("All transfers have been completed.");
