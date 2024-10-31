@@ -120,10 +120,10 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
                 }
 
                 if (targetScore.score > transferScore.score) {
-                    // The transfer score is better, so we move the current score to the banned table.
+                    // The target uid's score is better, so we move the transfer score to the banned table.
                     scoreIdsToBan.push(transferScore.id);
                 } else {
-                    // The current score is better, so we move the transfer score to the banned table.
+                    // The transfer score is better, so we move the target uid's score to the banned table.
                     scoreIdsToBan.push(targetScore.id);
                 }
             }
@@ -165,10 +165,10 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
                 }
 
                 if (targetScore.pp > transferScore.pp) {
-                    // The transfer score is better, so we move the current score to the banned table.
+                    // The target uid's score is better, so we move the transfer score to the banned table.
                     scoreIdsToBan.push(transferScore.id);
                 } else {
-                    // The current score is better, so we move the transfer score to the banned table.
+                    // The transfer score is better, so we move the target uid's score to the banned table.
                     scoreIdsToBan.push(targetScore.id);
                 }
             }
@@ -230,6 +230,7 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
             }
         }
 
+        // Update user statistics.
         const topScores = await officialPool
             .query<
                 RowDataPacket[]
