@@ -138,6 +138,11 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
                         `INSERT INTO ${bannedScoreTable} SELECT * FROM ${scoreTable} WHERE id = ?`,
                         [scoreId],
                     );
+
+                    await connection.query(
+                        `DELETE FROM ${scoreTable} WHERE id = ?`,
+                        [scoreId],
+                    );
                 }
 
                 await connection.commit();
@@ -181,6 +186,11 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
                 for (const scoreId of scoreIdsToBan) {
                     await connection.query(
                         `INSERT INTO ${bestBannedScoreTable} SELECT * FROM ${bestScoreTable} WHERE id = ?`,
+                        [scoreId],
+                    );
+
+                    await connection.query(
+                        `DELETE FROM ${bestScoreTable} WHERE id = ?`,
                         [scoreId],
                     );
                 }
