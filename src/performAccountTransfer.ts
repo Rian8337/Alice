@@ -4,7 +4,7 @@ import {
     constructOfficialDatabaseTable,
     OfficialDatabaseTables,
 } from "@database/official/OfficialDatabaseTables";
-import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
+import { OfficialDatabaseBestScore } from "@database/official/schema/OfficialDatabaseBestScore";
 import { RowDataPacket } from "mysql2";
 
 Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
@@ -25,6 +25,9 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
         OfficialDatabaseTables.bannedScore,
         OfficialDatabaseTables.bestBannedScore,
     ].map(constructOfficialDatabaseTable);
+
+    const scoreTable = scoreTables[0];
+    const bestScoreTable = scoreTables[1];
 
     for (const transfer of transfers.values()) {
         const connection = await officialPool.getConnection();
@@ -48,7 +51,6 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
                 }
             }
 
-            const scoreTable = scoreTables[0];
             const valuesArr = [transfer.transferUid, transfer.transferUid];
 
             await connection.query(
@@ -59,26 +61,36 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
             const topScores = await connection
                 .query<
                     RowDataPacket[]
-                >(`SELECT accuracy FROM ${scoreTable} WHERE uid = ? AND score > 0 ORDER BY pp DESC LIMIT 100`, [transfer.transferUid])
+                >(`SELECT pp, accuracy FROM ${bestScoreTable} WHERE uid = ? ORDER BY pp DESC LIMIT 100`, [transfer.transferUid])
                 .then(
                     (res) =>
-                        res[0] as Pick<OfficialDatabaseScore, "accuracy">[],
+                        res[0] as Pick<
+                            OfficialDatabaseBestScore,
+                            "pp" | "accuracy"
+                        >[],
                 );
 
+            let totalPP = 0;
             let accuracy = 0;
             let accuracyWeight = 0;
 
             for (let i = 0; i < topScores.length; ++i) {
+                const score = topScores[i];
                 const weight = Math.pow(0.95, i);
 
-                accuracy += topScores[i].accuracy * weight;
+                totalPP += score.pp * weight;
+                accuracy += score.accuracy * weight;
                 accuracyWeight += weight;
             }
 
-            accuracy /= accuracyWeight;
+            if (accuracy > 0) {
+                accuracy /= accuracyWeight;
+            } else {
+                accuracy = 1;
+            }
 
             await connection.query(
-                `UPDATE ${userTable} SET accuracy = ${accuracy} WHERE id = ?`,
+                `UPDATE ${userTable} SET pp = ${totalPP}, accuracy = ${accuracy} WHERE id = ?`,
                 valuesArr,
             );
 
