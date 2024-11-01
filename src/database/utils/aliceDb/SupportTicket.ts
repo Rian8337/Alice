@@ -282,8 +282,21 @@ export class SupportTicket extends Manager implements DatabaseSupportTicket {
 
         await this.updateMessages(language);
 
-        await userThreadChannel.setLocked(true, "Ticket closed");
-        await userThreadChannel.setArchived(true, "Ticket closed");
+        if (!userThreadChannel.locked) {
+            await userThreadChannel.setLocked(true, "Ticket closed");
+        }
+
+        if (!userThreadChannel.archived) {
+            await userThreadChannel.setArchived(true, "Ticket closed");
+        }
+
+        if (!staffThreadChannel.locked) {
+            await staffThreadChannel.setLocked(true, "Ticket closed");
+        }
+
+        if (!staffThreadChannel.archived) {
+            await staffThreadChannel.setArchived(true, "Ticket closed");
+        }
 
         await staffThreadChannel.setLocked(true, "Ticket closed");
         await staffThreadChannel.setArchived(true, "Ticket closed");
