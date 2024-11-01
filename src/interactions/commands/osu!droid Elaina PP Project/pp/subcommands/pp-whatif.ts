@@ -1,6 +1,5 @@
 import { Constants } from "@core/Constants";
 import { DatabaseManager } from "@database/DatabaseManager";
-import { UserBindCollectionManager } from "@database/managers/elainaDb/UserBindCollectionManager";
 import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
@@ -11,19 +10,17 @@ import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { DPPHelper } from "@utils/helpers/DPPHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@utils/helpers/LocaleHelper";
-import { Snowflake } from "discord.js";
 import { FindOptions } from "mongodb";
 import { NumberHelper } from "@utils/helpers/NumberHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: PPLocalization = new PPLocalization(
+    const localization = new PPLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const discordid: Snowflake | undefined =
-        interaction.options.getUser("user")?.id;
-    const uid: number | null = interaction.options.getInteger("uid");
-    const username: string | null = interaction.options.getString("username");
+    const discordid = interaction.options.getUser("user")?.id;
+    const uid = interaction.options.getInteger("uid");
+    const username = interaction.options.getString("username");
 
     if ([discordid, uid, username].filter(Boolean).length > 1) {
         interaction.ephemeral = true;
@@ -35,8 +32,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const dbManager: UserBindCollectionManager =
-        DatabaseManager.elainaDb.collections.userBind;
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     let bindInfo: UserBind | null | undefined;
 
@@ -80,12 +76,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const ppValue: number = interaction.options.getNumber("pp", true);
-
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const ppValue = interaction.options.getNumber("pp", true);
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     // Since <Collection>.at will spread the collection anyway, we search the index here.
-    let playIndex: number = 0;
+    let playIndex = 0;
 
     for (const pp of bindInfo.pp.values()) {
         if (pp.pp <= ppValue) {
@@ -120,7 +115,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         },
     ]);
 
-    const totalPP: number = DPPHelper.calculateFinalPerformancePoints(
+    const totalPP = DPPHelper.calculateFinalPerformancePoints(
         bindInfo.pp,
         bindInfo.playc,
     );

@@ -54,5 +54,7 @@ export class PPENTranslation extends Translation<PPStrings> {
             "A score of `%spp` for `%s` would not affect their total pp.",
         whatIfScoreEntered:
             "A score of `%spp` (`%spp` weighted) for `%s` would be their `#%s` top play and increase their total pp to `%spp` (`+%spp`).",
+        ppSystemOutdated:
+            "This pp system is outdated and will be removed in the future.",
     };
 }

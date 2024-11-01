@@ -53,5 +53,6 @@ export class PPESTranslation extends Translation<PPStrings> {
         ppSubmissionInfo: "Información de PP registrada",
         whatIfScoreNotEntered: "",
         whatIfScoreEntered: "",
+        ppSystemOutdated: "",
     };
 }

@@ -28,6 +28,7 @@ import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPe
 import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
 import { ResponseDifficultyAttributes } from "@structures/difficultyattributes/ResponseDifficultyAttributes";
 import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
+import { MessageCreator } from "@utils/creators/MessageCreator";
 
 /**
  * A helper for droid performance points related things.
@@ -172,7 +173,12 @@ export abstract class DPPHelper {
 
         MessageButtonCreator.createLimitedButtonBasedPaging(
             interaction,
-            { embeds: [embed] },
+            {
+                content: MessageCreator.createWarn(
+                    "This pp system is outdated and will be removed in the future.",
+                ),
+                embeds: [embed],
+            },
             [interaction.user.id],
             Math.max(page, 1),
             Math.ceil(playerInfo.pp.size / 5),

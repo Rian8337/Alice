@@ -33,13 +33,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         },
     });
 
+    const outdatedMessage = MessageCreator.createWarn(
+        localization.getTranslation("ppSystemOutdated"),
+    );
+
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject,
                 ),
-            ),
+            )}`,
         });
     }
 
@@ -49,9 +53,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (!beatmapID) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 localization.getTranslation("beatmapNotFound"),
-            ),
+            )}`,
         });
     }
 
@@ -62,9 +66,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (!beatmapInfo) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 localization.getTranslation("beatmapNotFound"),
-            ),
+            )}`,
         });
     }
 
@@ -81,9 +85,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 localization.getTranslation("noScoreSubmitted"),
-            ),
+            )}`,
         });
     }
 
@@ -140,15 +144,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         !result.statuses[0].success
     ) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 localization.getTranslation("submitFailed"),
-            ),
+            )}`,
             embeds: [embed],
         });
     }
 
     InteractionHelper.reply(interaction, {
-        content: MessageCreator.createAccept("Submission success."),
+        content: `${outdatedMessage}\n${MessageCreator.createAccept("Submission success.")}`,
         embeds: [embed],
     });
 };

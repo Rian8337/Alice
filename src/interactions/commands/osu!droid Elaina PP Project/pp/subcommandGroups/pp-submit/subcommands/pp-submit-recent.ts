@@ -34,13 +34,17 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         },
     });
 
+    const outdatedMessage = MessageCreator.createWarn(
+        localization.getTranslation("ppSystemOutdated"),
+    );
+
     if (!bindInfo) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 new ConstantsLocalization(localization.language).getTranslation(
                     Constants.selfNotBindedReject,
                 ),
-            ),
+            )}`,
         });
     }
 
@@ -48,9 +52,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 localization.getTranslation("profileNotFound"),
-            ),
+            )}`,
         });
     }
 
@@ -60,9 +64,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         )
     ) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 localization.getTranslation("uidIsBanned"),
-            ),
+            )}`,
         });
     }
 
@@ -112,9 +116,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (scoresToSubmit.length === 0) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 localization.getTranslation("noScoresInSubmittedList"),
-            ),
+            )}`,
         });
     }
 
@@ -185,26 +189,26 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     if (result === null || result.statuses.every((s) => !s.success)) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
+            content: `${outdatedMessage}\n${MessageCreator.createReject(
                 localization.getTranslation("submitFailed"),
-            ),
+            )}`,
             embeds: [embed],
         });
     }
 
     if (result.statuses.some((s) => !s.success)) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createAccept(
+            content: `${outdatedMessage}\n${MessageCreator.createAccept(
                 localization.getTranslation("partialSubmitSuccessful"),
-            ),
+            )}`,
             embeds: [embed],
         });
     }
 
     InteractionHelper.reply(interaction, {
-        content: MessageCreator.createAccept(
+        content: `${outdatedMessage}\n${MessageCreator.createAccept(
             localization.getTranslation("fullSubmitSuccessful"),
-        ),
+        )}`,
         embeds: [embed],
     });
 };

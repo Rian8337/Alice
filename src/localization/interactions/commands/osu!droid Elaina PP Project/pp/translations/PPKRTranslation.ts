@@ -50,5 +50,6 @@ export class PPKRTranslation extends Translation<PPStrings> {
         ppSubmissionInfo: "PP 제출 정보",
         whatIfScoreNotEntered: "",
         whatIfScoreEntered: "",
+        ppSystemOutdated: "",
     };
 }

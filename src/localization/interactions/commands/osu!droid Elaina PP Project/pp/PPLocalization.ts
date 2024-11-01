@@ -40,6 +40,7 @@ export interface PPStrings {
     readonly ppSubmissionInfo: string;
     readonly whatIfScoreNotEntered: string;
     readonly whatIfScoreEntered: string;
+    readonly ppSystemOutdated: string;
 }
 
 /**
