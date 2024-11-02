@@ -27,10 +27,9 @@ import { DPPProcessorCalculationResponse } from "@structures/utils/DPPProcessorC
  * A REST manager for the droid performance points processor backend.
  */
 export abstract class DPPProcessorRESTManager extends RESTManager {
-    private static readonly endpoint =
-        /* Config.isDebug
+    private static readonly endpoint = Config.isDebug
         ? "https://droidpp.osudroid.moe/api/dpp/processor/"
-        :  */ "http://localhost:3006/api/dpp/processor/";
+        : "http://localhost:3006/api/dpp/processor/";
 
     /**
      * Retrieves a difficulty attributes from the backend.
