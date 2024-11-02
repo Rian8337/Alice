@@ -13,7 +13,7 @@ export abstract class MessageCreator {
         Config.isDebug ? "1300058912279761011" : "1300047123554762772",
     );
     private static readonly warnPrefix = formatEmoji(
-        Config.isDebug ? "1300058934811295846" : "1300047123498250240",
+        Config.isDebug ? "1300058934811295846" : "1300047227116585020",
     );
 
     /**
