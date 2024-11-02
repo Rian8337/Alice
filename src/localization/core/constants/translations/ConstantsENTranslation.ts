@@ -12,7 +12,7 @@ export class ConstantsENTranslation extends Translation<ConstantsStrings> {
         selfAccountNotBinded: `I'm sorry, your account is not bound. You need to bind your account using ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083",
+            "1302217968935108639",
         )} first.`,
         commandNotAvailableInServer:
             "I'm sorry, this command is not available in this server.",
@@ -21,7 +21,7 @@ export class ConstantsENTranslation extends Translation<ConstantsStrings> {
         userAccountNotBinded: `I'm sorry, that account is not bound. The user needs to bind their account using ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083",
+            "1302217968935108639",
         )} first.`,
     };
 }

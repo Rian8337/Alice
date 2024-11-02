@@ -28,11 +28,11 @@ export class OnboardingBindAccountENTranslation extends Translation<OnboardingBi
         furtherBindQuote: `You may also use the ${chatInputApplicationCommandMention(
             "userbind",
             "uid",
-            "881019231863468083",
+            "1302217968935108639",
         )} or ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083",
+            "1302217968935108639",
         )} commands to access this feature. The first command identifies your osu!droid account by its uid, while the second command identifies your osu!droid account by its username.`,
     };
 }

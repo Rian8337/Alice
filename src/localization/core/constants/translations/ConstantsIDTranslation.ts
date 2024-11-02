@@ -12,7 +12,7 @@ export class ConstantsIDTranslation extends Translation<ConstantsStrings> {
         selfAccountNotBinded: `Maaf, akun kamu belum terhubung. Kamu perlu menghubungkan akunmu menggunakan ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083",
+            "1302217968935108639",
         )} terlebih dahulu.`,
         commandNotAvailableInServer:
             "Maaf, perintah ini tidak tersedia untuk server ini.",
@@ -21,7 +21,7 @@ export class ConstantsIDTranslation extends Translation<ConstantsStrings> {
         userAccountNotBinded: `Maaf, akun tersebut belum terhubung. Pemilik akun tersebut perlu menghubungkan akunnya menggunakan ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083",
+            "1302217968935108639",
         )} terlebih dahulu.`,
     };
 }

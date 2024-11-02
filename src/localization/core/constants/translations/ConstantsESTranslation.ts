@@ -12,7 +12,7 @@ export class ConstantsESTranslation extends Translation<ConstantsStrings> {
         selfAccountNotBinded: `Lo siento, tu cuenta no esta enlazada. Para enlazar tu cuenta, usa ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083",
+            "1302217968935108639",
         )} primero.`,
         commandNotAvailableInServer:
             "Lo siento, ese comando no esta disponible en este servidor.",
@@ -21,7 +21,7 @@ export class ConstantsESTranslation extends Translation<ConstantsStrings> {
         userAccountNotBinded: `Lo siento, esa cuenta no esta enlazada. El usuario necesito enlazar su cuenta usando ${chatInputApplicationCommandMention(
             "userbind",
             "username",
-            "881019231863468083",
+            "1302217968935108639",
         )} primero.`,
     };
 }
