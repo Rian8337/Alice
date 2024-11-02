@@ -9,13 +9,12 @@ export class OnboardingAccountBindENTranslation extends Translation<OnboardingAc
         profileNotFound: "I'm sorry, I couldn't find that account's profile!",
         incorrectEmail:
             "I'm sorry, the email you have entered is not associated with the account you're binding!",
-        newAccountBindConfirmation:
-            "Are you sure you want to bind your account to %s?",
-        newAccountBindSuccessful:
-            "Successfully bound your account to %s. You can bind %s more osu!droid account(s).",
-        accountBindError: "I'm sorry, I couldn't bind your account to %s: %s.",
-        accountHasBeenBindedError:
+        bindConfirmation: "Are you sure you want to bind your account to %s?",
+        discordAccountAlreadyBoundError:
+            "I'm sorry, you have bound yourself to an osu!droid account.",
+        accountHasBeenBoundError:
             "I'm sorry, that osu!droid account has been bound to another Discord account!",
-        oldAccountBindSuccessful: "Successfully bound your account to %s.",
+        bindError: "I'm sorry, I couldn't bind your account: %s.",
+        bindSuccessful: "Successfully bound your account to %s.",
     };
 }

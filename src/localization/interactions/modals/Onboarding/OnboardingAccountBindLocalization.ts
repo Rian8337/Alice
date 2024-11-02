@@ -5,11 +5,11 @@ import { OnboardingAccountBindENTranslation } from "./translations/OnboardingAcc
 export interface OnboardingAccountBindStrings {
     readonly profileNotFound: string;
     readonly incorrectEmail: string;
-    readonly newAccountBindConfirmation: string;
-    readonly newAccountBindSuccessful: string;
-    readonly oldAccountBindSuccessful: string;
-    readonly accountBindError: string;
-    readonly accountHasBeenBindedError: string;
+    readonly bindConfirmation: string;
+    readonly discordAccountAlreadyBoundError: string;
+    readonly bindError: string;
+    readonly accountHasBeenBoundError: string;
+    readonly bindSuccessful: string;
 }
 
 /**
