@@ -7,18 +7,12 @@ import { UserbindKRTranslation } from "./translations/UserbindKRTranslation";
 
 export interface UserbindStrings {
     readonly profileNotFound: string;
-    readonly newAccountBindNotInMainServer: string;
-    readonly emailNotSpecified: string;
     readonly incorrectEmail: string;
-    readonly newAccountUidBindConfirmation: string;
-    readonly newAccountUsernameBindConfirmation: string;
-    readonly newAccountUidBindSuccessful: string;
-    readonly newAccountUsernameBindSuccessful: string;
-    readonly accountUidBindError: string;
-    readonly accountUsernameBindError: string;
-    readonly accountHasBeenBindedError: string;
-    readonly oldAccountUidBindSuccessful: string;
-    readonly oldAccountUsernameBindSuccessful: string;
+    readonly bindConfirmation: string;
+    readonly discordAccountAlreadyBoundError: string;
+    readonly bindError: string;
+    readonly accountHasBeenBoundError: string;
+    readonly bindSuccessful: string;
 }
 
 /**

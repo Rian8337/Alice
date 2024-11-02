@@ -18,8 +18,7 @@ export const config: SlashCommand["config"] = {
         {
             name: "uid",
             type: ApplicationCommandOptionType.Subcommand,
-            description:
-                "Switches your currently bound osu!droid account or binds an osu!droid account using its uid.",
+            description: "Binds an osu!droid account using its uid.",
             options: [
                 {
                     name: "uid",
@@ -30,17 +29,17 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "email",
+                    required: true,
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The email associated with the osu!droid account. Required for first-time bind of the account.",
+                        "The email associated with the osu!droid account.",
                 },
             ],
         },
         {
             name: "username",
             type: ApplicationCommandOptionType.Subcommand,
-            description:
-                "Switches your currently bound osu!droid account or binds an osu!droid account using its username.",
+            description: "Binds an osu!droid account using its username.",
             options: [
                 {
                     name: "username",
@@ -52,9 +51,10 @@ export const config: SlashCommand["config"] = {
                 },
                 {
                     name: "email",
+                    required: true,
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The email associated with the osu!droid account. Required for first-time bind of the account.",
+                        "The email associated with the osu!droid account.",
                 },
             ],
         },
