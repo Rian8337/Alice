@@ -1,3 +1,4 @@
+import "module-alias/register";
 import { DatabaseManager } from "@database/DatabaseManager";
 import { officialPool } from "@database/official/OfficialDatabasePool";
 import {
@@ -70,7 +71,7 @@ function getBestScores(
         );
 }
 
-Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
+DatabaseManager.init().then(async () => {
     const dbManager = DatabaseManager.aliceDb.collections.accountTransfer;
     const transfers = await dbManager.get(
         "discordId",
@@ -98,8 +99,23 @@ Promise.all([DatabaseManager.init(), officialPool.connect()]).then(async () => {
         OfficialDatabaseTables.bestBannedScore,
     );
 
+    console.log("Transfering", transfers.size, "accounts.");
+
     for (const transfer of transfers.values()) {
+        console.log("Transferring account for", transfer.discordId);
+
         for (const uidToTransfer of transfer.transferList) {
+            if (uidToTransfer === transfer.transferUid) {
+                continue;
+            }
+
+            console.log(
+                "Transferring",
+                uidToTransfer,
+                "to",
+                transfer.transferUid,
+            );
+
             // Mark the uid as archived.
             await officialPool.query(
                 `UPDATE ${userTable} SET archived = 1 WHERE id = ?`,
