@@ -401,10 +401,8 @@ export class ProfileCardCreator {
         if (this.bindInfo) {
             this.context.fillText(
                 `${this.localization.getTranslation("accuracy")}: ${(
-                    this.player.accuracy /
-                    (this.player instanceof Player
-                        ? 1
-                        : this.player.playcount * 1000)
+                    this.player.accuracy *
+                    (this.player instanceof Player ? 1 : 100)
                 ).toFixed(2)}% | ${this.bindInfo.weightedAccuracy.toFixed(2)}%`,
                 x,
                 y + yOffset,
@@ -412,10 +410,8 @@ export class ProfileCardCreator {
         } else {
             this.context.fillText(
                 `${this.localization.getTranslation("accuracy")}: ${(
-                    this.player.accuracy /
-                    (this.player instanceof Player
-                        ? 1
-                        : this.player.playcount * 1000)
+                    this.player.accuracy *
+                    (this.player instanceof Player ? 1 : 100)
                 ).toFixed(2)}%`,
                 x,
                 y + yOffset,
