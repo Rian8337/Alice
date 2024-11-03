@@ -1,7 +1,6 @@
 import {
     Canvas,
     createCanvas,
-    Image,
     loadImage,
     CanvasRenderingContext2D,
 } from "canvas";
@@ -61,7 +60,7 @@ export class ProfileCardCreator {
     /**
      * Whether to draw for template badges.
      */
-    private template: boolean = false;
+    private template = false;
 
     private readonly localization: ProfileCardCreatorLocalization;
     private readonly BCP47: string;
@@ -108,7 +107,7 @@ export class ProfileCardCreator {
     async generateTemplateCard(): Promise<Buffer> {
         this.template = true;
 
-        const card: Buffer = await this.generateCard();
+        const card = await this.generateCard();
 
         this.template = false;
 
@@ -144,9 +143,9 @@ export class ProfileCardCreator {
     private async drawBackground(): Promise<void> {
         this.context.save();
 
-        const backgroundImageID: string =
+        const backgroundImageID =
             this.playerInfo?.picture_config.activeBackground.id ?? "default";
-        const bg: Image = await loadImage(
+        const bg = await loadImage(
             `${process.cwd()}/files/images/backgrounds/${backgroundImageID}.png`,
         );
         this.context.drawImage(bg, 0, 0);
@@ -210,7 +209,7 @@ export class ProfileCardCreator {
     private async drawPlayerAvatar(): Promise<void> {
         this.context.save();
 
-        const avatar: Image = await loadImage(
+        const avatar = await loadImage(
             this.player instanceof Player
                 ? this.player.avatarURL
                 : DroidHelper.getAvatarURL(this.player.id),
@@ -382,7 +381,7 @@ export class ProfileCardCreator {
             243,
         );
 
-        let yOffset: number = 0;
+        let yOffset = 0;
 
         const increaseYOffset = (): void => {
             yOffset += this.detailed || this.template ? 20 : 18;
