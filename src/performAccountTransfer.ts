@@ -292,18 +292,14 @@ DatabaseManager.init().then(async () => {
 
         try {
             await connection.query(
-                `UPDATE ${userTable} SET score = (SELECT SUM(score) FROM ${scoreTable} WHERE uid = ?) WHERE id = ?`,
-                [transfer.transferUid, transfer.transferUid],
-            );
-
-            await connection.query(
-                `UPDATE ${userTable} SET pp = ${totalPP}, accuracy = ${accuracy} WHERE id = ?`,
-                [transfer.transferUid],
-            );
-
-            await connection.query(
-                `UPDATE ${userTable} SET playcount = (SELECT COUNT(*) FROM ${scoreTable} WHERE uid = ? AND score > 0) WHERE id = ?`,
-                [transfer.transferUid, transfer.transferUid],
+                `UPDATE ${userTable}
+                SET score = (SELECT SUM(score) FROM ${scoreTable} WHERE uid = ?),
+                pp = ${totalPP},
+                accuracy = ${accuracy},
+                playcount = (SELECT COUNT(*) FROM ${scoreTable} WHERE uid = ? AND score > 0),
+                archived = 0
+                WHERE id = ?`,
+                [transfer.transferUid, transfer.transferUid, transfer.transferUid],
             );
 
             await connection.commit();
