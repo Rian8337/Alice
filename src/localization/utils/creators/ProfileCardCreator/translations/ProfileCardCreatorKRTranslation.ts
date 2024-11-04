@@ -9,7 +9,7 @@ export class ProfileCardCreatorKRTranslation extends Translation<ProfileCardCrea
         totalScore: "총 점수",
         accuracy: "정확도",
         playCount: "플레이 횟수",
-        droidPP: "Droid pp",
+        performancePoints: "",
         clan: "클랜",
         challengePoints: "챌린지 포인트",
     };

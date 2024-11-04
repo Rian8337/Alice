@@ -26,7 +26,13 @@ export class ProfileCardCreator {
     private readonly player:
         | Pick<
               OfficialDatabaseUser,
-              "id" | "username" | "score" | "accuracy" | "playcount" | "region"
+              | "id"
+              | "username"
+              | "score"
+              | "accuracy"
+              | "playcount"
+              | "region"
+              | "pp"
           >
         | Player;
 
@@ -82,6 +88,7 @@ export class ProfileCardCreator {
                   | "accuracy"
                   | "playcount"
                   | "region"
+                  | "pp"
               >
             | Player,
         detailed: boolean,
@@ -396,27 +403,17 @@ export class ProfileCardCreator {
             x,
             y + yOffset,
         );
+
         increaseYOffset();
 
-        if (this.bindInfo) {
-            this.context.fillText(
-                `${this.localization.getTranslation("accuracy")}: ${(
-                    this.player.accuracy *
-                    (this.player instanceof Player ? 1 : 100)
-                ).toFixed(2)}% | ${this.bindInfo.weightedAccuracy.toFixed(2)}%`,
-                x,
-                y + yOffset,
-            );
-        } else {
-            this.context.fillText(
-                `${this.localization.getTranslation("accuracy")}: ${(
-                    this.player.accuracy *
-                    (this.player instanceof Player ? 1 : 100)
-                ).toFixed(2)}%`,
-                x,
-                y + yOffset,
-            );
-        }
+        this.context.fillText(
+            `${this.localization.getTranslation("accuracy")}: ${(
+                this.player.accuracy * (this.player instanceof Player ? 1 : 100)
+            ).toFixed(2)}%`,
+            x,
+            y + yOffset,
+        );
+
         increaseYOffset();
 
         this.context.fillText(
@@ -426,31 +423,29 @@ export class ProfileCardCreator {
             x,
             y + yOffset,
         );
+
         increaseYOffset();
 
-        if (this.bindInfo) {
-            const ppRank = await this.getPlayerPPRank(this.bindInfo);
+        this.context.fillText(
+            `${this.localization.getTranslation(
+                "performancePoints",
+            )}: ${this.player.pp.toFixed(2)}pp`,
+            x,
+            y + yOffset,
+        );
+
+        increaseYOffset();
+
+        if (this.bindInfo?.clan) {
             this.context.fillText(
-                `${this.localization.getTranslation(
-                    "droidPP",
-                )}: ${this.bindInfo.pptotal.toFixed(
-                    2,
-                )}pp (#${ppRank.toLocaleString(this.BCP47)})`,
+                `${this.localization.getTranslation("clan")}: ${
+                    this.bindInfo.clan
+                }`,
                 x,
                 y + yOffset,
             );
-            increaseYOffset();
 
-            if (this.bindInfo.clan) {
-                this.context.fillText(
-                    `${this.localization.getTranslation("clan")}: ${
-                        this.bindInfo.clan
-                    }`,
-                    x,
-                    y + yOffset,
-                );
-                increaseYOffset();
-            }
+            increaseYOffset();
         }
 
         this.context.restore();

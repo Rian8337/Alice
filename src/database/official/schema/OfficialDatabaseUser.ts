@@ -8,6 +8,7 @@ export interface OfficialDatabaseUser {
     readonly email: string;
     readonly deviceid: string;
     readonly score: number;
+    readonly pp: number;
     readonly playcount: number;
     readonly accuracy: number;
     readonly regist_time: Date;

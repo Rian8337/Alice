@@ -43,6 +43,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         "playcount",
         "accuracy",
         "region",
+        "pp",
     ]);
 
     if (!player) {

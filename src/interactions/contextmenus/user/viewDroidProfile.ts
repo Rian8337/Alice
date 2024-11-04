@@ -51,6 +51,7 @@ export const run: UserContextMenuCommand["run"] = async (_, interaction) => {
         "playcount",
         "accuracy",
         "region",
+        "pp",
     ]);
 
     if (!player) {

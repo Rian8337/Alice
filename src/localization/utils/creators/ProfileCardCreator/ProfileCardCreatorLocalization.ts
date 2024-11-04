@@ -9,7 +9,7 @@ export interface ProfileCardCreatorStrings {
     readonly totalScore: string;
     readonly accuracy: string;
     readonly playCount: string;
-    readonly droidPP: string;
+    readonly performancePoints: string;
     readonly clan: string;
     readonly challengePoints: string;
 }

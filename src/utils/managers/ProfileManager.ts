@@ -48,6 +48,7 @@ export abstract class ProfileManager extends Manager {
                   | "accuracy"
                   | "playcount"
                   | "region"
+                  | "pp"
               >
             | Player,
         bindInfo?: UserBind | null,
@@ -71,7 +72,15 @@ export abstract class ProfileManager extends Manager {
         }
 
         if (!player) {
-            const newPlayer = await DroidHelper.getPlayer(uid);
+            const newPlayer = await DroidHelper.getPlayer(uid, [
+                "id",
+                "username",
+                "score",
+                "accuracy",
+                "playcount",
+                "region",
+                "pp",
+            ]);
 
             if (!newPlayer) {
                 return null;
@@ -136,6 +145,7 @@ export abstract class ProfileManager extends Manager {
                   | "accuracy"
                   | "playcount"
                   | "region"
+                  | "pp"
               >
             | Player,
         language: Language = "en",
@@ -148,6 +158,7 @@ export abstract class ProfileManager extends Manager {
                 "accuracy",
                 "playcount",
                 "region",
+                "pp",
             ]);
 
             if (!newPlayer) {

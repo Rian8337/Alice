@@ -50,6 +50,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
               | "accuracy"
               | "region"
               | "email"
+              | "pp"
           >
         | Player
         | null = null;
@@ -64,6 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 "accuracy",
                 "region",
                 "email",
+                "pp",
             ]);
 
             uid ??=
@@ -95,6 +97,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 "accuracy",
                 "region",
                 "email",
+                "pp",
             ]);
 
             uid ??=
@@ -148,6 +151,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         "accuracy",
         "region",
         "email",
+        "pp",
     ]);
 
     if (!player) {

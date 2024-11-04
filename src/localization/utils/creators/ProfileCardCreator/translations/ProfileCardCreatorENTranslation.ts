@@ -9,7 +9,7 @@ export class ProfileCardCreatorENTranslation extends Translation<ProfileCardCrea
         totalScore: "Total Score",
         accuracy: "Accuracy",
         playCount: "Play Count",
-        droidPP: "Droid pp",
+        performancePoints: "Performance Points",
         clan: "Clan",
         challengePoints: "Challenge Points",
     };
