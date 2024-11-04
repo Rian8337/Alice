@@ -1,10 +1,6 @@
 import { Constants } from "@core/Constants";
 import { DatabaseManager } from "@database/DatabaseManager";
-import { PlayerInfoCollectionManager } from "@database/managers/aliceDb/PlayerInfoCollectionManager";
-import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
-import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ProfileImageConfig } from "@structures/profile/ProfileImageConfig";
 import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
 import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
@@ -18,11 +14,13 @@ import { StringHelper } from "@utils/helpers/StringHelper";
 import { ProfileManager } from "@utils/managers/ProfileManager";
 
 export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
-    const localization: ProfileLocalization = new ProfileLocalization(
+    const localization = new ProfileLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const bindInfo: UserBind | null =
+    await InteractionHelper.deferUpdate(interaction);
+
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
@@ -46,29 +44,26 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    const color: string | undefined =
-        await MessageInputCreator.createInputDetector(
-            interaction,
-            {
-                embeds: [
-                    EmbedCreator.createInputEmbed(
-                        interaction,
-                        localization.getTranslation(
-                            "changeInfoBoxTextColorTitle",
-                        ),
-                        `${localization.getTranslation(
-                            "enterColor",
-                        )}\n\n${localization.getTranslation(
-                            "supportedColorFormat",
-                        )}`,
-                        localization.language,
-                    ),
-                ],
-            },
-            [],
-            [interaction.user.id],
-            20,
-        );
+    const color = await MessageInputCreator.createInputDetector(
+        interaction,
+        {
+            embeds: [
+                EmbedCreator.createInputEmbed(
+                    interaction,
+                    localization.getTranslation("changeInfoBoxTextColorTitle"),
+                    `${localization.getTranslation(
+                        "enterColor",
+                    )}\n\n${localization.getTranslation(
+                        "supportedColorFormat",
+                    )}`,
+                    localization.language,
+                ),
+            ],
+        },
+        [],
+        [interaction.user.id],
+        20,
+    );
 
     if (!color) {
         return;
@@ -76,7 +71,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
 
     // RGBA
     if (color.includes(",")) {
-        const RGBA: number[] = color.split(",").map((v) => parseFloat(v));
+        const RGBA = color.split(",").map((v) => parseFloat(v));
 
         if (
             RGBA.length !== 4 ||
@@ -99,30 +94,24 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    const playerInfoDbManager: PlayerInfoCollectionManager =
-        DatabaseManager.aliceDb.collections.playerInfo;
+    const playerInfoDbManager = DatabaseManager.aliceDb.collections.playerInfo;
 
-    await InteractionHelper.deferUpdate(interaction);
-
-    const playerInfo: PlayerInfo | null = await playerInfoDbManager.getFromUser(
-        interaction.user,
-        {
-            projection: {
-                _id: 0,
-                picture_config: 1,
-                coins: 1,
-                points: 1,
-            },
+    const playerInfo = await playerInfoDbManager.getFromUser(interaction.user, {
+        projection: {
+            _id: 0,
+            picture_config: 1,
+            coins: 1,
+            points: 1,
         },
-    );
+    });
 
-    const pictureConfig: ProfileImageConfig =
+    const pictureConfig =
         playerInfo?.picture_config ??
         playerInfoDbManager.defaultDocument.picture_config;
 
     pictureConfig.textColor = color;
 
-    const image: Buffer | null = await ProfileManager.getProfileStatistics(
+    const image = await ProfileManager.getProfileStatistics(
         bindInfo.uid,
         undefined,
         bindInfo,
@@ -139,7 +128,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    const confirmation: boolean = await MessageButtonCreator.createConfirmation(
+    const confirmation = await MessageButtonCreator.createConfirmation(
         interaction,
         {
             content: MessageCreator.createWarn(

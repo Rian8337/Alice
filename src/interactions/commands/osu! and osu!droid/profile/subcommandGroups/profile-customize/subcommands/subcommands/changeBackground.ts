@@ -1,19 +1,10 @@
-import {
-    Collection,
-    GuildEmoji,
-    StringSelectMenuInteraction,
-} from "discord.js";
 import { Constants } from "@core/Constants";
 import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { ProfileImageConfig } from "@structures/profile/ProfileImageConfig";
 import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@utils/creators/MessageCreator";
 import { ProfileManager } from "@utils/managers/ProfileManager";
 import { StringHelper } from "@utils/helpers/StringHelper";
-import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
-import { UserBind } from "@database/utils/elainaDb/UserBind";
-import { ProfileBackground } from "@database/utils/aliceDb/ProfileBackground";
 import { SelectMenuCreator } from "@utils/creators/SelectMenuCreator";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
@@ -25,11 +16,11 @@ export const run: SlashSubcommand<false>["run"] = async (
     client,
     interaction,
 ) => {
-    const localization: ProfileLocalization = new ProfileLocalization(
+    const localization = new ProfileLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
@@ -53,18 +44,16 @@ export const run: SlashSubcommand<false>["run"] = async (
         });
     }
 
-    const backgroundList: Collection<string, ProfileBackground> =
+    const backgroundList =
         await DatabaseManager.aliceDb.collections.profileBackgrounds.get(
             "id",
             {},
             { projection: { _id: 0 } },
         );
 
-    const coin: GuildEmoji = client.emojis.cache.get(
-        Constants.mahiruCoinEmote,
-    )!;
+    const coin = client.emojis.cache.get(Constants.mahiruCoinEmote)!;
 
-    const selectMenuInteraction: StringSelectMenuInteraction | null =
+    const selectMenuInteraction =
         await SelectMenuCreator.createStringSelectMenu(
             interaction,
             {
@@ -86,11 +75,10 @@ export const run: SlashSubcommand<false>["run"] = async (
         return;
     }
 
-    const bgId: string = selectMenuInteraction.values[0];
+    const bgId = selectMenuInteraction.values[0];
+    const background = backgroundList.get(bgId)!;
 
-    const background: ProfileBackground = backgroundList.get(bgId)!;
-
-    const playerInfo: PlayerInfo | null =
+    const playerInfo =
         await DatabaseManager.aliceDb.collections.playerInfo.getFromUser(
             interaction.user,
             {
@@ -103,16 +91,16 @@ export const run: SlashSubcommand<false>["run"] = async (
             },
         );
 
-    const pictureConfig: ProfileImageConfig =
+    const pictureConfig =
         playerInfo?.picture_config ??
         DatabaseManager.aliceDb.collections.playerInfo.defaultDocument
             .picture_config;
 
-    const isBackgroundOwned: boolean = !!pictureConfig.backgrounds.find(
+    const isBackgroundOwned = !!pictureConfig.backgrounds.find(
         (v) => v.id === bgId,
     );
 
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     if (!isBackgroundOwned) {
         if ((playerInfo?.coins ?? 0) < 500) {
@@ -136,7 +124,7 @@ export const run: SlashSubcommand<false>["run"] = async (
 
     await InteractionHelper.deferUpdate(selectMenuInteraction);
 
-    const image: Buffer | null = await ProfileManager.getProfileStatistics(
+    const image = await ProfileManager.getProfileStatistics(
         bindInfo.uid,
         undefined,
         bindInfo,
@@ -153,7 +141,7 @@ export const run: SlashSubcommand<false>["run"] = async (
         });
     }
 
-    const confirmation: boolean = await MessageButtonCreator.createConfirmation(
+    const confirmation = await MessageButtonCreator.createConfirmation(
         selectMenuInteraction,
         {
             content: MessageCreator.createWarn(
