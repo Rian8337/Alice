@@ -129,8 +129,7 @@ export class PlayerInfo extends Manager {
         amount: number,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: PlayerInfoLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (this.coins + amount < 0) {
             // This would only happen if the amount incremented is negative
@@ -163,8 +162,7 @@ export class PlayerInfo extends Manager {
         coinAmount: number,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: PlayerInfoLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (this.hasClaimedDaily) {
             return this.createOperationResult(
@@ -209,20 +207,18 @@ export class PlayerInfo extends Manager {
      */
     async transferCoins(
         amount: number,
-        thisPlayer: Pick<OfficialDatabaseUser, "score"> | Player,
+        thisPlayer: Pick<OfficialDatabaseUser, "pp"> | Player,
         to: PlayerInfo,
         limit?: number,
         language: Language = "en",
     ): Promise<OperationResult> {
-        const localization: PlayerInfoLocalization =
-            this.getLocalization(language);
+        const localization = this.getLocalization(language);
 
         if (limit === undefined) {
             const rank =
                 thisPlayer instanceof Player
                     ? thisPlayer.rank
-                    : ((await DroidHelper.getPlayerRank(thisPlayer.score)) ??
-                      0);
+                    : ((await DroidHelper.getPlayerPPRank(thisPlayer.pp)) ?? 0);
 
             switch (true) {
                 case rank < 10:

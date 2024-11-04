@@ -296,26 +296,23 @@ export class Clan extends Manager {
 
         let player = await DroidHelper.getPlayer(
             toAcceptBindInfo.previous_bind[0],
-            ["score", "id"],
+            ["pp", "id"],
         );
         let rank =
             player instanceof Player
                 ? player.rank
                 : player !== null
-                  ? ((await DroidHelper.getPlayerRank(player.score)) ?? 0)
+                  ? ((await DroidHelper.getPlayerPPRank(player.pp)) ?? 0)
                   : 0;
 
         for (const uid of toAcceptBindInfo.previous_bind.slice(1)) {
-            const tempPlayer = await DroidHelper.getPlayer(uid, [
-                "score",
-                "id",
-            ]);
+            const tempPlayer = await DroidHelper.getPlayer(uid, ["pp", "id"]);
 
             const tempRank =
                 tempPlayer instanceof Player
                     ? tempPlayer.rank
                     : tempPlayer != null
-                      ? ((await DroidHelper.getPlayerRank(tempPlayer.score)) ??
+                      ? ((await DroidHelper.getPlayerPPRank(tempPlayer.pp)) ??
                         0)
                       : 0;
 

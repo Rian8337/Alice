@@ -43,7 +43,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     let player:
         | Pick<
               OfficialDatabaseUser,
-              "id" | "username" | "score" | "region" | "playcount"
+              "id" | "username" | "pp" | "region" | "playcount"
           >
         | Player
         | null = null;
@@ -60,7 +60,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             player = await DroidHelper.getPlayer(uid!, [
                 "id",
                 "username",
-                "score",
+                "pp",
                 "region",
                 "playcount",
             ]);
@@ -123,7 +123,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const rank =
         player instanceof Player
             ? player.rank
-            : ((await DroidHelper.getPlayerRank(player.score)) ?? 0);
+            : ((await DroidHelper.getPlayerPPRank(player.pp)) ?? 0);
 
     embed
         .setAuthor({

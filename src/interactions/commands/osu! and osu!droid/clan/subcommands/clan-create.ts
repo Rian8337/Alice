@@ -136,7 +136,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const rank =
         player instanceof Player
             ? player.rank
-            : ((await DroidHelper.getPlayerRank(player.score)) ?? 0);
+            : ((await DroidHelper.getPlayerPPRank(player.score)) ?? 0);
 
     await DatabaseManager.elainaDb.collections.clan.insert({
         leader: interaction.user.id,

@@ -48,9 +48,7 @@ export const run: EventUtil["run"] = async () => {
                     let highestRankUid = 0;
 
                     for (const uid of bindInfo.previous_bind) {
-                        const player = await DroidHelper.getPlayer(uid, [
-                            "score",
-                        ]);
+                        const player = await DroidHelper.getPlayer(uid, ["pp"]);
 
                         if (!player) {
                             continue;
@@ -59,8 +57,8 @@ export const run: EventUtil["run"] = async () => {
                         const rank =
                             player instanceof Player
                                 ? player.rank
-                                : ((await DroidHelper.getPlayerRank(
-                                      player.score,
+                                : ((await DroidHelper.getPlayerPPRank(
+                                      player.pp,
                                   )) ?? 0);
 
                         if (rank > 0 && highestRank > rank) {

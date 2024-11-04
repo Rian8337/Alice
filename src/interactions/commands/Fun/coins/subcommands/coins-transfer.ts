@@ -120,7 +120,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const player = await DroidHelper.getPlayer(userPlayerInfo.uid, ["score"]);
+    const player = await DroidHelper.getPlayer(userPlayerInfo.uid, ["pp"]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -133,7 +133,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const rank =
         player instanceof Player
             ? player.rank
-            : ((await DroidHelper.getPlayerRank(player.score)) ?? 0);
+            : ((await DroidHelper.getPlayerPPRank(player.pp)) ?? 0);
 
     let limit: number;
 
