@@ -144,7 +144,7 @@ export abstract class DroidHelper {
         const rankQuery = await officialPool.query<RowDataPacket[]>(
             `SELECT COUNT(*) + 1 FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.user,
-            )} WHERE score > ?;`,
+            )} WHERE banned = 0 AND restrict_mode = 0 AND archived = 0 AND score > ?;`,
             [score],
         );
 
@@ -171,7 +171,7 @@ export abstract class DroidHelper {
         const rankQuery = await officialPool.query<RowDataPacket[]>(
             `SELECT COUNT(*) + 1 FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.user,
-            )} WHERE pp > ?;`,
+            )} WHERE banned = 0 AND restrict_mode = 0 AND archived = 0 AND pp > ?;`,
             [pp],
         );
 
