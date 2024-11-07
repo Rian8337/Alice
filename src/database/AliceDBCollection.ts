@@ -30,7 +30,6 @@ import { DanCourseScoreCollectionManager } from "./managers/aliceDb/DanCourseSco
 import { RecentPlaysCollectionManager } from "./managers/aliceDb/RecentPlaysCollectionManager";
 import { SupportTicketCollectionManager } from "./managers/aliceDb/SupportTicketCollectionManager";
 import { SupportTicketPresetCollectionManager } from "./managers/aliceDb/SupportTicketPresetCollectionManager";
-import { InGamePPCollectionManager } from "./managers/aliceDb/InGamePPCollectionManager";
 import { AnniversaryTriviaPlayerCollectionManager } from "./managers/aliceDb/AnniversaryTriviaPlayerCollectionManager";
 import { AnniversaryTriviaQuestionCollectionManager } from "./managers/aliceDb/AnniversaryTriviaQuestionCollectionManager";
 import { PrototypePPTypeCollectionManager } from "./managers/aliceDb/PrototypePPTypeCollectionManager";
@@ -204,11 +203,6 @@ export class AliceDBCollection {
     readonly supportTicketPreset: SupportTicketPresetCollectionManager;
 
     /**
-     * The database collection for in-game performance points (pp) entries of osu!droid players.
-     */
-    readonly inGamePP: InGamePPCollectionManager;
-
-    /**
      * The database collection for anniversary trivia questions.
      */
     readonly anniversaryTriviaQuestion: AnniversaryTriviaQuestionCollectionManager;
@@ -322,9 +316,6 @@ export class AliceDBCollection {
         );
         this.supportTicketPreset = new SupportTicketPresetCollectionManager(
             aliceDb.collection("supportticketpreset"),
-        );
-        this.inGamePP = new InGamePPCollectionManager(
-            aliceDb.collection("ingamepp"),
         );
         this.anniversaryTriviaQuestion =
             new AnniversaryTriviaQuestionCollectionManager(
