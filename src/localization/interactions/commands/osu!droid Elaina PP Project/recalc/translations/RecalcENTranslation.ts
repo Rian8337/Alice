@@ -12,12 +12,8 @@ export class RecalcENTranslation extends Translation<RecalcStrings> {
         reworkTypeNotCurrent:
             "I'm sorry, the specified rework type is not the current rework type!",
         reworkTypeDoesntExist: "I'm sorry, this rework type does not exist!",
-        userIsDPPBanned: "I'm sorry, this user has been DPP banned!",
-        userHasRequestedRecalc:
-            "I'm sorry, this user has already requested a recalculation before!",
         userQueued: "Successfully queued %s for recalculation.",
         fullRecalcInProgress: "Successfully started recalculation.",
-        fullRecalcTrackProgress: "Recalculating players (%s/%s (%s%))...",
         fullRecalcSuccess: "%s, recalculation done!",
     };
 }

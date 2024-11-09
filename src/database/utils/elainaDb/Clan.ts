@@ -258,7 +258,6 @@ export class Clan extends Manager {
                         clan: 1,
                         oldjoincooldown: 1,
                         joincooldown: 1,
-                        previous_bind: 1,
                     },
                 },
             );
@@ -294,33 +293,16 @@ export class Clan extends Manager {
             );
         }
 
-        let player = await DroidHelper.getPlayer(
-            toAcceptBindInfo.previous_bind[0],
-            ["pp", "id"],
-        );
-        let rank =
+        const player = await DroidHelper.getPlayer(toAcceptBindInfo.uid, [
+            "pp",
+            "id",
+        ]);
+        const rank =
             player instanceof Player
                 ? player.rank
                 : player !== null
                   ? ((await DroidHelper.getPlayerPPRank(player.pp)) ?? 0)
                   : 0;
-
-        for (const uid of toAcceptBindInfo.previous_bind.slice(1)) {
-            const tempPlayer = await DroidHelper.getPlayer(uid, ["pp", "id"]);
-
-            const tempRank =
-                tempPlayer instanceof Player
-                    ? tempPlayer.rank
-                    : tempPlayer != null
-                      ? ((await DroidHelper.getPlayerPPRank(tempPlayer.pp)) ??
-                        0)
-                      : 0;
-
-            if (tempPlayer && rank > tempRank) {
-                player = tempPlayer;
-                rank = tempRank;
-            }
-        }
 
         if (!player) {
             return this.createOperationResult(
@@ -331,7 +313,7 @@ export class Clan extends Manager {
 
         this.member_list.set(id, {
             id: id,
-            uid: player instanceof Player ? player.uid : player.id,
+            uid: player.id,
             rank: rank,
             hasPermission: false,
             battle_cooldown: 0,

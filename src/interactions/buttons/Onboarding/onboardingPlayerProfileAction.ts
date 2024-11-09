@@ -21,9 +21,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                     uid: 1,
-                    pptotal: 1,
                     clan: 1,
-                    weightedAccuracy: 1,
                 },
             },
         );

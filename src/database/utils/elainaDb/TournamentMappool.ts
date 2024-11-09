@@ -9,6 +9,7 @@ import { Mod } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { ObjectId } from "bson";
 import { Collection } from "discord.js";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 /**
  * Represents a mappool for tournament.
@@ -178,7 +179,7 @@ export class TournamentMappool extends Manager {
         let retrievedScores: Score[];
 
         while (
-            (retrievedScores = await ScoreHelper.fetchDroidLeaderboard(
+            (retrievedScores = await DroidHelper.getBeatmapLeaderboard(
                 pickData.hash,
                 page++,
             )).length > 0

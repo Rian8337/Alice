@@ -28,7 +28,7 @@ export class RecentPlaysCollectionManager extends DatabaseCollectionManager<
             date: new Date(),
             hash: "",
             mods: "",
-            rank: "",
+            rank: "X",
             score: 0,
             uid: 0,
         };

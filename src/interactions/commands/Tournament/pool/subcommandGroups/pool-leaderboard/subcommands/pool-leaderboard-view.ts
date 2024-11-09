@@ -1,12 +1,9 @@
 import { DatabaseManager } from "@database/DatabaseManager";
-import { TournamentMappool } from "@database/utils/elainaDb/TournamentMappool";
 import { Symbols } from "@enums/utils/Symbols";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
-import { TournamentBeatmap } from "structures/tournament/TournamentBeatmap";
 import { TournamentScore } from "@structures/tournament/TournamentScore";
 import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
 import { PoolLocalization } from "@localization/interactions/commands/Tournament/pool/PoolLocalization";
-import { ScoreRank } from "structures/utils/ScoreRank";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@utils/creators/MessageCreator";
@@ -15,18 +12,17 @@ import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
-import { GuildMember, EmbedBuilder, bold } from "discord.js";
+import { GuildMember, bold } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: PoolLocalization = new PoolLocalization(
+    const localization = new PoolLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const id: string = interaction.options.getString("id", true);
+    const id = interaction.options.getString("id", true);
+    const pick = interaction.options.getString("pick", true);
 
-    const pick: string = interaction.options.getString("pick", true);
-
-    const pool: TournamentMappool | null =
+    const pool =
         await DatabaseManager.elainaDb.collections.tournamentMappool.getFromId(
             id,
         );
@@ -39,7 +35,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const map: TournamentBeatmap | null = pool.getBeatmapFromPick(pick);
+    const map = pool.getBeatmapFromPick(pick);
 
     if (!map) {
         return InteractionHelper.reply(interaction, {
@@ -51,7 +47,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const scores: TournamentScore[] = await pool.getBeatmapLeaderboard(pick);
+    const scores = await pool.getBeatmapLeaderboard(pick);
 
     if (scores.length === 0) {
         return InteractionHelper.reply(interaction, {
@@ -61,21 +57,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember>interaction.member).displayColor,
     }).setTitle(map.name);
 
-    const topScore: TournamentScore = scores[0];
-
-    const BCP47: string = LocaleHelper.convertToBCP47(localization.language);
+    const topScore = scores[0];
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
     const getScoreDescription = (score: TournamentScore): string => {
-        const arrow: Symbols = Symbols.rightArrowSmall;
+        const arrow = Symbols.rightArrowSmall;
 
         return (
             `${arrow} ${BeatmapManager.getRankEmote(
-                <ScoreRank>score.score.rank,
+                score.score.rank,
             )} ${arrow} ${(score.score.accuracy.value() * 100).toFixed(2)}%\n` +
             `${arrow} ${bold(
                 score.scoreV2.toLocaleString(BCP47),
@@ -125,11 +120,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 )}\n` + getScoreDescription(topScore),
         });
 
-        const actualPage: number = Math.floor((page - 1) / 20);
+        const actualPage = Math.floor((page - 1) / 20);
+        const pageRemainder = (page - 1) % 20;
 
-        const pageRemainder: number = (page - 1) % 20;
-
-        const displayedScores: TournamentScore[] = scores.slice(
+        const displayedScores = scores.slice(
             5 * pageRemainder,
             5 + 5 * pageRemainder,
         );

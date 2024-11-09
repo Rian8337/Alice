@@ -9,6 +9,5 @@ export class RecalculationManagerESTranslation extends Translation<Recalculation
         recalculationSuccessful: "%s, %s ha sido calculado correctamente.",
         recalculationFailed: "%s, el recalculo para %s falló: %s.",
         userNotBinded: "usuario no enlazado",
-        userDPPBanned: "el usuario fue baneado de poder reclamar PP",
     };
 }

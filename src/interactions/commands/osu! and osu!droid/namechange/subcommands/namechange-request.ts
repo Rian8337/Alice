@@ -66,7 +66,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const player = await DroidHelper.getPlayer(bindInfo.uid, ["email"]);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, ["id"]);
 
     if (!player) {
         return InteractionHelper.reply(interaction, {
@@ -76,17 +76,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const email = interaction.options.getString("email", true).trim();
-
-    if (email !== player.email) {
-        return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("emailNotEqualToBindedAccount"),
-            ),
-        });
-    }
-
-    const newUsername = interaction.options.getString("newusername", true);
+    const newUsername = interaction.options.getString("username", true);
 
     if (
         StringHelper.hasUnicode(newUsername) ||
@@ -117,7 +107,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("newNameAlreadyTaken"),
             ),
         });
-        2;
     }
 
     await DatabaseManager.aliceDb.collections.nameChange.requestNameChange(

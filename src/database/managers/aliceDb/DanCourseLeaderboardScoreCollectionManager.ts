@@ -29,7 +29,7 @@ export class DanCourseLeaderboardScoreCollectionManager extends DatabaseCollecti
             miss: 0,
             modstring: "",
             perfect: 0,
-            rank: "",
+            rank: "X",
             score: 0,
             skippedTime: 0,
             uid: 0,

@@ -5,42 +5,20 @@ import { MessageCreator } from "@utils/creators/MessageCreator";
 import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { StringHelper } from "@utils/helpers/StringHelper";
 import { Collection } from "discord.js";
-import { DroidAPIRequestBuilder } from "@rian8337/osu-base";
 import { LeaderboardLocalization } from "@localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
-
-/**
- * Retrieves the global leaderboard.
- *
- * @param page The page to retrieve.
- * @returns The scores at that page.
- */
-async function retrieveLeaderboard(page: number): Promise<string[]> {
-    const apiRequestBuilder = new DroidAPIRequestBuilder()
-        .setEndpoint("top.php")
-        .addParameter("page", page);
-
-    const result = await apiRequestBuilder.sendRequest();
-
-    if (result.statusCode !== 200) {
-        return [];
-    }
-
-    const data: string = result.data.toString("utf-8");
-    const content: string[] = data.split("<br>");
-    content.shift();
-
-    return content;
-}
+import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { OnlinePlayerRank } from "@structures/utils/OnlinePlayerRank";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: LeaderboardLocalization = new LeaderboardLocalization(
+    const localization = new LeaderboardLocalization(
         CommandHelper.getLocale(interaction),
     );
+    const BCP47 = LocaleHelper.convertToBCP47(localization.language);
 
-    const page: number = interaction.options.getInteger("page") ?? 1;
+    const page = interaction.options.getInteger("page") ?? 1;
 
     if (!NumberHelper.isPositive(page)) {
         return InteractionHelper.reply(interaction, {
@@ -50,29 +28,30 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const leaderboardCache: Collection<number, string[]> = new Collection();
+    const leaderboardCache = new Collection<number, OnlinePlayerRank[]>();
 
     const onPageChange: OnButtonPageChange = async (options, page) => {
-        const actualPage: number = Math.floor((page - 1) / 5);
+        const actualPage = Math.floor((page - 1) / 5);
+        const pageRemainder = (page - 1) % 5;
 
-        const pageRemainder: number = (page - 1) % 5;
-
-        const scores: string[] =
+        const ranks =
             leaderboardCache.get(actualPage) ??
-            (await retrieveLeaderboard(actualPage));
+            (await DroidHelper.getGlobalLeaderboard(actualPage));
 
         if (!leaderboardCache.has(actualPage)) {
-            leaderboardCache.set(actualPage, scores);
+            leaderboardCache.set(actualPage, ranks);
         }
 
-        const longestUsernameLength: number = Math.max(
-            ...scores
+        const longestUsernameLength = Math.max(
+            ...ranks
                 .slice(20 * pageRemainder, 20 + 20 * pageRemainder)
-                .map((v) => StringHelper.getUnicodeStringLength(v[1].trim())),
+                .map((v) =>
+                    StringHelper.getUnicodeStringLength(v.username.trim()),
+                ),
             16,
         );
 
-        let output: string = `${"#".padEnd(4)} | ${localization
+        let output = `${"#".padEnd(4)} | ${localization
             .getTranslation("username")
             .padEnd(longestUsernameLength)} | ${localization
             .getTranslation("uid")
@@ -80,25 +59,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             .getTranslation("playCount")
             .padEnd(5)} | ${localization.getTranslation(
             "accuracy",
-        )} | ${localization.getTranslation("score")}\n`;
+        )} | ${localization.getTranslation("pp")}\n`;
 
         for (
             let i = 20 * pageRemainder;
-            i < Math.min(scores.length, 20 + 20 * pageRemainder);
+            i < Math.min(ranks.length, 20 + 20 * pageRemainder);
             ++i
         ) {
-            const c: string[] = scores[i].split(" ");
-
-            c.splice(1, 1);
+            const c = ranks[i];
 
             output += `${(actualPage * 100 + i + 1)
                 .toString()
-                .padEnd(4)} | ${c[1].padEnd(
+                .padEnd(4)} | ${c.username.padEnd(
                 longestUsernameLength,
-            )} | ${c[0].padEnd(6)} | ${c[4].padEnd(5)} | ${(
-                (parseInt(c[5]) / parseInt(c[4]) / 1000).toFixed(2) + "%"
-            ).padEnd(8)} | ${parseInt(c[3]).toLocaleString(
-                LocaleHelper.convertToBCP47(localization.language),
+            )} | ${c.id.toString().padEnd(6)} | ${c.playcount.toString().padEnd(5)} | ${(c.accuracy * 100).toLocaleString(BCP47).padEnd(8)} | ${c.pp.toLocaleString(
+                BCP47,
             )}\n`;
         }
 

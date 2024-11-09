@@ -2,7 +2,6 @@ import { DatabaseManager } from "@database/DatabaseManager";
 import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
 import {
-    DroidAPIRequestBuilder,
     Mod,
     ModDoubleTime,
     ModHardRock,
@@ -15,34 +14,6 @@ import { Score } from "@rian8337/osu-droid-utilities";
  * A helper for global score-related things.
  */
 export abstract class ScoreHelper {
-    /**
-     * Retrieves the leaderboard of a beatmap.
-     *
-     * @param hash The MD5 hash of the beatmap.
-     * @param page The page to retrieve. Defaults to 1.
-     */
-    static async fetchDroidLeaderboard(
-        hash: string,
-        page: number = 1,
-    ): Promise<Score[]> {
-        const apiRequestBuilder = new DroidAPIRequestBuilder()
-            .setEndpoint("scoresearchv2.php")
-            .addParameter("hash", hash)
-            .addParameter("page", Math.max(0, page - 1))
-            .addParameter("order", "score");
-
-        const result = await apiRequestBuilder.sendRequest();
-
-        if (result.statusCode !== 200) {
-            throw new Error("Droid API request failed");
-        }
-
-        const data = result.data.toString("utf-8").split("<br>");
-        data.shift();
-
-        return data.map((v) => new Score().fillInformation(v));
-    }
-
     /**
      * Calculates an osu!droid ScoreV2 value.
      *
@@ -271,11 +242,8 @@ export abstract class ScoreHelper {
         for (const play of recentPlays) {
             const idx = existingScores.findIndex(
                 (v) =>
-                    (v instanceof Score
-                        ? v.scoreID
-                        : v instanceof RecentPlay
-                          ? v.scoreId
-                          : v.id) === play.scoreId,
+                    (v instanceof RecentPlay ? v.scoreId : v.id) ===
+                    play.scoreId,
             );
 
             if (idx !== -1) {

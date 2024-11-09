@@ -3,13 +3,14 @@ import { DatabaseRecentPlay } from "@structures/database/aliceDb/DatabaseRecentP
 import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
-import { SliderTickInformation } from "@structures/dpp/SliderTickInformation";
+import { SliderTickInformation } from "@structures/pp/SliderTickInformation";
 import { Manager } from "@utils/base/Manager";
 import {
     Accuracy,
     IModApplicableToDroid,
     Mod,
     ModUtil,
+    ScoreRank,
 } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
@@ -44,7 +45,7 @@ export class RecentPlay extends Manager {
     /**
      * The rank achieved in this play.
      */
-    readonly rank: string;
+    readonly rank: ScoreRank;
 
     /**
      * The date of which this play was set.
@@ -131,7 +132,7 @@ export class RecentPlay extends Manager {
      * The complete mod string of this play (mods, speed multiplier, and force AR combined).
      */
     get completeModString(): string {
-        let finalString: string = `+${
+        let finalString = `+${
             this.mods.length > 0 ? this.mods.map((v) => v.acronym) : "No Mod"
         }`;
 

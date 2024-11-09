@@ -1,14 +1,12 @@
 import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind";
 import { DatabaseCollectionManager } from "../DatabaseCollectionManager";
-import { Filter, FindOptions, WithId } from "mongodb";
+import { FindOptions } from "mongodb";
 import {
     ApplicationCommandOptionChoiceData,
-    Collection as DiscordCollection,
     Snowflake,
     User,
 } from "discord.js";
-import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { OperationResult } from "@structures/core/OperationResult";
 import { Constants } from "@core/Constants";
 
@@ -26,115 +24,9 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
     override get defaultDocument(): DatabaseUserBind {
         return {
             discordid: "",
-            playc: 0,
-            pp: [],
-            weightedAccuracy: 0,
-            pptotal: 0,
-            previous_bind: [],
             uid: 0,
             username: "",
         };
-    }
-
-    /**
-     * Gets the dpp rank of a specified dpp value.
-     *
-     * @param totalPP The total PP.
-     */
-    async getUserDPPRank(totalPP: number): Promise<number> {
-        return (
-            (await this.collection.countDocuments({
-                pptotal: { $gt: totalPP },
-            })) + 1
-        );
-    }
-
-    /**
-     * Gets unscanned players based on the given amount.
-     *
-     * @param amount The amount of unscanned players to retrieve.
-     * @returns The players.
-     */
-    async getDPPUnscannedPlayers(
-        amount: number,
-        options?: FindOptions<DatabaseUserBind>,
-    ): Promise<DiscordCollection<Snowflake, UserBind>> {
-        const userBind = await this.collection
-            .find(
-                { dppScanComplete: { $ne: true } },
-                this.processFindOptions(options),
-            )
-            .sort({ pptotal: -1 })
-            .limit(amount)
-            .toArray();
-
-        return ArrayHelper.arrayToCollection(
-            userBind.map((v) => new UserBind(v)),
-            "discordid",
-        );
-    }
-
-    /**
-     * Gets unscanned players based on the given amount.
-     *
-     * @param amount The amount of players to retrieve.
-     * @param options Options for the retrieval.
-     * @returns The players.
-     */
-    async getRecalcUnscannedPlayers(
-        amount: 1,
-        options?: FindOptions<DatabaseUserBind>,
-    ): Promise<UserBind | null>;
-
-    /**
-     * Gets unscanned players based on the given amount.
-     *
-     * @param amount The amount of players to retrieve.
-     * @param options Options for the retrieval.
-     * @returns The players.
-     */
-    async getRecalcUnscannedPlayers(
-        amount: Exclude<number, 1>,
-        options?: FindOptions<DatabaseUserBind>,
-    ): Promise<DiscordCollection<Snowflake, UserBind>>;
-
-    async getRecalcUnscannedPlayers(
-        amount: number,
-        options?: FindOptions<DatabaseUserBind>,
-    ): Promise<DiscordCollection<Snowflake, UserBind> | UserBind | null> {
-        const userBind = await this.collection
-            .find(
-                { dppRecalcComplete: { $ne: true } },
-                this.processFindOptions(options),
-            )
-            .sort({ pptotal: -1 })
-            .limit(amount)
-            .toArray();
-
-        if (amount === 1) {
-            return userBind.length > 0 ? new UserBind(userBind[0]) : null;
-        }
-
-        return ArrayHelper.arrayToCollection(
-            userBind.map((v) => new UserBind(v)),
-            "discordid",
-        );
-    }
-
-    /**
-     * Gets the amount of players that have not been recalculated in a droid performance points (dpp) recalculation.
-     */
-    async getRecalcUncalculatedPlayerCount(): Promise<number> {
-        return this.collection.countDocuments({
-            dppRecalcComplete: { $ne: true },
-        });
-    }
-
-    /**
-     * Gets the amount of players that have been recalculated in a droid performance points (dpp) recalculation.
-     */
-    async getRecalcCalculatedPlayerCount(): Promise<number> {
-        return this.collection.countDocuments({ dppRecalcComplete: true });
     }
 
     /**
@@ -185,7 +77,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
         uid: number,
         options?: FindOptions<DatabaseUserBind>,
     ): Promise<UserBind | null> {
-        return this.getOne({ previous_bind: { $all: [uid] } }, options);
+        return this.getOne({ uid: uid }, options);
     }
 
     /**
@@ -199,42 +91,6 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
         options?: FindOptions<DatabaseUserBind>,
     ): Promise<UserBind | null> {
         return this.getOne({ username: username }, options);
-    }
-
-    /**
-     * Gets the DPP leaderboard.
-     *
-     * @param clan The clan to get the leaderboard for.
-     */
-    async getDPPLeaderboard(
-        clan?: string,
-    ): Promise<DiscordCollection<number, UserBind>> {
-        const query: Filter<WithId<DatabaseUserBind>> = {};
-
-        if (clan) {
-            query.clan = clan;
-        }
-
-        const userBind = await this.collection
-            .find(
-                query,
-                this.processFindOptions({
-                    projection: {
-                        _id: 0,
-                        uid: 1,
-                        pptotal: 1,
-                        playc: 1,
-                        username: 1,
-                    },
-                }),
-            )
-            .sort({ pptotal: -1 })
-            .toArray();
-
-        return ArrayHelper.arrayToCollection(
-            userBind.map((v) => new UserBind(v)),
-            "uid",
-        );
     }
 
     /**
@@ -300,7 +156,7 @@ export class UserBindCollectionManager extends DatabaseCollectionManager<
      */
     async updateRoleConnectionMetadata(): Promise<OperationResult> {
         const guild = await this.client.guilds.fetch(Constants.mainServer);
-        const role = await guild.roles.fetch(Constants.dppProfileDisplayerRole);
+        const role = await guild.roles.fetch(Constants.ppProfileDisplayerRole);
 
         if (!role) {
             return this.createOperationResult(true);

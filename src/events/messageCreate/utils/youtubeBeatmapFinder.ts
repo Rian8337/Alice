@@ -9,7 +9,7 @@ import { YouTubeRESTManager } from "@utils/managers/YouTubeRESTManager";
 import { Modes } from "@rian8337/osu-base";
 import { YoutubeBeatmapFinderLocalization } from "@localization/events/messageCreate/youtubeBeatmapFinder/YoutubeBeatmapFinderLocalization";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
@@ -163,7 +163,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     }
 
                     const droidAttribs =
-                        await DPPProcessorRESTManager.getDifficultyAttributes(
+                        await PPProcessorRESTManager.getDifficultyAttributes(
                             beatmapInfo.beatmapId,
                             Modes.droid,
                             PPCalculationMethod.live,
@@ -174,7 +174,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     }
 
                     const osuAttribs =
-                        await DPPProcessorRESTManager.getDifficultyAttributes(
+                        await PPProcessorRESTManager.getDifficultyAttributes(
                             beatmapInfo.beatmapId,
                             Modes.osu,
                             PPCalculationMethod.live,

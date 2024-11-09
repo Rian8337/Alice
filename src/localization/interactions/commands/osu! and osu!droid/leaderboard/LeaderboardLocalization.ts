@@ -15,7 +15,6 @@ export interface LeaderboardStrings {
     readonly playCount: string;
     readonly pp: string;
     readonly accuracy: string;
-    readonly score: string;
 }
 
 /**

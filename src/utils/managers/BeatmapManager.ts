@@ -20,13 +20,13 @@ import {
     ModUtil,
     Precision,
     RankedStatus,
+    ScoreRank,
 } from "@rian8337/osu-base";
 import { Manager } from "@utils/base/Manager";
 import { CacheManager } from "./CacheManager";
 import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { createCanvas } from "canvas";
 import { HelperFunctions } from "@utils/helpers/HelperFunctions";
-import { ScoreRank } from "structures/utils/ScoreRank";
 import { BeatmapRetrievalOptions } from "@structures/utils/BeatmapRetrievalOptions";
 import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
 import { BeatmapProcessorRESTManager } from "./BeatmapProcessorRESTManager";

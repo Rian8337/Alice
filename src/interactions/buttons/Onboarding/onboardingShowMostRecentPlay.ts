@@ -10,7 +10,7 @@ import { DroidHelper } from "@utils/helpers/DroidHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { ReplayHelper } from "@utils/helpers/ReplayHelper";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { Modes } from "@rian8337/osu-base";
 import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { InteractionReplyOptions } from "discord.js";
@@ -88,7 +88,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
 
     const score = recentPlays[0];
 
-    const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+    const scoreAttribs = await PPProcessorRESTManager.getOnlineScoreAttributes(
         score.uid,
         score.hash,
         Modes.droid,
@@ -98,7 +98,7 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
     const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
         player instanceof Player
-            ? player.avatarURL
+            ? player.avatarUrl
             : DroidHelper.getAvatarURL(player.id),
         interaction.member.displayColor,
         scoreAttribs?.attributes,

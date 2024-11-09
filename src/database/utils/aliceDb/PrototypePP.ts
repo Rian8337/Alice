@@ -1,13 +1,15 @@
 import { DatabaseManager } from "@database/DatabaseManager";
 import { DatabasePrototypePP } from "structures/database/aliceDb/DatabasePrototypePP";
-import { PrototypePPEntry } from "@structures/dpp/PrototypePPEntry";
+import { PrototypePPEntry } from "@structures/pp/PrototypePPEntry";
 import { Manager } from "@utils/base/Manager";
 import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { ObjectId } from "bson";
 import { Collection, Snowflake } from "discord.js";
 
+// TODO: remove previous_bind references
+
 /**
- * Represents the prototype droid performance point (dpp) entry of an osu!droid account.
+ * Represents the prototype performance points information of an osu!droid account.
  */
 export class PrototypePP extends Manager {
     /**
@@ -22,17 +24,17 @@ export class PrototypePP extends Manager {
     lastUpdate: number;
 
     /**
-     * The prototype droid performance points (dpp) entries of the account, mapped by their hash.
+     * The prototype performance points entries of the account, mapped by their hash.
      */
     pp: Collection<string, PrototypePPEntry>;
 
     /**
-     * The total droid performance points (dpp) of the account after recalculation.
+     * The total performance points of the account after recalculation.
      */
     pptotal: number;
 
     /**
-     * The total droid performance points (dpp) of the account before recalculation.
+     * The total droid performance points of the account before recalculation.
      */
     prevpptotal: number;
 

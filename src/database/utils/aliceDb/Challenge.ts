@@ -10,7 +10,7 @@ import { ChallengeStatusType } from "structures/challenge/ChallengeStatusType";
 import { ChallengeType } from "structures/challenge/ChallengeType";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { MessageCreator } from "@utils/creators/MessageCreator";
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import {
     ApplicationCommandOptionChoiceData,
@@ -47,7 +47,6 @@ import {
     HitErrorInformation,
 } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { ScoreHelper } from "@utils/helpers/ScoreHelper";
 import { Language } from "@localization/base/Language";
 import {
     ChallengeLocalization,
@@ -59,7 +58,7 @@ import { createHash } from "crypto";
 import { ReplayHelper } from "@utils/helpers/ReplayHelper";
 import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
 import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
@@ -482,7 +481,7 @@ export class Challenge extends Manager {
         }
 
         replay ??= new ReplayAnalyzer({
-            scoreID: score instanceof Score ? score.scoreID : score.id,
+            scoreID: score.id,
         });
         await ReplayHelper.analyzeReplay(replay);
 
@@ -518,7 +517,7 @@ export class Challenge extends Manager {
         const calcParams =
             BeatmapDifficultyHelper.getCalculationParamsFromScore(score);
         const droidAttribs =
-            await DPPProcessorRESTManager.getPerformanceAttributes(
+            await PPProcessorRESTManager.getPerformanceAttributes(
                 this.beatmapid,
                 Modes.droid,
                 PPCalculationMethod.live,
@@ -533,7 +532,7 @@ export class Challenge extends Manager {
         }
 
         const osuAttribs =
-            await DPPProcessorRESTManager.getPerformanceAttributes(
+            await PPProcessorRESTManager.getPerformanceAttributes(
                 this.beatmapid,
                 Modes.osu,
                 PPCalculationMethod.live,
@@ -721,7 +720,7 @@ export class Challenge extends Manager {
 
             droidAttribs =
                 (
-                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                    await PPProcessorRESTManager.getPerformanceAttributes(
                         this.beatmapid,
                         Modes.droid,
                         PPCalculationMethod.live,
@@ -730,7 +729,7 @@ export class Challenge extends Manager {
                 )?.attributes ?? null;
             osuAttribs =
                 (
-                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                    await PPProcessorRESTManager.getPerformanceAttributes(
                         this.beatmapid,
                         Modes.osu,
                         PPCalculationMethod.live,
@@ -752,7 +751,7 @@ export class Challenge extends Manager {
 
             droidAttribs =
                 (
-                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                    await PPProcessorRESTManager.getPerformanceAttributes(
                         this.beatmapid,
                         Modes.droid,
                         PPCalculationMethod.live,
@@ -762,7 +761,7 @@ export class Challenge extends Manager {
 
             osuAttribs =
                 (
-                    await DPPProcessorRESTManager.getPerformanceAttributes(
+                    await PPProcessorRESTManager.getPerformanceAttributes(
                         this.beatmapid,
                         Modes.osu,
                         PPCalculationMethod.live,
@@ -942,7 +941,7 @@ export class Challenge extends Manager {
      * @returns The scores that are in the leaderboard of the challenge, sorted by score.
      */
     getCurrentLeaderboard(): Promise<Score[]> {
-        return ScoreHelper.fetchDroidLeaderboard(this.hash);
+        return DroidHelper.getBeatmapLeaderboard(this.hash);
     }
 
     /**
@@ -1490,7 +1489,7 @@ export class Challenge extends Manager {
         }
 
         const droidAttribs =
-            await DPPProcessorRESTManager.getPerformanceAttributes(
+            await PPProcessorRESTManager.getPerformanceAttributes(
                 this.beatmapid,
                 Modes.droid,
                 PPCalculationMethod.live,
@@ -1502,7 +1501,7 @@ export class Challenge extends Manager {
         }
 
         const osuAttribs =
-            await DPPProcessorRESTManager.getPerformanceAttributes(
+            await PPProcessorRESTManager.getPerformanceAttributes(
                 this.beatmapid,
                 Modes.osu,
                 PPCalculationMethod.live,

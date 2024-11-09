@@ -20,7 +20,7 @@ import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { Modes } from "@rian8337/osu-base";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { ReplayHelper } from "@utils/helpers/ReplayHelper";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
 import { ScoreHelper } from "@utils/helpers/ScoreHelper";
 import { StringHelper } from "@utils/helpers/StringHelper";
@@ -60,8 +60,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         case !!uid:
             player = await DroidHelper.getPlayer(uid!, ["id", "username"]);
 
-            uid ??=
-                (player instanceof Player ? player.uid : player?.id) ?? null;
+            uid ??= player?.id ?? null;
 
             break;
         case !!username:
@@ -75,8 +74,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             player = await DroidHelper.getPlayer(username, ["id", "username"]);
 
-            uid ??=
-                (player instanceof Player ? player.uid : player?.id) ?? null;
+            uid ??= player?.id ?? null;
 
             break;
         default:
@@ -143,7 +141,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     if (player instanceof Player) {
         const recentPlays = considerNonOverwrite
-            ? await ScoreHelper.getRecentScores(player.uid, player.recentPlays)
+            ? await ScoreHelper.getRecentScores(player.id, player.recentPlays)
             : player.recentPlays;
 
         if (recentPlays.length === 0) {
@@ -207,7 +205,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         score instanceof RecentPlay
             ? (score.droidAttribs ?? null)
             : (
-                  await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                  await PPProcessorRESTManager.getOnlineScoreAttributes(
                       score.uid,
                       score.hash,
                       Modes.droid,
@@ -218,7 +216,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
         player instanceof Player
-            ? player.avatarURL
+            ? player.avatarUrl
             : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs,

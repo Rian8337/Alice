@@ -68,8 +68,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 "pp",
             ]);
 
-            uid ??=
-                (player instanceof Player ? player.uid : player?.id) ?? null;
+            uid ??= player?.id ?? null;
 
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
@@ -100,8 +99,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 "pp",
             ]);
 
-            uid ??=
-                (player instanceof Player ? player.uid : player?.id) ?? null;
+            uid ??= player?.id ?? null;
 
             if (!uid) {
                 return InteractionHelper.reply(interaction, {
@@ -119,9 +117,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                     projection: {
                         _id: 0,
                         uid: 1,
-                        pptotal: 1,
                         clan: 1,
-                        weightedAccuracy: 1,
                     },
                 },
             );
@@ -187,7 +183,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 localization.getTranslation("viewingProfileWithEmail"),
                 `${player.username} (${uid})`,
                 ProfileManager.getProfileLink(uid).toString(),
-                createHash("md5").update(player.email).digest("hex"),
+                player instanceof Player
+                    ? "Unknown"
+                    : createHash("md5").update(player.email).digest("hex"),
             ),
             files: [profileImage],
         });

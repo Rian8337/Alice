@@ -9,11 +9,8 @@ export interface RecalcStrings {
     readonly reworkNameMissing: string;
     readonly reworkTypeNotCurrent: string;
     readonly reworkTypeDoesntExist: string;
-    readonly userIsDPPBanned: string;
-    readonly userHasRequestedRecalc: string;
     readonly userQueued: string;
     readonly fullRecalcInProgress: string;
-    readonly fullRecalcTrackProgress: string;
     readonly fullRecalcSuccess: string;
 }
 

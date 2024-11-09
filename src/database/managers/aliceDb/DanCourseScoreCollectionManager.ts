@@ -27,7 +27,7 @@ export class DanCourseScoreCollectionManager extends DatabaseCollectionManager<
             miss: 0,
             modstring: "",
             perfect: 0,
-            rank: "",
+            rank: "X",
             score: 0,
             skippedTime: 0,
             uid: 0,

@@ -34,7 +34,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         "email",
     ]);
 
-    if (!player) {
+    if (!player || player instanceof Player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("profileNotFound"),
@@ -50,9 +50,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const uid = player instanceof Player ? player.uid : player.id;
-
-    const uidBindInfo = await dbManager.getFromUid(uid, {
+    const uidBindInfo = await dbManager.getFromUid(player.id, {
         projection: { _id: 0, discordid: 1 },
     });
 
@@ -67,7 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const userBindInfo = await dbManager.getFromUser(interaction.user, {
         projection: {
             _id: 0,
-            previous_bind: 1,
+            uid: 1,
         },
     });
 
@@ -106,9 +104,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const result = await dbManager.insert({
         discordid: interaction.user.id,
-        uid: uid,
+        uid: player.id,
         username: player.username,
-        previous_bind: [uid],
     });
 
     if (result.failed()) {

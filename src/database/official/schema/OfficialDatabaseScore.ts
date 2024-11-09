@@ -1,4 +1,4 @@
-import { ScoreRank } from "@structures/utils/ScoreRank";
+import { ScoreRank } from "@rian8337/osu-base";
 
 /**
  * Represents an osu!droid score.

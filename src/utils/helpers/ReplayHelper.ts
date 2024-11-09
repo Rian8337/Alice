@@ -71,13 +71,13 @@ export abstract class ReplayHelper {
             });
         } else {
             analyzer = new ReplayAnalyzer({
-                scoreID: input instanceof Score ? input.scoreID : input.id,
+                scoreID: input.id,
             });
         }
 
         if (!Config.isDebug) {
             analyzer.originalODR ??= await this.retrieveFile(
-                input instanceof Score || input instanceof ReplayAnalyzer
+                input instanceof ReplayAnalyzer
                     ? input.scoreID
                     : input instanceof RecentPlay
                       ? input.scoreId!

@@ -9,6 +9,5 @@ export class RecalculationManagerKRTranslation extends Translation<Recalculation
         recalculationSuccessful: "%s, 성공적으로 %s를 재계산했어요.",
         recalculationFailed: "%s, %s의 재계산이 실패했어요: %s.",
         userNotBinded: "유저가 바인딩되어있지 않음",
-        userDPPBanned: "유저가 DPP-ban당함",
     };
 }

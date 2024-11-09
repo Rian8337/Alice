@@ -1,7 +1,5 @@
 import { Constants } from "@core/Constants";
 import { DatabaseManager } from "@database/DatabaseManager";
-import { RestoredPlayerCredentials } from "@database/utils/aliceDb/RestoredPlayerCredentials";
-import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 import { ProfileLocalization } from "@localization/interactions/commands/osu! and osu!droid/profile/ProfileLocalization";
@@ -11,20 +9,20 @@ import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { StringHelper } from "@utils/helpers/StringHelper";
-import { bold, Collection, EmbedBuilder, GuildMember } from "discord.js";
+import { bold, GuildMember } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: ProfileLocalization = new ProfileLocalization(
+    const localization = new ProfileLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const bindInfo: UserBind | null =
+    const bindInfo =
         await DatabaseManager.elainaDb.collections.userBind.getFromUser(
             interaction.user,
             {
                 projection: {
                     _id: 0,
-                    previous_bind: 1,
+                    uid: 1,
                 },
             },
         );
@@ -39,11 +37,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const retrievedUids: number[] = bindInfo.previous_bind.filter((v) =>
-        NumberHelper.isNumberInRange(v, 405907, 430370, true),
-    );
-
-    if (retrievedUids.length === 0) {
+    if (!NumberHelper.isNumberInRange(bindInfo.uid, 405907, 430370, true)) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerCredentialsNotFound"),
@@ -51,14 +45,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const playerCredentials: Collection<number, RestoredPlayerCredentials> =
-        await DatabaseManager.aliceDb.collections.restoredPlayerCredentials.get(
-            "Id",
-            {
-                Id: {
-                    $in: retrievedUids,
-                },
-            },
+    const credential =
+        await DatabaseManager.aliceDb.collections.restoredPlayerCredentials.getOne(
+            { Id: bindInfo.uid },
             {
                 projection: {
                     _id: 0,
@@ -68,7 +57,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             },
         );
 
-    if (playerCredentials.size === 0) {
+    if (!credential) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("playerCredentialsNotFound"),
@@ -76,7 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const embed: EmbedBuilder = EmbedCreator.createNormalEmbed({
+    const embed = EmbedCreator.createNormalEmbed({
         author: interaction.user,
         color: (<GuildMember | null>interaction.member)?.displayColor,
     });
@@ -90,25 +79,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 StringHelper.formatString(
                     localization.getTranslation("changeCredentialsDirection"),
                     "https://osudroid.moe/user?action=login",
-                ),
-        );
-
-    let i: number = 1;
-
-    for (const credential of playerCredentials.values()) {
-        embed.addFields({
-            name: i.toString(),
-            value:
+                ) +
+                "\n\n" +
                 `${bold(localization.getTranslation("username"))}: \`${
                     credential.Username
                 }\`\n` +
                 `${bold(localization.getTranslation("password"))}: \`${
                     credential.Password
                 }\``,
-        });
-
-        ++i;
-    }
+        );
 
     InteractionHelper.reply(interaction, {
         embeds: [embed],

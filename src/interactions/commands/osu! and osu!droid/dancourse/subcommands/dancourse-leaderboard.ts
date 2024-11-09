@@ -1,11 +1,9 @@
 import { DatabaseManager } from "@database/DatabaseManager";
-import { DanCourse } from "@database/utils/aliceDb/DanCourse";
 import { DanCourseLeaderboardScore } from "@database/utils/aliceDb/DanCourseLeaderboardScore";
 import { Symbols } from "@enums/utils/Symbols";
 import { DanCourseLocalization } from "@localization/interactions/commands/osu! and osu!droid/dancourse/DanCourseLocalization";
 import { SlashSubcommand } from "@structures/core/SlashSubcommand";
 import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
-import { ScoreRank } from "@structures/utils/ScoreRank";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { MessageCreator } from "@utils/creators/MessageCreator";
@@ -19,11 +17,11 @@ import { Accuracy, ModUtil } from "@rian8337/osu-base";
 import { BaseMessageOptions, bold, Collection, EmbedBuilder } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
-    const localization: DanCourseLocalization = new DanCourseLocalization(
+    const localization = new DanCourseLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const course: DanCourse | null =
+    const course =
         await DatabaseManager.aliceDb.collections.danCourses.getCourse(
             interaction.options.getString("name", true),
         );
@@ -36,12 +34,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const arrow: Symbols = Symbols.rightArrowSmall;
-    const scoreCache: Collection<number, DanCourseLeaderboardScore[]> =
-        new Collection();
+    const arrow = Symbols.rightArrowSmall;
+    const scoreCache = new Collection<number, DanCourseLeaderboardScore[]>();
 
     // Check first page first for score availability
-    const firstPageScores: DanCourseLeaderboardScore[] =
+    const firstPageScores =
         await DatabaseManager.aliceDb.collections.danCourseLeaderboardScores.getLeaderboard(
             course.hash,
             1,
@@ -58,9 +55,9 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     scoreCache.set(1, firstPageScores);
 
     const getModString = (score: DanCourseLeaderboardScore): string => {
-        let mods: string = "";
+        let mods = "";
         let forcedAR: number | undefined;
-        let speedMultiplier: number = 1;
+        let speedMultiplier = 1;
 
         for (const s of score.modstring.split("|")) {
             if (!s) {
@@ -76,7 +73,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             }
         }
 
-        let res: string = ModUtil.droidStringToMods(mods).reduce(
+        let res = ModUtil.droidStringToMods(mods).reduce(
             (a, v) => a + v.acronym,
             "",
         );
@@ -109,7 +106,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const getScoreDescription = (score: DanCourseLeaderboardScore): string => {
         return (
             `${arrow} ${BeatmapManager.getRankEmote(
-                <ScoreRank>score.rank,
+                score.rank,
             )} ${arrow} ${NumberHelper.round(
                 new Accuracy({
                     n300: score.perfect,
@@ -134,10 +131,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     };
 
     const onPageChange: OnButtonPageChange = async (options, page) => {
-        const actualPage: number = Math.floor((page - 1) / 10);
-        const pageRemainder: number = (page - 1) % 20;
+        const actualPage = Math.floor((page - 1) / 10);
+        const pageRemainder = (page - 1) % 20;
 
-        const scores: DanCourseLeaderboardScore[] =
+        const scores =
             scoreCache.get(actualPage) ??
             (await DatabaseManager.aliceDb.collections.danCourseLeaderboardScores.getLeaderboard(
                 course.hash,
@@ -151,9 +148,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         const embedOptions: BaseMessageOptions = {
             embeds: [EmbedCreator.createNormalEmbed()],
         };
-        const embed: EmbedBuilder = <EmbedBuilder>embedOptions.embeds![0];
-
-        const topScore: DanCourseLeaderboardScore = scoreCache.get(1)![0];
+        const embed = <EmbedBuilder>embedOptions.embeds![0];
+        const topScore = scoreCache.get(1)![0];
 
         embed.setTitle(course.courseName).addFields({
             name: `${bold(localization.getTranslation("topScore"))}`,
@@ -162,7 +158,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             )}\n${getScoreDescription(topScore)}`,
         });
 
-        const displayedScores: DanCourseLeaderboardScore[] = scores.slice(
+        const displayedScores = scores.slice(
             5 * pageRemainder,
             5 + 5 * pageRemainder,
         );

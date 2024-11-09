@@ -3,7 +3,6 @@ import { Translations } from "@localization/base/Translations";
 import { AccountRebindTicketPresetProcessorENTranslation } from "./translations/AccountRebindTicketPresetProcessorENTranslation";
 
 export interface AccountRebindTicketPresetProcessorStrings {
-    readonly bindLimitReached: string;
     readonly usernameLabel: string;
     readonly emailPlaceholder: string;
     readonly emailLabel: string;

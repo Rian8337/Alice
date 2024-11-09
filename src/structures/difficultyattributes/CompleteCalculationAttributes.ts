@@ -1,4 +1,4 @@
-import { CloneablePerformanceCalculationParameters } from "@structures/dpp/CloneablePerformanceCalculationParameters";
+import { CloneablePerformanceCalculationParameters } from "@structures/pp/CloneablePerformanceCalculationParameters";
 import { PerformanceAttributes } from "./PerformanceAttributes";
 import { RawDifficultyAttributes } from "./RawDifficultyAttributes";
 import { ReplayAttributes } from "./ReplayAttributes";

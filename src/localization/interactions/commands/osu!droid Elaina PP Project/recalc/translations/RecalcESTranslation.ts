@@ -11,14 +11,9 @@ export class RecalcESTranslation extends Translation<RecalcStrings> {
         reworkNameMissing: "",
         reworkTypeNotCurrent: "",
         reworkTypeDoesntExist: "",
-        userIsDPPBanned:
-            "Lo siento, este usuario esta baneado en el sistema de dpp!",
-        userHasRequestedRecalc:
-            "Lo siento, este usuario ya ha solicitado anteriormente un recuento en su perfil!",
         userQueued:
             "%s añadido correctamente a la cola para realizarle un recuento.",
         fullRecalcInProgress: "Recuento iniciado correctamente.",
-        fullRecalcTrackProgress: "Recalculando jugadores (%s/%s (%s%))...",
         fullRecalcSuccess: "%s, el recuento ha finalizado!",
     };
 }

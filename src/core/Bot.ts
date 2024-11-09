@@ -14,7 +14,6 @@ import { Event } from "structures/core/Event";
 import { TimeoutManager } from "@utils/managers/TimeoutManager";
 import { LoungeLockManager } from "@utils/managers/LoungeLockManager";
 import { ProfileManager } from "@utils/managers/ProfileManager";
-import { WhitelistManager } from "@utils/managers/WhitelistManager";
 import { DatabaseManager } from "@database/DatabaseManager";
 import { CommandUtilManager } from "@utils/managers/CommandUtilManager";
 import { EventUtil } from "structures/core/EventUtil";
@@ -542,7 +541,6 @@ export class Bot extends Client<true> {
         await LoungeLockManager.init();
         TimeoutManager.init();
         WarningManager.init();
-        await WhitelistManager.init();
     }
 
     /**

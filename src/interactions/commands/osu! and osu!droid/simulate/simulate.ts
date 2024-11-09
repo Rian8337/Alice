@@ -7,10 +7,9 @@ import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 import { SimulateLocalization } from "@localization/interactions/commands/osu! and osu!droid/simulate/SimulateLocalization";
 import { SlashCommand } from "@structures/core/SlashCommand";
-import { ScoreRank } from "@structures/utils/ScoreRank";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { MessageCreator } from "@utils/creators/MessageCreator";
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
@@ -18,7 +17,7 @@ import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { ReplayHelper } from "@utils/helpers/ReplayHelper";
 import { StringHelper } from "@utils/helpers/StringHelper";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import {
     Accuracy,
     BeatmapDifficulty,
@@ -32,6 +31,7 @@ import {
     ModHidden,
     ModPrecise,
     ModUtil,
+    ScoreRank,
     Slider,
     SliderNestedHitObject,
     SliderTick,
@@ -103,8 +103,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 "playcount",
             ]);
 
-            uid ??=
-                (player instanceof Player ? player.uid : player?.id) ?? null;
+            uid ??= player?.id ?? null;
 
             break;
         case !!username:
@@ -122,8 +121,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                 "playcount",
             ]);
 
-            uid ??=
-                (player instanceof Player ? player.uid : player?.id) ?? null;
+            uid ??= player?.id ?? null;
 
             break;
         default:
@@ -192,26 +190,22 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score = await DroidHelper.getScore(
-        player instanceof Player ? player.uid : player.id,
-        beatmap.hash,
-        [
-            "id",
-            "uid",
-            "hash",
-            "combo",
-            "mark",
-            "mode",
-            "perfect",
-            "good",
-            "bad",
-            "miss",
-            "filename",
-            "hash",
-            "score",
-            "date",
-        ],
-    );
+    const score = await DroidHelper.getScore(player.id, beatmap.hash, [
+        "id",
+        "uid",
+        "hash",
+        "combo",
+        "mark",
+        "mode",
+        "perfect",
+        "good",
+        "bad",
+        "miss",
+        "filename",
+        "hash",
+        "score",
+        "date",
+    ]);
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
@@ -648,14 +642,14 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const droidAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
+    const droidAttribs = await PPProcessorRESTManager.getPerformanceAttributes(
         beatmap.beatmapId,
         Modes.droid,
         PPCalculationMethod.live,
         calcParams,
     );
 
-    const osuAttribs = await DPPProcessorRESTManager.getPerformanceAttributes(
+    const osuAttribs = await PPProcessorRESTManager.getPerformanceAttributes(
         beatmap.beatmapId,
         Modes.osu,
         PPCalculationMethod.live,
@@ -667,7 +661,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
         player instanceof Player
-            ? player.avatarURL
+            ? player.avatarUrl
             : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
         droidAttribs?.attributes,

@@ -1,5 +1,5 @@
 import { Snowflake } from "discord.js";
-import { PrototypePPEntry } from "@structures/dpp/PrototypePPEntry";
+import { PrototypePPEntry } from "@structures/pp/PrototypePPEntry";
 import { BaseDocument } from "../BaseDocument";
 
 /**

@@ -5,7 +5,7 @@ import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { MessageCreator } from "@utils/creators/MessageCreator";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { NumberHelper } from "@utils/helpers/NumberHelper";
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import {
     Accuracy,
     MapInfo,
@@ -28,11 +28,11 @@ import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
-import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPHelper } from "@utils/helpers/PPHelper";
 import { RebalanceDroidPerformanceAttributes } from "@structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 import { ResponseDifficultyAttributes } from "@structures/difficultyattributes/ResponseDifficultyAttributes";
-import { DPPProcessorCalculationResponse } from "@structures/utils/DPPProcessorCalculationResponse";
+import { PPProcessorCalculationResponse } from "@structures/utils/PPProcessorCalculationResponse";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new CalculateLocalization(
@@ -109,7 +109,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     calcParams.recalculateAccuracy(beatmap.objects);
 
-    let droidCalcResult: DPPProcessorCalculationResponse<
+    let droidCalcResult: PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             DroidDifficultyAttributes | RebalanceDroidDifficultyAttributes,
             DroidPerformanceAttributes | RebalanceDroidPerformanceAttributes
@@ -125,7 +125,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     switch (interaction.options.getInteger("calculationmethod")) {
         case PPCalculationMethod.rebalance:
             droidCalcResult =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
+                await PPProcessorRESTManager.getPerformanceAttributes(
                     beatmap.beatmapId,
                     Modes.droid,
                     PPCalculationMethod.rebalance,
@@ -136,7 +136,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             if (droidCalcResult) {
                 osuCalcResult =
                     (
-                        await DPPProcessorRESTManager.getPerformanceAttributes(
+                        await PPProcessorRESTManager.getPerformanceAttributes(
                             beatmap.beatmapId,
                             Modes.osu,
                             PPCalculationMethod.rebalance,
@@ -147,7 +147,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             break;
         default:
             droidCalcResult =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
+                await PPProcessorRESTManager.getPerformanceAttributes(
                     beatmap.beatmapId,
                     Modes.droid,
                     PPCalculationMethod.live,
@@ -158,7 +158,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             if (droidCalcResult) {
                 osuCalcResult =
                     (
-                        await DPPProcessorRESTManager.getPerformanceAttributes(
+                        await PPProcessorRESTManager.getPerformanceAttributes(
                             beatmap.beatmapId,
                             Modes.osu,
                             PPCalculationMethod.live,
@@ -193,18 +193,18 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         string += `${localization.getTranslation("rawDroidSr")}: ${
             interaction.options.getInteger("calculationmethod") ===
             PPCalculationMethod.rebalance
-                ? DPPHelper.getRebalanceDroidDifficultyAttributesInfo(
+                ? PPHelper.getRebalanceDroidDifficultyAttributesInfo(
                       <
                           ResponseDifficultyAttributes<RebalanceDroidDifficultyAttributes>
                       >droidCalcResult.attributes.difficulty,
                   )
-                : DPPHelper.getDroidDifficultyAttributesInfo(
+                : PPHelper.getDroidDifficultyAttributesInfo(
                       droidCalcResult.attributes.difficulty,
                   )
         }`;
         string += `\n${localization.getTranslation(
             "rawDroidPp",
-        )}: ${DPPHelper.getDroidPerformanceAttributesInfo(
+        )}: ${PPHelper.getDroidPerformanceAttributesInfo(
             droidCalcResult.attributes.performance,
         )}\n`;
     }
@@ -213,17 +213,17 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         string += `${localization.getTranslation("rawPcSr")}: ${
             interaction.options.getInteger("calculationmethod") ===
             PPCalculationMethod.rebalance
-                ? DPPHelper.getRebalanceOsuDifficultyAttributesInfo(
+                ? PPHelper.getRebalanceOsuDifficultyAttributesInfo(
                       <
                           ResponseDifficultyAttributes<RebalanceOsuDifficultyAttributes>
                       >osuCalcResult.difficulty,
                   )
-                : DPPHelper.getOsuDifficultyAttributesInfo(
+                : PPHelper.getOsuDifficultyAttributesInfo(
                       osuCalcResult.difficulty,
                   )
         }\n${localization.getTranslation(
             "rawPcPp",
-        )}: ${DPPHelper.getOsuPerformanceAttributesInfo(
+        )}: ${PPHelper.getOsuPerformanceAttributesInfo(
             osuCalcResult.performance,
         )}`;
     }

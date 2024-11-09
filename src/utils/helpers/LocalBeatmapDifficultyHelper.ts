@@ -1,6 +1,6 @@
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
-import { DifficultyCalculationParameters } from "@utils/dpp/DifficultyCalculationParameters";
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { DifficultyCalculationParameters } from "@utils/pp/DifficultyCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import { Beatmap, Modes } from "@rian8337/osu-base";
 import {
     DroidDifficultyCalculator,

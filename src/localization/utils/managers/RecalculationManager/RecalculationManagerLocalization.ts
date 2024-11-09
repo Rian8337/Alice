@@ -8,7 +8,6 @@ export interface RecalculationManagerStrings {
     readonly recalculationSuccessful: string;
     readonly recalculationFailed: string;
     readonly userNotBinded: string;
-    readonly userDPPBanned: string;
 }
 
 /**

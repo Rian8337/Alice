@@ -1,3 +1,4 @@
+import { ScoreRank } from "@rian8337/osu-base";
 import { BaseDocument } from "../BaseDocument";
 
 /**
@@ -37,7 +38,7 @@ export interface DatabaseDanCourseScore extends BaseDocument {
     /**
      * The rank achieved by the player.
      */
-    readonly rank: string;
+    readonly rank: ScoreRank;
 
     /**
      * The amount of geki achieved by the player.

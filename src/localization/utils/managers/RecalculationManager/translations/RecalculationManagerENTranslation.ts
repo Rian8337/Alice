@@ -9,6 +9,5 @@ export class RecalculationManagerENTranslation extends Translation<Recalculation
         recalculationSuccessful: "%s, successfully recalculated %s.",
         recalculationFailed: "%s, recalculation for %s failed: %s.",
         userNotBinded: "user is not bound",
-        userDPPBanned: "user was DPP banned",
     };
 }

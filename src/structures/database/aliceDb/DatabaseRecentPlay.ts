@@ -7,7 +7,8 @@ import { CompleteCalculationAttributes } from "@structures/difficultyattributes/
 import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
 import { BaseDocument } from "../BaseDocument";
-import { SliderTickInformation } from "@structures/dpp/SliderTickInformation";
+import { SliderTickInformation } from "@structures/pp/SliderTickInformation";
+import { ScoreRank } from "@rian8337/osu-base";
 
 /**
  * Represents a recent play.
@@ -36,7 +37,7 @@ export interface DatabaseRecentPlay extends BaseDocument {
     /**
      * The rank achieved in this play.
      */
-    rank: string;
+    rank: ScoreRank;
 
     /**
      * The date of which this play was set.

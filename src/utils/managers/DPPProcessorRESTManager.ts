@@ -13,20 +13,20 @@ import {
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { consola } from "consola";
-import { DifficultyCalculationParameters } from "@utils/dpp/DifficultyCalculationParameters";
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { DifficultyCalculationParameters } from "@utils/pp/DifficultyCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
 import { PerformanceAttributes } from "@structures/difficultyattributes/PerformanceAttributes";
 import { RebalanceDroidPerformanceAttributes } from "@structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
-import { PPSubmissionOperationResult } from "@structures/dpp/PPSubmissionOperationResult";
-import { DPPProcessorCalculationResponse } from "@structures/utils/DPPProcessorCalculationResponse";
+import { PPSubmissionOperationResult } from "@structures/pp/PPSubmissionOperationResult";
+import { PPProcessorCalculationResponse } from "@structures/utils/PPProcessorCalculationResponse";
 
 /**
- * A REST manager for the droid performance points processor backend.
+ * A REST manager for the performance points processor backend.
  */
-export abstract class DPPProcessorRESTManager extends RESTManager {
+export abstract class PPProcessorRESTManager extends RESTManager {
     private static readonly endpoint = Config.isDebug
         ? "https://droidpp.osudroid.moe/api/dpp/processor/"
         : "http://localhost:3006/api/dpp/processor/";
@@ -49,7 +49,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: DifficultyCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CacheableDifficultyAttributes<DroidDifficultyAttributes>,
         THasStrainChart
     > | null>;
@@ -72,7 +72,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: DifficultyCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CacheableDifficultyAttributes<RebalanceDroidDifficultyAttributes>,
         THasStrainChart
     > | null>;
@@ -95,7 +95,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: DifficultyCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CacheableDifficultyAttributes<OsuDifficultyAttributes>,
         THasStrainChart
     > | null>;
@@ -118,7 +118,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: DifficultyCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CacheableDifficultyAttributes<RebalanceOsuDifficultyAttributes>,
         THasStrainChart
     > | null>;
@@ -131,7 +131,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod,
         calculationParams?: DifficultyCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CacheableDifficultyAttributes<RawDifficultyAttributes>,
         THasStrainChart
     > | null> {
@@ -227,7 +227,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: PerformanceCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             DroidDifficultyAttributes,
             DroidPerformanceAttributes
@@ -251,7 +251,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: PerformanceCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RebalanceDroidDifficultyAttributes,
             RebalanceDroidPerformanceAttributes
@@ -275,7 +275,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod.live,
         calculationParams?: PerformanceCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             OsuDifficultyAttributes,
             OsuPerformanceAttributes
@@ -299,7 +299,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod.rebalance,
         calculationParams?: PerformanceCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RebalanceOsuDifficultyAttributes,
             OsuPerformanceAttributes
@@ -313,7 +313,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod,
         calculationParams?: PerformanceCalculationParameters,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RawDifficultyAttributes,
             PerformanceAttributes
@@ -429,7 +429,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             DroidDifficultyAttributes,
             DroidPerformanceAttributes
@@ -453,7 +453,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         mode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RebalanceDroidDifficultyAttributes,
             RebalanceDroidPerformanceAttributes
@@ -477,7 +477,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             OsuDifficultyAttributes,
             OsuPerformanceAttributes
@@ -501,7 +501,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         mode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RebalanceOsuDifficultyAttributes,
             OsuPerformanceAttributes
@@ -515,7 +515,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         mode: Modes,
         calculationMethod: PPCalculationMethod,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RawDifficultyAttributes,
             PerformanceAttributes
@@ -562,7 +562,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapHash: string,
         calculationMethod: PPCalculationMethod.live,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             DroidDifficultyAttributes,
             DroidPerformanceAttributes
@@ -587,7 +587,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapHash: string,
         calculationMethod: PPCalculationMethod.rebalance,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RebalanceDroidDifficultyAttributes,
             RebalanceDroidPerformanceAttributes
@@ -602,7 +602,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         beatmapHash: string,
         calculationMethod: PPCalculationMethod,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RawDifficultyAttributes,
             DroidPerformanceAttributes
@@ -654,7 +654,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         gamemode: Modes.droid,
         calculationMethod: PPCalculationMethod.live,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             DroidDifficultyAttributes,
             DroidPerformanceAttributes
@@ -683,7 +683,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         gamemode: Modes.droid,
         calculationMethod: PPCalculationMethod.rebalance,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RebalanceDroidDifficultyAttributes,
             RebalanceDroidPerformanceAttributes
@@ -712,7 +712,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         gamemode: Modes.osu,
         calculationMethod: PPCalculationMethod.live,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             OsuDifficultyAttributes,
             OsuPerformanceAttributes
@@ -741,7 +741,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         gamemode: Modes.osu,
         calculationMethod: PPCalculationMethod.rebalance,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RebalanceOsuDifficultyAttributes,
             OsuPerformanceAttributes
@@ -757,7 +757,7 @@ export abstract class DPPProcessorRESTManager extends RESTManager {
         gamemode: Modes,
         calculationMethod: PPCalculationMethod,
         generateStrainChart?: THasStrainChart,
-    ): Promise<DPPProcessorCalculationResponse<
+    ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RawDifficultyAttributes,
             PerformanceAttributes

@@ -6,7 +6,6 @@ import {
 } from "canvas";
 import { Player } from "@rian8337/osu-droid-utilities";
 import { promises } from "fs";
-import { DatabaseManager } from "@database/DatabaseManager";
 import { UserBind } from "@database/utils/elainaDb/UserBind";
 import { PlayerInfo } from "@database/utils/aliceDb/PlayerInfo";
 import { Language } from "@localization/base/Language";
@@ -218,7 +217,7 @@ export class ProfileCardCreator {
 
         const avatar = await loadImage(
             this.player instanceof Player
-                ? this.player.avatarURL
+                ? this.player.avatarUrl
                 : DroidHelper.getAvatarURL(this.player.id),
         );
         this.context.drawImage(avatar, 9, 9, 150, 150);
@@ -573,16 +572,5 @@ export class ProfileCardCreator {
         );
 
         this.context.restore();
-    }
-
-    /**
-     * Gets the player's dpp rank.
-     */
-    private async getPlayerPPRank(bindInfo: UserBind): Promise<number> {
-        return (
-            (await DatabaseManager.elainaDb?.collections.userBind.getUserDPPRank(
-                bindInfo.pptotal,
-            )) ?? 0
-        );
     }
 }

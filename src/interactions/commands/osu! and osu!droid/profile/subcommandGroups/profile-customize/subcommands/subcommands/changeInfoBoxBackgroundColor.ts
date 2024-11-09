@@ -28,9 +28,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                     _id: 0,
                     uid: 1,
                     username: 1,
-                    pptotal: 1,
                     clan: 1,
-                    weightedAccuracy: 1,
                 },
             },
         );

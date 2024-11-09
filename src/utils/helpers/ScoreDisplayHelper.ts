@@ -1,5 +1,4 @@
 import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
-import { ScoreRank } from "structures/utils/ScoreRank";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
@@ -8,7 +7,6 @@ import {
     GuildMember,
     Message,
     EmbedBuilder,
-    BaseMessageOptions,
     RepliableInteraction,
     Snowflake,
     bold,
@@ -22,18 +20,17 @@ import { DateTimeFormatHelper } from "./DateTimeFormatHelper";
 import { LocaleHelper } from "./LocaleHelper";
 import { Symbols } from "@enums/utils/Symbols";
 import { MessageCreator } from "@utils/creators/MessageCreator";
-import { Accuracy, Modes } from "@rian8337/osu-base";
+import { Accuracy, Modes, ScoreRank } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
     OsuDifficultyAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import { InteractionHelper } from "./InteractionHelper";
-import { ScoreHelper } from "./ScoreHelper";
 import { CommandHelper } from "./CommandHelper";
 import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
 import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
@@ -110,7 +107,7 @@ export abstract class ScoreDisplayHelper {
 
                 let fieldName = `${i + 1}. ${BeatmapManager.getRankEmote(
                     score instanceof Score || score instanceof RecentPlay
-                        ? <ScoreRank>score.rank
+                        ? score.rank
                         : score.mark,
                 )} | `;
 
@@ -248,7 +245,7 @@ export abstract class ScoreDisplayHelper {
         >();
 
         // Check first page first for score availability
-        const firstPageScores = await ScoreHelper.fetchDroidLeaderboard(
+        const firstPageScores = await DroidHelper.getBeatmapLeaderboard(
             beatmapInfo?.hash ?? hash!,
         );
 
@@ -267,7 +264,7 @@ export abstract class ScoreDisplayHelper {
         const arrow = Symbols.rightArrowSmall;
 
         const getCalculationResult = async (
-            score: Score,
+            score: Score | OfficialDatabaseScore,
         ): Promise<
             [
                 CompleteCalculationAttributes<
@@ -281,9 +278,9 @@ export abstract class ScoreDisplayHelper {
             ]
         > => {
             const droidAttribs = beatmapInfo
-                ? (droidAttribsCache.get(score.scoreID) ??
+                ? (droidAttribsCache.get(score.id) ??
                   (
-                      await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                      await PPProcessorRESTManager.getOnlineScoreAttributes(
                           score.uid,
                           score.hash,
                           Modes.droid,
@@ -294,9 +291,9 @@ export abstract class ScoreDisplayHelper {
                 : null;
 
             const osuAttribs = beatmapInfo
-                ? (osuAttribsCache.get(score.scoreID) ??
+                ? (osuAttribsCache.get(score.id) ??
                   (
-                      await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                      await PPProcessorRESTManager.getOnlineScoreAttributes(
                           score.uid,
                           score.hash,
                           Modes.osu,
@@ -306,12 +303,12 @@ export abstract class ScoreDisplayHelper {
                   null)
                 : null;
 
-            if (!droidAttribsCache.has(score.scoreID)) {
-                droidAttribsCache.set(score.scoreID, droidAttribs);
+            if (!droidAttribsCache.has(score.id)) {
+                droidAttribsCache.set(score.id, droidAttribs);
             }
 
-            if (!osuAttribsCache.has(score.scoreID)) {
-                osuAttribsCache.set(score.scoreID, osuAttribs);
+            if (!osuAttribsCache.has(score.id)) {
+                osuAttribsCache.set(score.id, osuAttribs);
             }
 
             return [droidAttribs, osuAttribs];
@@ -321,9 +318,7 @@ export abstract class ScoreDisplayHelper {
             const attribs = await getCalculationResult(score);
 
             return (
-                `${arrow} ${BeatmapManager.getRankEmote(
-                    <ScoreRank>score.rank,
-                )} ${
+                `${arrow} ${BeatmapManager.getRankEmote(score.rank)} ${
                     attribs[0] && attribs[1]
                         ? `${arrow} ${bold(
                               `${attribs[0].performance.total.toFixed(
@@ -347,7 +342,7 @@ export abstract class ScoreDisplayHelper {
         };
 
         const noModDroidAttribs = beatmapInfo
-            ? await DPPProcessorRESTManager.getDifficultyAttributes(
+            ? await PPProcessorRESTManager.getDifficultyAttributes(
                   beatmapInfo.beatmapId,
                   Modes.droid,
                   PPCalculationMethod.live,
@@ -355,7 +350,7 @@ export abstract class ScoreDisplayHelper {
             : null;
 
         const noModOsuAttribs = beatmapInfo
-            ? await DPPProcessorRESTManager.getDifficultyAttributes(
+            ? await PPProcessorRESTManager.getDifficultyAttributes(
                   beatmapInfo.beatmapId,
                   Modes.osu,
                   PPCalculationMethod.live,
@@ -368,7 +363,7 @@ export abstract class ScoreDisplayHelper {
 
             const scores =
                 leaderboardCache.get(actualPage) ??
-                (await ScoreHelper.fetchDroidLeaderboard(
+                (await DroidHelper.getBeatmapLeaderboard(
                     beatmapInfo?.hash ?? hash!,
                     page,
                 ));
@@ -377,7 +372,7 @@ export abstract class ScoreDisplayHelper {
                 leaderboardCache.set(actualPage, scores);
             }
 
-            const embedOptions: BaseMessageOptions = beatmapInfo
+            const embedOptions = beatmapInfo
                 ? EmbedCreator.createBeatmapEmbed(
                       beatmapInfo,
                       undefined,

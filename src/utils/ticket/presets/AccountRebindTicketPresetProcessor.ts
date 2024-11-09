@@ -6,8 +6,6 @@ import {
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { AccountRebindTicketPresetProcessorLocalization } from "@localization/utils/ticket/presets/AccountRebindTicketPresetProcessor/AccountRebindTicketPresetProcessorLocalization";
 import { DatabaseManager } from "@database/DatabaseManager";
-import { InteractionHelper } from "@utils/helpers/InteractionHelper";
-import { MessageCreator } from "@utils/creators/MessageCreator";
 import { ModalTicketPresetProcessor } from "./ModalTicketPresetProcessor";
 import { ProcessedSupportTicketPreset } from "@structures/utils/ProcessedSupportTicketPreset";
 import { StringHelper } from "@utils/helpers/StringHelper";
@@ -35,7 +33,8 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
         const reason = interaction.fields.getTextInputValue("reason");
 
         const player = await DroidHelper.getPlayer(username, ["id", "email"]);
-        if (!player) {
+
+        if (!player || player instanceof Player) {
             return this.invalidateModal(
                 interaction,
                 localization.getTranslation("playerNotFound"),
@@ -49,11 +48,9 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
             );
         }
 
-        const uid = player instanceof Player ? player.uid : player.id;
-
         const bindInfo =
             await DatabaseManager.elainaDb.collections.userBind.getFromUid(
-                uid,
+                player.id,
                 { projection: { _id: 0, discordid: 1 } },
             );
 
@@ -77,8 +74,8 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
             .catch(() => null);
 
         return {
-            title: `osu!droid Account Rebind (${uid})`,
-            description: `I would like to request an osu!droid account rebind with uid ${uid} with the following reason:\n\n${reason}`,
+            title: `osu!droid Account Rebind (${player.id})`,
+            description: `I would like to request an osu!droid account rebind with uid ${player.id} with the following reason:\n\n${reason}`,
             assignees: role?.members.map((v) => v.id),
         };
     }
@@ -86,31 +83,10 @@ export class AccountRebindTicketPresetProcessor extends ModalTicketPresetProcess
     protected override async processInitialInteraction(
         interaction: ModalRepliableInteraction,
         preset: DatabaseSupportTicketPreset,
-    ): Promise<unknown> {
+    ): Promise<void> {
         const localization = this.getLocalization(
             CommandHelper.getLocale(interaction),
         );
-
-        const bindInfo =
-            await DatabaseManager.elainaDb.collections.userBind.getFromUser(
-                interaction.user,
-                {
-                    projection: {
-                        _id: 0,
-                        previous_bind: 1,
-                    },
-                },
-            );
-
-        const binds = bindInfo?.previous_bind ?? [];
-
-        if (binds.length > 2) {
-            return InteractionHelper.reply(interaction, {
-                content: MessageCreator.createReject(
-                    localization.getTranslation("bindLimitReached"),
-                ),
-            });
-        }
 
         const modal = this.createModal(
             preset,

@@ -1,6 +1,6 @@
 import { Accuracy, Beatmap, MapInfo, Mod, ModUtil } from "@rian8337/osu-base";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import {
     DifficultyAttributes,
     DifficultyCalculator,
@@ -13,11 +13,11 @@ import {
     DifficultyHitObject as RebalanceDifficultyHitObject,
     PerformanceCalculator as RebalancePerformanceCalculator,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
-import { PerformanceCalculationResult } from "@utils/dpp/PerformanceCalculationResult";
-import { RebalancePerformanceCalculationResult } from "@utils/dpp/RebalancePerformanceCalculationResult";
-import { RebalanceDifficultyCalculationResult } from "@utils/dpp/RebalanceDifficultyCalculationResult";
-import { DifficultyCalculationParameters } from "@utils/dpp/DifficultyCalculationParameters";
-import { DifficultyCalculationResult } from "@utils/dpp/DifficultyCalculationResult";
+import { PerformanceCalculationResult } from "@utils/pp/PerformanceCalculationResult";
+import { RebalancePerformanceCalculationResult } from "@utils/pp/RebalancePerformanceCalculationResult";
+import { RebalanceDifficultyCalculationResult } from "@utils/pp/RebalanceDifficultyCalculationResult";
+import { DifficultyCalculationParameters } from "@utils/pp/DifficultyCalculationParameters";
+import { DifficultyCalculationResult } from "@utils/pp/DifficultyCalculationResult";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { DifficultyAttributesCacheManager } from "@utils/difficultyattributescache/DifficultyAttributesCacheManager";
 import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";

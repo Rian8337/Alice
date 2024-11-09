@@ -35,7 +35,6 @@ export const run: EventUtil["run"] = async () => {
                             {
                                 projection: {
                                     _id: 0,
-                                    previous_bind: 1,
                                 },
                             },
                         );
@@ -44,31 +43,19 @@ export const run: EventUtil["run"] = async () => {
                         continue;
                     }
 
-                    let highestRank = Number.POSITIVE_INFINITY;
-                    let highestRankUid = 0;
+                    const player = await DroidHelper.getPlayer(member.id, [
+                        "pp",
+                    ]);
 
-                    for (const uid of bindInfo.previous_bind) {
-                        const player = await DroidHelper.getPlayer(uid, ["pp"]);
-
-                        if (!player) {
-                            continue;
-                        }
-
-                        const rank =
-                            player instanceof Player
-                                ? player.rank
-                                : ((await DroidHelper.getPlayerPPRank(
-                                      player.pp,
-                                  )) ?? 0);
-
-                        if (rank > 0 && highestRank > rank) {
-                            highestRank = rank;
-                            highestRankUid = uid;
-                        }
+                    if (!player) {
+                        continue;
                     }
 
-                    member.uid = highestRankUid;
-                    member.rank = highestRank;
+                    member.rank =
+                        player instanceof Player
+                            ? player.rank
+                            : ((await DroidHelper.getPlayerPPRank(player.pp)) ??
+                              0);
                 }
 
                 await clan.updateClan();

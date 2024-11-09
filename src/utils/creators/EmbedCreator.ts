@@ -13,6 +13,7 @@ import {
     userMention,
     underscore,
     channelMention,
+    hyperlink,
 } from "discord.js";
 import { Config } from "@core/Config";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
@@ -21,12 +22,9 @@ import { Challenge } from "@database/utils/aliceDb/Challenge";
 import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { StringHelper } from "@utils/helpers/StringHelper";
 import { ClanAuction } from "@database/utils/aliceDb/ClanAuction";
-import { UserBind } from "@database/utils/elainaDb/UserBind";
-import { DatabaseManager } from "@database/DatabaseManager";
 import { TournamentMatch } from "@database/utils/elainaDb/TournamentMatch";
-import { DifficultyCalculationParameters } from "@utils/dpp/DifficultyCalculationParameters";
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
-import { ScoreRank } from "structures/utils/ScoreRank";
+import { DifficultyCalculationParameters } from "@utils/pp/DifficultyCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import { MapShare } from "@database/utils/aliceDb/MapShare";
 import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
 import { MusicQueue } from "@utils/music/MusicQueue";
@@ -54,7 +52,7 @@ import {
     HitResult,
     HitErrorInformation,
 } from "@rian8337/osu-droid-replay-analyzer";
-import { Score } from "@rian8337/osu-droid-utilities";
+import { Player, Score } from "@rian8337/osu-droid-utilities";
 import { Language } from "@localization/base/Language";
 import {
     EmbedCreatorLocalization,
@@ -66,13 +64,14 @@ import { ReplayHelper } from "@utils/helpers/ReplayHelper";
 import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
 import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { RecentPlay } from "@database/utils/aliceDb/RecentPlay";
 import { NormalEmbedOptions } from "@structures/utils/NormalEmbedOptions";
-import { DPPHelper } from "@utils/helpers/DPPHelper";
 import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabaseScore";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
+import { ProfileManager } from "@utils/managers/ProfileManager";
 
 /**
  * Utility to create message embeds.
@@ -244,18 +243,20 @@ export abstract class EmbedCreator {
     }
 
     /**
-     * Creates an embed for displaying DPP list.
+     * Creates an embed for displaying a player's top plays.
      *
      * @param interaction The interaction that triggered the embed creation.
-     * @param playerInfo The player's information.
-     * @param ppRank The DPP rank of the player.
+     * @param player The player to create the embed for.
+     * @param topScores The top scores of the player.
+     * @param ppRank The rank of the player in the DPP leaderboard.
      * @param language The locale of the user who attempted to create the embed. Defaults to English.
      * @returns The embed.
      */
-    static async createDPPListEmbed(
+    static async createPPListEmbed(
         interaction: RepliableInteraction,
-        playerInfo: UserBind,
-        ppRank?: number,
+        player: Pick<OfficialDatabaseUser, "id" | "username" | "pp"> | Player,
+        topScores: Score[],
+        ppRank?: number | null,
         language: Language = "en",
     ): Promise<EmbedBuilder> {
         const localization = new EmbedCreatorLocalization(language);
@@ -265,45 +266,28 @@ export abstract class EmbedCreator {
             color: (<GuildMember | null>interaction.member)?.displayColor,
         });
 
-        ppRank ??=
-            await DatabaseManager.elainaDb.collections.userBind.getUserDPPRank(
-                playerInfo.pptotal,
-            );
-
-        const bonusPP = DPPHelper.calculateBonusPerformancePoints(
-            playerInfo.playc,
-        );
+        ppRank ??= await DroidHelper.getPlayerPPRank(player.id);
 
         embed.setDescription(
             `${bold(
                 `${StringHelper.formatString(
                     localization.getTranslation("ppProfileTitle"),
-                    `${userMention(playerInfo.discordid)} (${
-                        playerInfo.username
-                    })`,
+                    hyperlink(
+                        player.username,
+                        ProfileManager.getProfileLink(player.id),
+                    ),
                 )}`,
             )}\n` +
                 `${localization.getTranslation("totalPP")}: ${bold(
-                    `${playerInfo.pptotal.toFixed(
-                        2,
-                    )} pp (#${ppRank.toLocaleString(
-                        LocaleHelper.convertToBCP47(language),
-                    )})`,
-                )}\n` +
-                `${localization.getTranslation("totalPPNoBonus")}: ${bold(
-                    `${(playerInfo.pptotal - bonusPP).toFixed(2)} pp`,
+                    `${player.pp.toFixed(2)} pp (${typeof ppRank === "number" ? `${ppRank.toLocaleString(LocaleHelper.convertToBCP47(language))}` : "Unknown"})`,
                 )}\n` +
                 `${localization.getTranslation(
                     "recommendedStarRating",
                 )}: ${bold(
-                    `${(Math.pow(playerInfo.pptotal, 0.4) * 0.225).toFixed(2)}${
+                    `${(Math.pow(player.pp, 0.4) * 0.225).toFixed(2)}${
                         Symbols.star
                     }`,
-                )}\n` +
-                // `Recalculated: ${bold(playerInfo.dppRecalcComplete ? "Yes" : "No")}\n` +
-                `[${localization.getTranslation(
-                    "ppProfile",
-                )}](https://droidpp.osudroid.moe/profile/${playerInfo.uid})`,
+                )}`,
         );
 
         return embed;
@@ -570,7 +554,7 @@ export abstract class EmbedCreator {
                 score instanceof RecentPlay
                     ? score.droidAttribs
                     : (
-                          await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                          await PPProcessorRESTManager.getOnlineScoreAttributes(
                               score.uid,
                               score.hash,
                               Modes.droid,
@@ -584,7 +568,7 @@ export abstract class EmbedCreator {
                 score instanceof RecentPlay
                     ? score.osuAttribs
                     : (
-                          await DPPProcessorRESTManager.getOnlineScoreAttributes(
+                          await PPProcessorRESTManager.getOnlineScoreAttributes(
                               score.uid,
                               score.hash,
                               Modes.osu,
@@ -595,7 +579,7 @@ export abstract class EmbedCreator {
 
         let beatmapInformation = `${arrow} ${BeatmapManager.getRankEmote(
             score instanceof Score || score instanceof RecentPlay
-                ? <ScoreRank>score.rank
+                ? score.rank
                 : score.mark,
         )} ${arrow} `;
 
@@ -660,7 +644,7 @@ export abstract class EmbedCreator {
             });
 
             const droidFcAttribs =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
+                await PPProcessorRESTManager.getPerformanceAttributes(
                     score.hash,
                     Modes.droid,
                     PPCalculationMethod.live,
@@ -668,7 +652,7 @@ export abstract class EmbedCreator {
                 );
 
             const osuFcAttribs =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
+                await PPProcessorRESTManager.getPerformanceAttributes(
                     score.hash,
                     Modes.osu,
                     PPCalculationMethod.live,
@@ -845,7 +829,7 @@ export abstract class EmbedCreator {
         });
 
         const droidDiffAttribs =
-            await DPPProcessorRESTManager.getDifficultyAttributes(
+            await PPProcessorRESTManager.getDifficultyAttributes(
                 challenge.beatmapid,
                 Modes.droid,
                 PPCalculationMethod.live,
@@ -857,7 +841,7 @@ export abstract class EmbedCreator {
         }
 
         const osuDiffAttribs =
-            await DPPProcessorRESTManager.getDifficultyAttributes(
+            await PPProcessorRESTManager.getDifficultyAttributes(
                 challenge.beatmapid,
                 Modes.osu,
                 PPCalculationMethod.live,
@@ -1134,7 +1118,7 @@ export abstract class EmbedCreator {
         const calcParams = new DifficultyCalculationParameters();
 
         const droidDiffAttribs =
-            await DPPProcessorRESTManager.getDifficultyAttributes(
+            await PPProcessorRESTManager.getDifficultyAttributes(
                 submission.beatmap_id,
                 Modes.droid,
                 PPCalculationMethod.live,
@@ -1142,7 +1126,7 @@ export abstract class EmbedCreator {
             );
 
         const osuDiffAttribs =
-            await DPPProcessorRESTManager.getDifficultyAttributes(
+            await PPProcessorRESTManager.getDifficultyAttributes(
                 submission.beatmap_id,
                 Modes.osu,
                 PPCalculationMethod.live,

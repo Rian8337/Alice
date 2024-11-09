@@ -63,9 +63,7 @@ export abstract class ProfileManager extends Manager {
                     {
                         projection: {
                             _id: 0,
-                            pptotal: 1,
                             clan: 1,
-                            weightedAccuracy: 1,
                         },
                     },
                 );

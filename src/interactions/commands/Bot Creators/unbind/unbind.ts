@@ -32,7 +32,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     const dbManager = DatabaseManager.elainaDb.collections.userBind;
 
     const bindInfo = await dbManager.getFromUid(uid, {
-        projection: { _id: 0, previous_bind: 1, uid: 1 },
+        projection: { _id: 0, uid: 1 },
     });
 
     if (!bindInfo) {
@@ -43,7 +43,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const result = await bindInfo.unbind(uid, localization.language);
+    const result = await bindInfo.unbind();
 
     if (result.failed()) {
         return InteractionHelper.reply(interaction, {

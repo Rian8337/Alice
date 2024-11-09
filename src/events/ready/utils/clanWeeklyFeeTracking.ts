@@ -78,7 +78,7 @@ export const run: EventUtil["run"] = async (client) => {
                             {
                                 projection: {
                                     _id: 0,
-                                    previous_bind: 1,
+                                    uid: 1,
                                 },
                             },
                         );
@@ -90,17 +90,13 @@ export const run: EventUtil["run"] = async (client) => {
                         continue;
                     }
 
-                    let highestRank: number = Number.POSITIVE_INFINITY;
+                    const player = await Player.getInformation(member.uid);
 
-                    for (const uid of bindInfo.previous_bind) {
-                        const player: Player | null =
-                            await Player.getInformation(uid);
-
-                        if (!player) {
-                            continue;
-                        }
-
-                        highestRank = Math.min(player.rank, highestRank);
+                    if (!player) {
+                        upkeepDistribution.shift();
+                        await clan.removeMember(member.id, language);
+                        ++kickedCount;
+                        continue;
                     }
 
                     const randomUpkeepDistribution: number =

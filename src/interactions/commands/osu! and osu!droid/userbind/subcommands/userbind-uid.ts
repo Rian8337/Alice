@@ -6,6 +6,7 @@ import { UserbindLocalization } from "@localization/interactions/commands/osu! a
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { Player } from "@rian8337/osu-droid-utilities";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new UserbindLocalization(
@@ -48,7 +49,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         "email",
     ]);
 
-    if (!player) {
+    if (!player || player instanceof Player) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("profileNotFound"),

@@ -66,8 +66,6 @@ export interface EmbedCreatorStrings {
     readonly musicQueuer: string;
     readonly ppProfileTitle: string; // see PrototypecheckLocalization
     readonly totalPP: string;
-    readonly ppProfile: string;
-    readonly totalPPNoBonus: string;
     readonly warningInfo: string;
     readonly warnedUser: string;
     readonly warningId: string;

@@ -65,7 +65,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 "playcount",
             ]);
 
-            const localUid = player instanceof Player ? player.uid : player?.id;
+            const localUid = player?.id;
 
             if (localUid !== undefined) {
                 bindInfo = await dbManager.getFromUid(localUid, findOptions);
@@ -84,7 +84,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
             player = await DroidHelper.getPlayer(username);
 
-            const localUid = player instanceof Player ? player.uid : player?.id;
+            const localUid = player?.id;
 
             if (localUid !== undefined) {
                 bindInfo = await dbManager.getFromUid(localUid, findOptions);
@@ -132,22 +132,20 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 player.username,
             ),
             iconURL: interaction.user.avatarURL()!,
-            url: ProfileManager.getProfileLink(
-                player instanceof Player ? player.uid : player.id,
-            ).toString(),
+            url: ProfileManager.getProfileLink(player.id).toString(),
         })
         .setThumbnail(
             player instanceof Player
-                ? player.avatarURL
+                ? player.avatarUrl
                 : DroidHelper.getAvatarURL(player.id),
         )
         .setDescription(
             `[${localization.getTranslation("avatarLink")}](${
                 player instanceof Player
-                    ? player.avatarURL
+                    ? player.avatarUrl
                     : DroidHelper.getAvatarURL(player.id)
             })\n\n` +
-                `${bold(localization.getTranslation("uid"))}: ${player instanceof Player ? player.uid : player.id}\n` +
+                `${bold(localization.getTranslation("uid"))}: ${player.id}\n` +
                 `${bold(
                     localization.getTranslation("rank"),
                 )}: ${rank.toLocaleString(BCP47)}\n` +

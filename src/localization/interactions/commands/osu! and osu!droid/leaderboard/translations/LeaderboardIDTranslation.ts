@@ -17,6 +17,5 @@ export class LeaderboardIDTranslation extends Translation<LeaderboardStrings> {
         playCount: "Jumlah Main",
         pp: "PP",
         accuracy: "Akurasi",
-        score: "Skor",
     };
 }

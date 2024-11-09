@@ -68,14 +68,7 @@ export const config: SlashCommand["config"] = {
             description: "Request a name change.",
             options: [
                 {
-                    name: "email",
-                    required: true,
-                    type: ApplicationCommandOptionType.String,
-                    description:
-                        "The email that is connected to your currently bound osu!droid account.",
-                },
-                {
-                    name: "newusername",
+                    name: "username",
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     description:

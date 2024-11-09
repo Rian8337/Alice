@@ -16,6 +16,5 @@ export class LeaderboardESTranslation extends Translation<LeaderboardStrings> {
         playCount: "Play",
         pp: "PP",
         accuracy: "Precisión",
-        score: "Puntaje",
     };
 }

@@ -7,8 +7,6 @@ import { AccountRebindTicketPresetProcessorStrings } from "../AccountRebindTicke
 export class AccountRebindTicketPresetProcessorENTranslation extends Translation<AccountRebindTicketPresetProcessorStrings> {
     override readonly translations: AccountRebindTicketPresetProcessorStrings =
         {
-            bindLimitReached:
-                "I'm sorry, you cannot bind another osu!droid account as you have reached the bind limit!",
             usernameLabel: "osu!droid Account Username",
             emailPlaceholder: "Email of the osu!droid account entered above.",
             emailLabel: "osu!droid Account Email",

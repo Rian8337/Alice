@@ -8,8 +8,9 @@ import { OfficialDatabaseScore } from "@database/official/schema/OfficialDatabas
 import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
 import { OfficialDatabaseScoreMods } from "@structures/utils/OfficialDatabaseScoreMods";
 import { DroidAPIRequestBuilder, ModUtil } from "@rian8337/osu-base";
-import { Player, Score } from "@rian8337/osu-droid-utilities";
+import { APIScore, Player, Score } from "@rian8337/osu-droid-utilities";
 import { RowDataPacket } from "mysql2";
+import { OnlinePlayerRank } from "@structures/utils/OnlinePlayerRank";
 
 /**
  * A helper for osu!droid related requests.
@@ -23,21 +24,19 @@ export abstract class DroidHelper {
      * @param hash The MD5 hash of the beatmap.
      * @param page The page to retrieve. Defaults to 1.
      * @param scoresPerPage The amount of scores to retrieve per page. Only used when the database is queried. Defaults to 100.
-     * @param databaseColumns The columns to retrieve from the database if the database is queried.
      * @returns The leaderboard.
      */
-    static async getLeaderboard<K extends keyof OfficialDatabaseScore>(
+    static async getBeatmapLeaderboard(
         hash: string,
         page: number = 1,
         scoresPerPage: number = 100,
-        databaseColumns?: K[],
-    ): Promise<Pick<OfficialDatabaseScore, K>[] | Score[]> {
+    ): Promise<Score[]> {
         if (Config.isDebug) {
             const apiRequestBuilder = new DroidAPIRequestBuilder()
                 .setEndpoint("scoresearchv2.php")
                 .addParameter("hash", hash)
                 .addParameter("page", Math.max(0, page - 1))
-                .addParameter("order", "score");
+                .addParameter("order", "pp");
 
             const result = await apiRequestBuilder.sendRequest();
 
@@ -45,23 +44,86 @@ export abstract class DroidHelper {
                 throw new Error("Droid API request failed");
             }
 
-            const data = result.data.toString("utf-8").split("<br>");
+            let response: APIScore[];
 
-            data.shift();
+            try {
+                response = JSON.parse(result.data.toString("utf-8"));
+            } catch {
+                throw new Error("Failed to parse JSON response");
+            }
 
-            return data.map((v) => new Score().fillInformation(v));
+            return response.map((v) => new Score(v));
         }
 
         const leaderboardQuery = await officialPool.query<RowDataPacket[]>(
-            `SELECT ${
-                databaseColumns?.join() || "*"
-            } FROM ${constructOfficialDatabaseTable(
-                OfficialDatabaseTables.score,
-            )} WHERE hash = ? AND score > 0 ORDER BY score DESC LIMIT ? OFFSET ?;`,
+            `SELECT
+                score.id as id,
+                score.uid as uid,
+                user.username as username,
+                score.filename as filename,
+                score.score as score,
+                score.combo as combo,
+                score.mark as mark,
+                score.mode as mode,
+                score.accuracy as accuracy,
+                score.perfect as perfect,
+                score.good as good,
+                score.bad as bad,
+                score.miss as miss,
+                score.date as date,
+                score.hash as hash,
+                score.pp as pp
+                FROM ${constructOfficialDatabaseTable(OfficialDatabaseTables.score)} score, ${constructOfficialDatabaseTable(OfficialDatabaseTables.user)} user
+                WHERE hash = ? AND score > 0 ORDER BY pp DESC LIMIT ? OFFSET ?;`,
             [hash, scoresPerPage, (page - 1) * scoresPerPage],
         );
 
-        return leaderboardQuery[0] as OfficialDatabaseScore[];
+        return (leaderboardQuery[0] as APIScore[]).map((v) => new Score(v));
+    }
+
+    /**
+     * Retrieves the global leaderboard.
+     *
+     * In debug mode, the osu!droid API will be requested. Otherwise, the official database will be queried.
+     *
+     * @param page The page to retrieve. Defaults to 1.
+     * @param scoresPerPage The amount of scores to retrieve per page. Only used when the database is queried. Defaults to 100.
+     * @returns The global leaderboard.
+     */
+    static async getGlobalLeaderboard(
+        page: number = 1,
+        scoresPerPage: number = 100,
+    ): Promise<OnlinePlayerRank[]> {
+        if (Config.isDebug) {
+            const apiRequestBuilder = new DroidAPIRequestBuilder()
+                .setEndpoint("top.php")
+                .addParameter("page", page);
+
+            const result = await apiRequestBuilder.sendRequest();
+
+            if (result.statusCode !== 200) {
+                throw new Error("Droid API request failed");
+            }
+
+            let response: OnlinePlayerRank[];
+
+            try {
+                response = JSON.parse(result.data.toString("utf-8"));
+            } catch {
+                throw new Error("Failed to parse JSON response");
+            }
+
+            return response;
+        }
+
+        const leaderboardQuery = await officialPool.query<RowDataPacket[]>(
+            `SELECT id, username, pp, playcount, accuracy FROM ${constructOfficialDatabaseTable(
+                OfficialDatabaseTables.user,
+            )} WHERE banned = 0 AND restrict_mode = 0 AND archived = 0 ORDER BY pp DESC LIMIT ? OFFSET ?;`,
+            [scoresPerPage, (page - 1) * scoresPerPage],
+        );
+
+        return leaderboardQuery[0] as OnlinePlayerRank[];
     }
 
     /**
@@ -95,6 +157,70 @@ export abstract class DroidHelper {
         );
 
         return scoreQuery[0] as OfficialDatabaseScore[];
+    }
+
+    /**
+     * Gets the top scores of a player.
+     *
+     * In debug mode, the osu!droid API will be requested. Otherwise, the official database will be queried.
+     *
+     * @param uid The uid of the player.
+     * @param amount The amount of scores to retrieve. Defaults to 100.
+     * @returns The top scores.
+     */
+    static async getTopScores(
+        uid: number,
+        amount: number = 100,
+    ): Promise<Score[]> {
+        if (Config.isDebug) {
+            const apiRequestBuilder = new DroidAPIRequestBuilder()
+                .setEndpoint("scoresearchv2.php")
+                .addParameter("uid", uid)
+                .addParameter("page", 0)
+                .addParameter("order", "pp")
+                .addParameter("limit", amount);
+
+            const data = await apiRequestBuilder.sendRequest();
+
+            if (data.statusCode !== 200) {
+                return [];
+            }
+
+            let response: APIScore[];
+
+            try {
+                response = JSON.parse(data.data.toString("utf-8"));
+            } catch {
+                throw new Error("Failed to parse JSON response");
+            }
+
+            return response.map((v) => new Score(v));
+        }
+
+        const scoreQuery = await officialPool.query<RowDataPacket[]>(
+            `SELECT
+                score.id as id,
+                score.uid as uid,
+                user.username as username,
+                score.filename as filename,
+                score.score as score,
+                score.combo as combo,
+                score.mark as mark,
+                score.mode as mode,
+                score.accuracy as accuracy,
+                score.perfect as perfect,
+                score.good as good,
+                score.bad as bad,
+                score.miss as miss,
+                score.date as date,
+                score.hash as hash,
+                score.pp as pp
+                FROM ${constructOfficialDatabaseTable(OfficialDatabaseTables.score)} score, ${constructOfficialDatabaseTable(OfficialDatabaseTables.user)} user
+                WHERE uid = ? AND score > 0 ORDER BY score DESC LIMIT ?;`,
+            [uid, amount],
+        );
+
+        return (scoreQuery[0] as APIScore[]).map((v) => new Score(v));
     }
 
     /**
@@ -242,11 +368,15 @@ export abstract class DroidHelper {
                 return [];
             }
 
-            const entries = data.data.toString("utf-8").split("<br>");
+            let response: APIScore[];
 
-            entries.shift();
+            try {
+                response = JSON.parse(data.data.toString("utf-8"));
+            } catch {
+                throw new Error("Failed to parse JSON response");
+            }
 
-            return entries.map((v) => new Score().fillInformation(v));
+            return response.map((v) => new Score(v));
         }
 
         const scoreQuery = await officialPool.query<RowDataPacket[]>(

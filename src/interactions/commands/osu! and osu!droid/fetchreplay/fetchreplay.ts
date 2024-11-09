@@ -9,7 +9,6 @@ import { MessageCreator } from "@utils/creators/MessageCreator";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { Accuracy, MapInfo, Modes } from "@rian8337/osu-base";
-import { ExportedReplayJSON } from "@rian8337/osu-droid-replay-analyzer";
 import { Score } from "@rian8337/osu-droid-utilities";
 import { FetchreplayLocalization } from "@localization/interactions/commands/osu! and osu!droid/fetchreplay/FetchreplayLocalization";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
@@ -17,10 +16,11 @@ import { StringHelper } from "@utils/helpers/StringHelper";
 import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { ReplayHelper } from "@utils/helpers/ReplayHelper";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { BeatmapDifficultyHelper } from "@utils/helpers/BeatmapDifficultyHelper";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { ExportedReplayJSONV2 } from "@rian8337/osu-droid-replay-analyzer";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new FetchreplayLocalization(
@@ -132,10 +132,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const zip = new AdmZip();
 
-    zip.addFile(
-        `${score instanceof Score ? score.scoreID : score.id}.odr`,
-        replay.originalODR!,
-    );
+    zip.addFile(`${score.id}.odr`, replay.originalODR!);
 
     let modstring: string;
 
@@ -173,7 +170,6 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         }
     }
 
-    const scoreId = score instanceof Score ? score.scoreID : score.id;
     const rank = score instanceof Score ? score.rank : score.mark;
     const accuracy =
         score instanceof Score
@@ -185,12 +181,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
                   nmiss: score.miss,
               });
 
-    const json: ExportedReplayJSON = {
-        version: 1,
+    const json: ExportedReplayJSONV2 = {
+        version: 2,
         replaydata: {
             filename: `${data.folderName}\\/${data.fileName}`,
             playername: data.isReplayV3() ? data.playerName : username,
-            replayfile: `${scoreId}.odr`,
+            replayfile: `${score.id}.odr`,
+            beatmapMD5: score.hash,
             mod: modstring,
             score: score.score,
             combo: score.combo,
@@ -203,13 +200,6 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             misses: accuracy.nmiss,
             accuracy: accuracy.value(),
             time: score.date.getTime(),
-            perfect: data.isReplayV3()
-                ? data.isFullCombo
-                    ? 1
-                    : 0
-                : accuracy.nmiss === 0
-                  ? 1
-                  : 0,
         },
     };
 
@@ -240,7 +230,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const droidAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+    const droidAttribs = await PPProcessorRESTManager.getOnlineScoreAttributes(
         score.uid,
         score.hash,
         Modes.droid,
@@ -267,7 +257,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const osuAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+    const osuAttribs = await PPProcessorRESTManager.getOnlineScoreAttributes(
         score.uid,
         score.hash,
         Modes.osu,

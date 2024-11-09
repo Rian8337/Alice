@@ -50,8 +50,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         case !!uid:
             player = await DroidHelper.getPlayer(uid!);
 
-            uid ??=
-                (player instanceof Player ? player.uid : player?.id) ?? null;
+            uid ??= player?.id ?? null;
 
             break;
         case !!username:
@@ -65,8 +64,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
             player = await DroidHelper.getPlayer(username);
 
-            uid ??=
-                (player instanceof Player ? player.uid : player?.id) ?? null;
+            uid ??= player?.id ?? null;
 
             break;
         default:
@@ -149,10 +147,7 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     if (considerNonOverwrite) {
-        recentPlays = await ScoreHelper.getRecentScores(
-            player instanceof Player ? player.uid : player.id,
-            recentPlays,
-        );
+        recentPlays = await ScoreHelper.getRecentScores(player.id, recentPlays);
     }
 
     if (recentPlays.length === 0) {

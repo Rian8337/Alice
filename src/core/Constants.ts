@@ -111,9 +111,9 @@ export class Constants {
         "1201421169061019738" satisfies Snowflake;
 
     /**
-     * The ID of the linked role for displaying dpp statistics in user profiles.
+     * The ID of the linked role for displaying pp statistics in user profiles.
      */
-    static readonly dppProfileDisplayerRole =
+    static readonly ppProfileDisplayerRole =
         "1082254268691644446" satisfies Snowflake;
 
     /**

@@ -13,7 +13,7 @@ import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 import { StringHelper } from "@utils/helpers/StringHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
 
@@ -31,9 +31,6 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 projection: {
                     _id: 0,
                     uid: 1,
-                    pptotal: 1,
-                    previous_bind: 1,
-                    username: 1,
                 },
             },
         );
@@ -101,7 +98,11 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         });
     }
 
-    const player = await DroidHelper.getPlayer(bindInfo.uid, ["score"]);
+    const player = await DroidHelper.getPlayer(bindInfo.uid, [
+        "username",
+        "score",
+        "pp",
+    ]);
 
     if (!player) {
         return InteractionHelper.update(interaction, {
@@ -115,7 +116,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
 
     switch (badge.type) {
         case "dpp":
-            canUserClaimBadge = bindInfo.pptotal >= badge.requirement;
+            canUserClaimBadge = player.pp >= badge.requirement;
             break;
         case "score_total":
             canUserClaimBadge = player.score >= badge.requirement;
@@ -188,39 +189,13 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 });
             }
 
-            for (const uid of bindInfo.previous_bind) {
-                const score = await DroidHelper.getScore(
-                    uid,
-                    beatmapInfo.hash,
-                    ["uid", "hash"],
-                );
+            const score = await DroidHelper.getScore(
+                bindInfo.uid,
+                beatmapInfo.hash,
+                ["uid", "hash"],
+            );
 
-                if (!score) {
-                    continue;
-                }
-
-                const attribs =
-                    await DPPProcessorRESTManager.getOnlineScoreAttributes(
-                        score.uid,
-                        score.hash,
-                        Modes.osu,
-                        PPCalculationMethod.live,
-                    );
-
-                if (!attribs) {
-                    continue;
-                }
-
-                if (
-                    attribs.attributes.difficulty.starRating >=
-                    badge.requirement
-                ) {
-                    canUserClaimBadge = true;
-                    break;
-                }
-            }
-
-            if (!canUserClaimBadge) {
+            if (!score) {
                 return InteractionHelper.update(interaction, {
                     content: MessageCreator.createReject(
                         localization.getTranslation(
@@ -230,8 +205,30 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
                 });
             }
 
-            if (!beatmapInfo) {
-                return;
+            const attribs =
+                await PPProcessorRESTManager.getOnlineScoreAttributes(
+                    score.uid,
+                    score.hash,
+                    Modes.osu,
+                    PPCalculationMethod.live,
+                );
+
+            if (!attribs) {
+                return InteractionHelper.update(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation(
+                            "userDoesntHaveScoreinBeatmap",
+                        ),
+                    ),
+                });
+            }
+
+            if (attribs.attributes.difficulty.starRating < badge.requirement) {
+                return InteractionHelper.update(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("userCannotClaimBadge"),
+                    ),
+                });
             }
 
             break;
@@ -265,7 +262,7 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         await playerInfoDbManager.insert({
             discordid: interaction.user.id,
             uid: bindInfo.uid,
-            username: bindInfo.username,
+            username: player.username,
             picture_config: pictureConfig,
         });
     }

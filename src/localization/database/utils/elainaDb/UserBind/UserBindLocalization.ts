@@ -7,11 +7,8 @@ import { UserBindKRTranslation } from "./translations/UserBindKRTranslation";
 
 export interface UserBindStrings {
     readonly uidNotBindedToAccount: string;
-    readonly cannotRebindToSameAccount: string;
-    readonly bindLimitReachedInOtherAccount: string;
     readonly playerNotFound: string;
     readonly playerWithUidOrUsernameNotFound: string;
-    readonly bindLimitReached: string;
     readonly unbindClanDisbandNotification: string;
 }
 

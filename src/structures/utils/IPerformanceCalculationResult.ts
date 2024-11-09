@@ -1,4 +1,4 @@
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import {
     DifficultyAttributes,
     DifficultyCalculator,

@@ -14,7 +14,7 @@ import { GuildMember, InteractionReplyOptions } from "discord.js";
 import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { ReplayHelper } from "@utils/helpers/ReplayHelper";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
@@ -84,26 +84,22 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const score = await DroidHelper.getScore(
-        player instanceof Player ? player.uid : player.id,
-        beatmapInfo.hash,
-        [
-            "id",
-            "uid",
-            "hash",
-            "score",
-            "filename",
-            "hash",
-            "mode",
-            "combo",
-            "mark",
-            "perfect",
-            "good",
-            "bad",
-            "miss",
-            "date",
-        ],
-    );
+    const score = await DroidHelper.getScore(player.id, beatmapInfo.hash, [
+        "id",
+        "uid",
+        "hash",
+        "score",
+        "filename",
+        "hash",
+        "mode",
+        "combo",
+        "mark",
+        "perfect",
+        "good",
+        "bad",
+        "miss",
+        "date",
+    ]);
 
     if (!score) {
         return InteractionHelper.reply(interaction, {
@@ -118,7 +114,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         beatmapInfo.hash,
     );
 
-    const scoreAttribs = await DPPProcessorRESTManager.getOnlineScoreAttributes(
+    const scoreAttribs = await PPProcessorRESTManager.getOnlineScoreAttributes(
         score.uid,
         score.hash,
         Modes.droid,
@@ -128,7 +124,7 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
     const embed = await EmbedCreator.createRecentPlayEmbed(
         score,
         player instanceof Player
-            ? player.avatarURL
+            ? player.avatarUrl
             : DroidHelper.getAvatarURL(player.id),
         (<GuildMember | null>interaction.member)?.displayColor,
         scoreAttribs?.attributes,

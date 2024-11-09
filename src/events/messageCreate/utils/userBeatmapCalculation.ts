@@ -10,9 +10,9 @@ import { Message, EmbedBuilder, bold, underline } from "discord.js";
 import { MapInfo, Modes, ModUtil } from "@rian8337/osu-base";
 import { UserBeatmapCalculationLocalization } from "@localization/events/messageCreate/userBeatmapCalculation/UserBeatmapCalculationLocalization";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
-import { DPPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
+import { PPProcessorRESTManager } from "@utils/managers/DPPProcessorRESTManager";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
-import { DPPHelper } from "@utils/helpers/DPPHelper";
+import { PPHelper } from "@utils/helpers/PPHelper";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
     if (
@@ -65,7 +65,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             );
 
             const droidAttribs =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
+                await PPProcessorRESTManager.getPerformanceAttributes(
                     beatmapId,
                     Modes.droid,
                     PPCalculationMethod.live,
@@ -78,7 +78,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             }
 
             const osuAttribs =
-                await DPPProcessorRESTManager.getPerformanceAttributes(
+                await PPProcessorRESTManager.getPerformanceAttributes(
                     beatmapId,
                     Modes.osu,
                     PPCalculationMethod.live,
@@ -105,11 +105,11 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             if (message.content.includes("-d")) {
                 string += `${localization.getTranslation(
                     "droidStars",
-                )}: ${DPPHelper.getDroidDifficultyAttributesInfo(
+                )}: ${PPHelper.getDroidDifficultyAttributesInfo(
                     droidAttribs.attributes.difficulty,
                 )}\n${localization.getTranslation(
                     "droidPP",
-                )}: ${DPPHelper.getDroidPerformanceAttributesInfo(
+                )}: ${PPHelper.getDroidPerformanceAttributesInfo(
                     droidAttribs.attributes.performance,
                 )}\n`;
             }
@@ -117,11 +117,11 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             if (message.content.includes("-p")) {
                 string += `${localization.getTranslation(
                     "pcStars",
-                )}: ${DPPHelper.getOsuDifficultyAttributesInfo(
+                )}: ${PPHelper.getOsuDifficultyAttributesInfo(
                     osuAttribs.attributes.difficulty,
                 )}\n${localization.getTranslation(
                     "pcPP",
-                )}: ${DPPHelper.getOsuPerformanceAttributesInfo(
+                )}: ${PPHelper.getOsuPerformanceAttributesInfo(
                     osuAttribs.attributes.performance,
                 )}`;
             }
@@ -207,7 +207,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                 }
 
                 const droidDiffAttribs =
-                    await DPPProcessorRESTManager.getDifficultyAttributes(
+                    await PPProcessorRESTManager.getDifficultyAttributes(
                         beatmapInfo.hash,
                         Modes.droid,
                         PPCalculationMethod.live,
@@ -215,7 +215,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
                     );
 
                 const osuDiffAttribs =
-                    await DPPProcessorRESTManager.getDifficultyAttributes(
+                    await PPProcessorRESTManager.getDifficultyAttributes(
                         beatmapInfo.hash,
                         Modes.osu,
                         PPCalculationMethod.live,

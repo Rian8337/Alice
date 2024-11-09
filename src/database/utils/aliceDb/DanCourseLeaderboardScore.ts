@@ -1,4 +1,5 @@
 import { DatabaseManager } from "@database/DatabaseManager";
+import { ScoreRank } from "@rian8337/osu-base";
 import { DatabaseDanCourseLeaderboardScore } from "@structures/database/aliceDb/DatabaseDanCourseLeaderboardScore";
 import { Manager } from "@utils/base/Manager";
 import { ObjectId } from "mongodb";
@@ -15,7 +16,7 @@ export class DanCourseLeaderboardScore
     modstring: string;
     score: number;
     maxCombo: number;
-    rank: string;
+    rank: ScoreRank;
     geki: number;
     perfect: number;
     katu: number;

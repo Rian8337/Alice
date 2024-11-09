@@ -16,6 +16,5 @@ export class LeaderboardKRTranslation extends Translation<LeaderboardStrings> {
         playCount: "플레이",
         pp: "PP",
         accuracy: "정확도",
-        score: "점수",
     };
 }

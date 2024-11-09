@@ -1,5 +1,3 @@
-import { PPEntry } from "@structures/dpp/PPEntry";
-import { RecalculationProgress } from "@structures/dpp/RecalculationProgress";
 import { Snowflake } from "discord.js";
 import { BaseDocument } from "../BaseDocument";
 
@@ -23,37 +21,9 @@ export interface DatabaseUserBind extends BaseDocument {
     username: string;
 
     /**
-     * The total droid performance points (dpp) that the user has.
-     */
-    pptotal: number;
-
-    /**
-     * The play count of the user (how many scores the user have submitted into the dpp system).
-     */
-    playc: number;
-
-    /**
-     * The weighted accuracy of the player.
-     */
-    weightedAccuracy: number;
-
-    /**
-     * The droid performance points entries of the user.
-     */
-    pp: PPEntry[];
-
-    /**
      * The clan the user is currently in.
      */
     clan?: string;
-
-    /**
-     * The UID of osu!droid accounts that are bound to the user.
-     *
-     * A user can only bind up to 2 osu!droid accounts, therefore
-     * the maximum length of this array will never exceed 2.
-     */
-    previous_bind: number[];
 
     /**
      * The epoch time at which the user can join another clan, in seconds.
@@ -69,21 +39,6 @@ export interface DatabaseUserBind extends BaseDocument {
      * The epoch time at which the user can rejoin their old clan, in seconds.
      */
     oldjoincooldown?: number;
-
-    /**
-     * Whether the ongoing dpp scan is completed for this user.
-     */
-    dppScanComplete?: boolean;
-
-    /**
-     * Whether the ongoing dpp recalculation is completed for this user.
-     */
-    dppRecalcComplete?: boolean;
-
-    /**
-     * Progress of ongoing dpp calculation.
-     */
-    calculationInfo?: RecalculationProgress<PPEntry>;
 
     /**
      * Whether the daily role connection metadata for this user has been completed.

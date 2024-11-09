@@ -12,16 +12,16 @@ import {
     ExtendedDroidDifficultyAttributes as RebalanceExtendedDroidDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
-import { PerformanceCalculationResult } from "@utils/dpp/PerformanceCalculationResult";
+import { PerformanceCalculationResult } from "@utils/pp/PerformanceCalculationResult";
 import {
     ReplayAnalyzer,
     SliderCheeseInformation,
     ThreeFingerChecker,
 } from "@rian8337/osu-droid-replay-analyzer";
-import { RebalancePerformanceCalculationResult } from "@utils/dpp/RebalancePerformanceCalculationResult";
+import { RebalancePerformanceCalculationResult } from "@utils/pp/RebalancePerformanceCalculationResult";
 import { CacheManager } from "@utils/managers/CacheManager";
 import { ReplayHelper } from "./ReplayHelper";
-import { PerformanceCalculationParameters } from "@utils/dpp/PerformanceCalculationParameters";
+import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import { Beatmap } from "@rian8337/osu-base";
 
 /**
