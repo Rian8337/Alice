@@ -60,6 +60,8 @@ export const run: SlashSubcommandGroup["run"] = async (_, interaction) => {
         "pp",
     ] satisfies (keyof OfficialDatabaseUser)[];
 
+    await InteractionHelper.deferReply(interaction);
+
     switch (subcommand) {
         case "uid":
             if (uidToCompare === otherUid) {
