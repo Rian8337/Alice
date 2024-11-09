@@ -216,7 +216,7 @@ export abstract class DroidHelper {
                 score.hash as hash,
                 score.pp as pp
                 FROM ${constructOfficialDatabaseTable(OfficialDatabaseTables.score)} score, ${constructOfficialDatabaseTable(OfficialDatabaseTables.user)} user
-                WHERE uid = ? AND score > 0 ORDER BY score DESC LIMIT ?;`,
+                WHERE score.uid = ? AND score.score > 0 AND user.id = score.uid ORDER BY score.score DESC LIMIT ?;`,
             [uid, amount],
         );
 
