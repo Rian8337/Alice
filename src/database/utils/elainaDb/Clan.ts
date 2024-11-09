@@ -294,14 +294,13 @@ export class Clan extends Manager {
         }
 
         const player = await DroidHelper.getPlayer(toAcceptBindInfo.uid, [
-            "pp",
             "id",
         ]);
         const rank =
             player instanceof Player
                 ? player.rank
                 : player !== null
-                  ? ((await DroidHelper.getPlayerPPRank(player.pp)) ?? 0)
+                  ? ((await DroidHelper.getPlayerPPRank(player.id)) ?? 0)
                   : 0;
 
         if (!player) {

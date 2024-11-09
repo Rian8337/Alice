@@ -282,23 +282,25 @@ export abstract class DroidHelper {
     }
 
     /**
-     * Obtains a rank from the official database based on a player's pp.
+     * Obtains the rank of a player.
      *
      * In debug mode, this will return `null`.
      *
-     * @param pp The pp to get the rank from.
+     * @param id The ID of the player to get the rank from.
      * @returns The rank of the player, `null` if not found.
      */
-    static async getPlayerPPRank(pp: number): Promise<number | null> {
+    static async getPlayerPPRank(id: number): Promise<number | null> {
         if (Config.isDebug) {
             return null;
         }
 
+        const table = constructOfficialDatabaseTable(
+            OfficialDatabaseTables.user,
+        );
+
         const rankQuery = await officialPool.query<RowDataPacket[]>(
-            `SELECT COUNT(*) + 1 FROM ${constructOfficialDatabaseTable(
-                OfficialDatabaseTables.user,
-            )} WHERE banned = 0 AND restrict_mode = 0 AND archived = 0 AND pp > ?;`,
-            [pp],
+            `SELECT COUNT(*) + 1 FROM ${table} WHERE banned = 0 AND restrict_mode = 0 AND archived = 0 AND pp > (SELECT pp FROM ${table} WHERE id = ?);`,
+            [id],
         );
 
         return (

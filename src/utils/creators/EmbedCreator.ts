@@ -255,7 +255,6 @@ export abstract class EmbedCreator {
     static async createPPListEmbed(
         interaction: RepliableInteraction,
         player: Pick<OfficialDatabaseUser, "id" | "username" | "pp"> | Player,
-        topScores: Score[],
         ppRank?: number | null,
         language: Language = "en",
     ): Promise<EmbedBuilder> {

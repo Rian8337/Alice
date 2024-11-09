@@ -207,7 +207,7 @@ export class PlayerInfo extends Manager {
      */
     async transferCoins(
         amount: number,
-        thisPlayer: Pick<OfficialDatabaseUser, "pp"> | Player,
+        thisPlayer: Pick<OfficialDatabaseUser, "id"> | Player,
         to: PlayerInfo,
         limit?: number,
         language: Language = "en",
@@ -218,7 +218,7 @@ export class PlayerInfo extends Manager {
             const rank =
                 thisPlayer instanceof Player
                     ? thisPlayer.rank
-                    : ((await DroidHelper.getPlayerPPRank(thisPlayer.pp)) ?? 0);
+                    : ((await DroidHelper.getPlayerPPRank(thisPlayer.id)) ?? 0);
 
             switch (true) {
                 case rank < 10:

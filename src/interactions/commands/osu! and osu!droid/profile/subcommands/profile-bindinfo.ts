@@ -41,10 +41,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     let bindInfo: UserBind | null | undefined;
     let player:
-        | Pick<
-              OfficialDatabaseUser,
-              "id" | "username" | "pp" | "region" | "playcount"
-          >
+        | Pick<OfficialDatabaseUser, "id" | "username" | "region" | "playcount">
         | Player
         | null = null;
 
@@ -60,7 +57,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             player = await DroidHelper.getPlayer(uid!, [
                 "id",
                 "username",
-                "pp",
                 "region",
                 "playcount",
             ]);
@@ -82,7 +78,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 });
             }
 
-            player = await DroidHelper.getPlayer(username);
+            player = await DroidHelper.getPlayer(username, [
+                "id",
+                "username",
+                "region",
+                "playcount",
+            ]);
 
             const localUid = player?.id;
 
@@ -100,7 +101,12 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             );
 
             if (bindInfo?.uid) {
-                player = await DroidHelper.getPlayer(bindInfo.uid);
+                player = await DroidHelper.getPlayer(bindInfo.uid, [
+                    "id",
+                    "username",
+                    "region",
+                    "playcount",
+                ]);
             }
 
             break;
@@ -123,7 +129,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const rank =
         player instanceof Player
             ? player.rank
-            : ((await DroidHelper.getPlayerPPRank(player.pp)) ?? 0);
+            : ((await DroidHelper.getPlayerPPRank(player.id)) ?? 0);
 
     embed
         .setAuthor({

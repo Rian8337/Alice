@@ -44,7 +44,7 @@ export const run: EventUtil["run"] = async () => {
                     }
 
                     const player = await DroidHelper.getPlayer(member.id, [
-                        "pp",
+                        "id",
                     ]);
 
                     if (!player) {
@@ -54,7 +54,7 @@ export const run: EventUtil["run"] = async () => {
                     member.rank =
                         player instanceof Player
                             ? player.rank
-                            : ((await DroidHelper.getPlayerPPRank(player.pp)) ??
+                            : ((await DroidHelper.getPlayerPPRank(player.id)) ??
                               0);
                 }
 

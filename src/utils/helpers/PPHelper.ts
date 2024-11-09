@@ -51,7 +51,6 @@ export abstract class PPHelper {
         const embed = await EmbedCreator.createPPListEmbed(
             interaction,
             player,
-            topScores,
             undefined,
             CommandHelper.getLocale(interaction),
         );
