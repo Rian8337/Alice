@@ -278,7 +278,7 @@ export abstract class EmbedCreator {
                 )}`,
             )}\n` +
                 `${localization.getTranslation("totalPP")}: ${bold(
-                    `${player.pp.toFixed(2)} pp (${typeof ppRank === "number" ? `${ppRank.toLocaleString(LocaleHelper.convertToBCP47(language))}` : "Unknown"})`,
+                    `${player.pp.toFixed(2)} pp (${typeof ppRank === "number" ? `#${ppRank.toLocaleString(LocaleHelper.convertToBCP47(language))}` : "Unknown"})`,
                 )}\n` +
                 `${localization.getTranslation(
                     "recommendedStarRating",
