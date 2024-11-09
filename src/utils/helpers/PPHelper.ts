@@ -60,38 +60,8 @@ export abstract class PPHelper {
                 const score = topScores[i];
 
                 if (score) {
-                    let modstring = score.completeModString;
-
-                    if (
-                        score.forceAR ||
-                        (score.speedMultiplier && score.speedMultiplier !== 1)
-                    ) {
-                        if (score.mods) {
-                            modstring += " ";
-                        }
-
-                        modstring += "(";
-
-                        if (score.forceAR) {
-                            modstring += `AR${score.forceAR}`;
-                        }
-
-                        if (
-                            score.speedMultiplier &&
-                            score.speedMultiplier !== 1
-                        ) {
-                            if (score.forceAR) {
-                                modstring += ", ";
-                            }
-
-                            modstring += `${score.speedMultiplier}x`;
-                        }
-
-                        modstring += ")";
-                    }
-
                     embed.addFields({
-                        name: `${i + 1}. ${score.title} ${modstring}`,
+                        name: `${i + 1}. ${score.title} ${score.completeModString}`,
                         value: `${score.combo}x | ${(score.accuracy.value() * 100).toFixed(2)}% | ${
                             score.miss
                         } ${Symbols.missIcon} | ${underscore(
