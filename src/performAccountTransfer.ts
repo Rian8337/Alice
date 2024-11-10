@@ -299,7 +299,11 @@ DatabaseManager.init().then(async () => {
                 playcount = (SELECT COUNT(*) FROM ${scoreTable} WHERE uid = ? AND score > 0),
                 archived = 0
                 WHERE id = ?`,
-                [transfer.transferUid, transfer.transferUid, transfer.transferUid],
+                [
+                    transfer.transferUid,
+                    transfer.transferUid,
+                    transfer.transferUid,
+                ],
             );
 
             await connection.commit();
@@ -314,6 +318,11 @@ DatabaseManager.init().then(async () => {
         await dbManager.updateOne(
             { discordId: transfer.discordId },
             { $set: { transferDone: true } },
+        );
+
+        await DatabaseManager.elainaDb.collections.userBind.updateOne(
+            { discordid: transfer.discordId },
+            { $set: { uid: transfer.transferUid } },
         );
 
         console.log(`Transfer for ${transfer.discordId} has been completed.`);
