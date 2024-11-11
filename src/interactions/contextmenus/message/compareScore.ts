@@ -9,7 +9,6 @@ import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { Modes } from "@rian8337/osu-base";
-import { Player } from "@rian8337/osu-droid-utilities";
 import { GuildMember, InteractionReplyOptions } from "discord.js";
 import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
@@ -121,23 +120,18 @@ export const run: MessageContextMenuCommand["run"] = async (_, interaction) => {
         PPCalculationMethod.live,
     );
 
-    const embed = await EmbedCreator.createRecentPlayEmbed(
-        score,
-        player instanceof Player
-            ? player.avatarUrl
-            : DroidHelper.getAvatarURL(player.id),
-        (<GuildMember | null>interaction.member)?.displayColor,
-        scoreAttribs?.attributes,
-        undefined,
-        localization.language,
-    );
-
     const options: InteractionReplyOptions = {
+        ...(await EmbedCreator.createRecentPlayEmbed(
+            score,
+            (<GuildMember | null>interaction.member)?.displayColor,
+            scoreAttribs?.attributes,
+            undefined,
+            localization.language,
+        )),
         content: MessageCreator.createAccept(
             localization.getTranslation("comparePlayDisplay"),
             player.username,
         ),
-        embeds: [embed],
     };
 
     const replay = await ReplayHelper.analyzeReplay(score);

@@ -11,6 +11,7 @@ import { DroidAPIRequestBuilder, ModUtil } from "@rian8337/osu-base";
 import { APIScore, Player, Score } from "@rian8337/osu-droid-utilities";
 import { RowDataPacket } from "mysql2";
 import { OnlinePlayerRank } from "@structures/utils/OnlinePlayerRank";
+import { readFile, stat } from "fs/promises";
 
 /**
  * A helper for osu!droid related requests.
@@ -550,6 +551,35 @@ export abstract class DroidHelper {
      */
     static getAvatarURL(uid: number): string {
         return `https://osudroid.moe/user/avatar?id=${uid}`;
+    }
+
+    /**
+     * Obtains the avatar of a player.
+     *
+     * In debug mode, the avatar will be obtained by requesting the osu!droid server.
+     * Otherwise, the avatar will be obtained via the file system.
+     *
+     * @param uid The uid of the player.
+     * @returns The avatar of the player, `null` if the avatar is not found or the osu!droid server cannot be requested.
+     */
+    static async getAvatar(uid: number): Promise<Buffer | null> {
+        if (Config.isDebug) {
+            return fetch(this.getAvatarURL(uid))
+                .then((res) => res.arrayBuffer())
+                .then(Buffer.from)
+                .catch(() => null);
+        }
+
+        const avatarBasePath = "/DroidData/osudroid/zip/avatar/";
+        let avatarPath = `${avatarBasePath}${uid}.png`;
+
+        const avatarStats = await stat(avatarPath);
+
+        if (!avatarStats.isFile()) {
+            avatarPath = `${avatarBasePath}0.png`;
+        }
+
+        return readFile(avatarPath).catch(() => null);
     }
 
     /**

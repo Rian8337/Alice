@@ -14,6 +14,7 @@ import {
     underscore,
     channelMention,
     hyperlink,
+    AttachmentBuilder,
 } from "discord.js";
 import { Config } from "@core/Config";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
@@ -514,7 +515,6 @@ export abstract class EmbedCreator {
               >
             | Score
             | RecentPlay,
-        playerAvatarURL: string,
         embedColor?: ColorResolvable,
         droidAttribs?: CompleteCalculationAttributes<
             DroidDifficultyAttributes,
@@ -525,7 +525,7 @@ export abstract class EmbedCreator {
             OsuPerformanceAttributes
         > | null,
         language: Language = "en",
-    ): Promise<EmbedBuilder> {
+    ): Promise<BaseMessageOptions> {
         const localization = this.getLocalization(language);
         const BCP47 = LocaleHelper.convertToBCP47(language);
         const arrow = Symbols.rightArrowSmall;
@@ -543,9 +543,19 @@ export abstract class EmbedCreator {
                 ? score.completeModString
                 : DroidHelper.getCompleteModString(score.mode);
 
+        const avatar = await DroidHelper.getAvatar(score.uid);
+        const avatarURL = "attachment://avatar.png";
+
+        const options: BaseMessageOptions = {
+            embeds: [embed],
+            files: avatar
+                ? [new AttachmentBuilder(avatar, { name: avatarURL })]
+                : [],
+        };
+
         embed.setAuthor({
             name: `${score instanceof Score || score instanceof RecentPlay ? score.title : DroidHelper.cleanupFilename(score.filename)} ${modString}`,
-            iconURL: playerAvatarURL,
+            iconURL: avatarURL,
         });
 
         if (droidAttribs === undefined && osuAttribs !== null) {
@@ -602,7 +612,7 @@ export abstract class EmbedCreator {
                 }/${accuracy.nmiss}]`;
 
             embed.setDescription(beatmapInformation);
-            return embed;
+            return options;
         }
 
         const beatmap: MapInfo = (await BeatmapManager.getBeatmap(score.hash, {
@@ -616,7 +626,7 @@ export abstract class EmbedCreator {
                 } | ${osuAttribs.difficulty.starRating.toFixed(2)}${
                     Symbols.star
                 }]`,
-                iconURL: playerAvatarURL,
+                iconURL: avatarURL,
                 url: beatmap.beatmapLink,
             })
             .setThumbnail(
@@ -796,7 +806,7 @@ export abstract class EmbedCreator {
 
         embed.setDescription(beatmapInformation);
 
-        return embed;
+        return options;
     }
 
     /**

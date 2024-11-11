@@ -160,23 +160,18 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         PPCalculationMethod.live,
     );
 
-    const embed = await EmbedCreator.createRecentPlayEmbed(
-        score,
-        player instanceof Player
-            ? player.avatarUrl
-            : DroidHelper.getAvatarURL(player.id),
-        (<GuildMember | null>interaction.member)?.displayColor,
-        scoreAttribs?.attributes,
-        undefined,
-        localization.language,
-    );
-
     const options: InteractionReplyOptions = {
+        ...(await EmbedCreator.createRecentPlayEmbed(
+            score,
+            (<GuildMember | null>interaction.member)?.displayColor,
+            scoreAttribs?.attributes,
+            undefined,
+            localization.language,
+        )),
         content: MessageCreator.createAccept(
             localization.getTranslation("comparePlayDisplay"),
             player.username,
         ),
-        embeds: [embed],
     };
 
     const replay = await ReplayHelper.analyzeReplay(score);

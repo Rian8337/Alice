@@ -174,7 +174,7 @@ export class ProfileCardCreator {
             this.drawPlayerLevel();
         }
 
-        await this.writePlayerProfile();
+        this.writePlayerProfile();
     }
 
     /**
@@ -215,12 +215,13 @@ export class ProfileCardCreator {
     private async drawPlayerAvatar(): Promise<void> {
         this.context.save();
 
-        const avatar = await loadImage(
-            this.player instanceof Player
-                ? this.player.avatarUrl
-                : DroidHelper.getAvatarURL(this.player.id),
-        );
-        this.context.drawImage(avatar, 9, 9, 150, 150);
+        const avatar = await DroidHelper.getAvatar(this.player.id);
+
+        if (!avatar) {
+            return;
+        }
+
+        this.context.drawImage(await loadImage(avatar), 9, 9, 150, 150);
 
         this.context.restore();
     }
@@ -371,7 +372,7 @@ export class ProfileCardCreator {
     /**
      * Writes the details of the player's profile.
      */
-    private async writePlayerProfile(): Promise<void> {
+    private writePlayerProfile(): void {
         this.context.save();
 
         const x = 169;

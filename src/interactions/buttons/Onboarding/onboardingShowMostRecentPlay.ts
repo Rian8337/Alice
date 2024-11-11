@@ -95,23 +95,18 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
         PPCalculationMethod.live,
     );
 
-    const embed = await EmbedCreator.createRecentPlayEmbed(
-        score,
-        player instanceof Player
-            ? player.avatarUrl
-            : DroidHelper.getAvatarURL(player.id),
-        interaction.member.displayColor,
-        scoreAttribs?.attributes,
-        undefined,
-        localization.language,
-    );
-
     const options: InteractionReplyOptions = {
         content: MessageCreator.createAccept(
             localization.getTranslation("recentPlayDisplay"),
             player.username,
         ),
-        embeds: [embed],
+        ...(await EmbedCreator.createRecentPlayEmbed(
+            score,
+            interaction.member.displayColor,
+            scoreAttribs?.attributes,
+            undefined,
+            localization.language,
+        )),
         ephemeral: true,
     };
 

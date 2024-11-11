@@ -50,17 +50,14 @@ export const run: EventUtil["run"] = async (client) => {
                     break;
                 }
 
-                const embed = await EmbedCreator.createRecentPlayEmbed(
-                    score,
-                    DroidHelper.getAvatarURL(trackedPlayer.uid),
-                    8311585,
-                );
-
                 channel.send({
+                    ...(await EmbedCreator.createRecentPlayEmbed(
+                        score,
+                        8311585,
+                    )),
                     content: MessageCreator.createAccept(
                         `Recent play for ${player.username}:`,
                     ),
-                    embeds: [embed],
                 });
             }
         }
