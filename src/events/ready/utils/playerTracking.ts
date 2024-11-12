@@ -51,13 +51,15 @@ export const run: EventUtil["run"] = async (client) => {
                 }
 
                 channel.send({
-                    ...(await EmbedCreator.createRecentPlayEmbed(
-                        score,
-                        8311585,
-                    )),
                     content: MessageCreator.createAccept(
                         `Recent play for ${player.username}:`,
                     ),
+                    embeds: [
+                        await EmbedCreator.createRecentPlayEmbed(
+                            score,
+                            8311585,
+                        ),
+                    ],
                 });
             }
         }

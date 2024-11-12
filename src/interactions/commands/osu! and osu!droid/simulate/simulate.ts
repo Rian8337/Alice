@@ -659,16 +659,18 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     BeatmapManager.setChannelLatestBeatmap(interaction.channelId, score.hash);
 
     InteractionHelper.reply(interaction, {
-        ...(await EmbedCreator.createRecentPlayEmbed(
-            score,
-            (<GuildMember | null>interaction.member)?.displayColor,
-            droidAttribs?.attributes,
-            osuAttribs?.attributes,
-        )),
         content: MessageCreator.createAccept(
             localization.getTranslation("simulatedPlayDisplay"),
             player.username,
         ),
+        embeds: [
+            await EmbedCreator.createRecentPlayEmbed(
+                score,
+                (<GuildMember | null>interaction.member)?.displayColor,
+                droidAttribs?.attributes,
+                osuAttribs?.attributes,
+            ),
+        ],
     });
 };
 

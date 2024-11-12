@@ -1,4 +1,4 @@
-import { AttachmentBuilder, bold, GuildMember } from "discord.js";
+import { bold, GuildMember } from "discord.js";
 import { DatabaseManager } from "@database/DatabaseManager";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { MessageCreator } from "@utils/creators/MessageCreator";
@@ -131,9 +131,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             ? player.rank
             : ((await DroidHelper.getPlayerPPRank(player.id)) ?? 0);
 
-    const avatar = await DroidHelper.getAvatar(player.id);
-    const embedAvatarURL = "attachment://avatar.png";
-
     embed
         .setAuthor({
             name: StringHelper.formatString(
@@ -143,13 +140,11 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             iconURL: interaction.user.avatarURL()!,
             url: ProfileManager.getProfileLink(player.id).toString(),
         })
-        .setThumbnail(embedAvatarURL)
+        .setThumbnail(DroidHelper.getAvatarURL(player.id))
         .setDescription(
-            `[${localization.getTranslation("avatarLink")}](${
-                player instanceof Player
-                    ? player.avatarUrl
-                    : DroidHelper.getAvatarURL(player.id)
-            })\n\n` +
+            `[${localization.getTranslation("avatarLink")}](${DroidHelper.getAvatarURL(
+                player.id,
+            )})\n\n` +
                 `${bold(localization.getTranslation("uid"))}: ${player.id}\n` +
                 `${bold(
                     localization.getTranslation("rank"),
@@ -175,9 +170,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     InteractionHelper.reply(interaction, {
         embeds: [embed],
-        files: avatar
-            ? [new AttachmentBuilder(avatar, { name: "avatar.png" })]
-            : [],
     });
 };
 

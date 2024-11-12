@@ -100,13 +100,15 @@ export const run: ButtonCommand["run"] = async (_, interaction) => {
             localization.getTranslation("recentPlayDisplay"),
             player.username,
         ),
-        ...(await EmbedCreator.createRecentPlayEmbed(
-            score,
-            interaction.member.displayColor,
-            scoreAttribs?.attributes,
-            undefined,
-            localization.language,
-        )),
+        embeds: [
+            await EmbedCreator.createRecentPlayEmbed(
+                score,
+                interaction.member.displayColor,
+                scoreAttribs?.attributes,
+                undefined,
+                localization.language,
+            ),
+        ],
         ephemeral: true,
     };
 

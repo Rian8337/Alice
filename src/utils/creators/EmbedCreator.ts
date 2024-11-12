@@ -14,7 +14,6 @@ import {
     underscore,
     channelMention,
     hyperlink,
-    AttachmentBuilder,
 } from "discord.js";
 import { Config } from "@core/Config";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
@@ -487,7 +486,6 @@ export abstract class EmbedCreator {
      * Creates a recent play embed.
      *
      * @param score The score to create recent play from.
-     * @param playerAvatarURL The avatar URL of the player.
      * @param embedColor The color of the embed.
      * @param droidAttribs The osu!droid complete attributes of the score. If unspecified, the score will be computed on fly.
      * @param osuAttribs The osu!standard complete attributes of the score. If unspecified, the score will be computed on fly.
@@ -525,7 +523,7 @@ export abstract class EmbedCreator {
             OsuPerformanceAttributes
         > | null,
         language: Language = "en",
-    ): Promise<BaseMessageOptions> {
+    ): Promise<EmbedBuilder> {
         const localization = this.getLocalization(language);
         const BCP47 = LocaleHelper.convertToBCP47(language);
         const arrow = Symbols.rightArrowSmall;
@@ -543,15 +541,7 @@ export abstract class EmbedCreator {
                 ? score.completeModString
                 : DroidHelper.getCompleteModString(score.mode);
 
-        const avatar = await DroidHelper.getAvatar(score.uid);
-        const avatarURL = "attachment://avatar.png";
-
-        const options: BaseMessageOptions = {
-            embeds: [embed],
-            files: avatar
-                ? [new AttachmentBuilder(avatar, { name: avatarURL })]
-                : [],
-        };
+        const avatarURL = DroidHelper.getAvatarURL(score.uid);
 
         embed.setAuthor({
             name: `${score instanceof Score || score instanceof RecentPlay ? score.title : DroidHelper.cleanupFilename(score.filename)} ${modString}`,
@@ -612,7 +602,7 @@ export abstract class EmbedCreator {
                 }/${accuracy.nmiss}]`;
 
             embed.setDescription(beatmapInformation);
-            return options;
+            return embed;
         }
 
         const beatmap: MapInfo = (await BeatmapManager.getBeatmap(score.hash, {
@@ -806,7 +796,7 @@ export abstract class EmbedCreator {
 
         embed.setDescription(beatmapInformation);
 
-        return options;
+        return embed;
     }
 
     /**
