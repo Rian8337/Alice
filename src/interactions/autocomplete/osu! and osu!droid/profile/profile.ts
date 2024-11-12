@@ -1,12 +1,10 @@
-import { DatabaseManager } from "@database/DatabaseManager";
 import { AutocompleteHandler } from "@structures/core/AutocompleteHandler";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: AutocompleteHandler["run"] = async (_, interaction) => {
-    const focusedValue: string = interaction.options.getFocused();
-
     interaction.respond(
-        await DatabaseManager.elainaDb.collections.userBind.searchPlayersForAutocomplete(
-            focusedValue,
+        await DroidHelper.searchPlayersForAutocomplete(
+            interaction.options.getFocused(),
         ),
     );
 };

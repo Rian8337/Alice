@@ -12,6 +12,8 @@ import { APIScore, Player, Score } from "@rian8337/osu-droid-utilities";
 import { RowDataPacket } from "mysql2";
 import { OnlinePlayerRank } from "@structures/utils/OnlinePlayerRank";
 import { readFile, stat } from "fs/promises";
+import { ApplicationCommandOptionChoiceData } from "discord.js";
+import { DatabaseManager } from "@database/DatabaseManager";
 
 /**
  * A helper for osu!droid related requests.
@@ -580,6 +582,53 @@ export abstract class DroidHelper {
         }
 
         return readFile(avatarPath).catch(() => null);
+    }
+
+    /**
+     * Searches for player names.
+     *
+     * In debug mode, this queries the database instead.
+     *
+     * @param name The name to search for.
+     * @param amount The amount of player names to retrieve. Defaults to 25.
+     * @returns The player names, `null` if in debug mode or the database cannot be queried.
+     */
+    static async searchPlayersForAutocomplete(
+        name: string,
+        amount = 25,
+    ): Promise<ApplicationCommandOptionChoiceData<string>[]> {
+        name = name.trim();
+
+        // Usernames only allow:
+        // - 2 to 20 characters.
+        // - alphanumeric characters and underscores.
+        if (
+            name.length < 2 ||
+            name.length > 20 ||
+            !/^[a-zA-Z0-9_]*$/.test(name)
+        ) {
+            return [];
+        }
+
+        if (Config.isDebug) {
+            return DatabaseManager.elainaDb.collections.userBind.searchPlayersForAutocomplete(
+                name,
+                amount,
+            );
+        }
+
+        const playerQuery = await officialPool
+            .query<
+                RowDataPacket[]
+            >(`SELECT username FROM ${constructOfficialDatabaseTable(OfficialDatabaseTables.user)} WHERE username LIKE ? LIMIT ${amount};`, [`${name}%`])
+            .then((res) => res[0] as Pick<OfficialDatabaseUser, "username">[]);
+
+        return playerQuery.map((v) => {
+            return {
+                name: v.username,
+                value: v.username,
+            };
+        });
     }
 
     /**

@@ -1,5 +1,6 @@
 import { DatabaseManager } from "@database/DatabaseManager";
 import { AutocompleteHandler } from "@structures/core/AutocompleteHandler";
+import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: AutocompleteHandler["run"] = async (_, interaction) => {
     // Lots of autocomplete options for this command, but they're all usernames.
@@ -28,9 +29,7 @@ export const run: AutocompleteHandler["run"] = async (_, interaction) => {
         }
     } else {
         interaction.respond(
-            await DatabaseManager.elainaDb.collections.userBind.searchPlayersForAutocomplete(
-                focused.value,
-            ),
+            await DroidHelper.searchPlayersForAutocomplete(focused.value),
         );
     }
 };
