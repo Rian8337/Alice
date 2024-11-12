@@ -142,7 +142,10 @@ export class TimingDistributionChart {
 
             if (
                 object instanceof Slider &&
-                objectData.accuracy === Math.floor(hitWindow50) + 13
+                !(
+                    -hitWindow50 > objectData.accuracy ||
+                    objectData.accuracy > Math.min(hitWindow50, object.duration)
+                )
             ) {
                 continue;
             }

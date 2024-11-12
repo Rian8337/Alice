@@ -493,7 +493,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
             // Start with slider head first.
             addSliderNestedResult(
                 object.nestedHitObjects[0],
-                Math.abs(hitAccuracy) !== Math.floor(simulatedHitWindow50) + 13,
+                -simulatedHitWindow50 <= hitAccuracy &&
+                    hitAccuracy <=
+                        Math.min(simulatedHitWindow50, object.duration),
             );
 
             // Then, handle the slider ticks and repeats.
