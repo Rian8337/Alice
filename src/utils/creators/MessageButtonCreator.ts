@@ -200,9 +200,12 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         });
 
                         if (index !== -1) {
-                            options.components = options.components
-                                ?.slice()
-                                .splice(index, 1);
+                            const newComponents =
+                                options.components?.slice() ?? [];
+
+                            newComponents.splice(index, 1);
+
+                            options.components = newComponents;
                         }
                     } else {
                         await InteractionHelper.reply(interaction, {
@@ -374,6 +377,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                         missAnalyzerButton.setDisabled(true);
                         break;
                     }
+
                     case timingDistributionButtonId: {
                         const timingDistributionChart =
                             new TimingDistributionChart(
@@ -396,43 +400,19 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                     }
                 }
 
-                // Remove the row
-                const index: number = (<ActionRowBuilder<ButtonBuilder>[]>(
-                    options.components
-                )).findIndex((v) => {
-                    if (v.components.length !== 2) {
-                        return;
-                    }
-
-                    return (
-                        (<APIButtonComponentWithCustomId>v.components[0].data)
-                            .custom_id ===
-                            (<APIButtonComponentWithCustomId>(
-                                missAnalyzerButton.data
-                            )).custom_id &&
-                        (<APIButtonComponentWithCustomId>v.components[1].data)
-                            .custom_id ===
-                            (<APIButtonComponentWithCustomId>(
-                                timingDistributionButton.data
-                            )).custom_id
-                    );
-                });
-
-                if (
-                    index !== -1 &&
-                    (<ActionRowBuilder<ButtonBuilder>[]>options.components)[
-                        index
-                    ].components.every((b) => b.data.disabled)
-                ) {
-                    return c.stop();
-                }
-
                 try {
                     interaction.isMessageComponent()
                         ? await InteractionHelper.update(interaction, options)
                         : await InteractionHelper.reply(interaction, options);
                     // eslint-disable-next-line no-empty
                 } catch {}
+
+                if (
+                    missAnalyzerButton.data.disabled &&
+                    timingDistributionButton.data.disabled
+                ) {
+                    c.stop();
+                }
             },
             async (c) => {
                 // Remove the row
@@ -458,9 +438,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 });
 
                 if (index !== -1) {
-                    options.components = options.components
-                        ?.slice()
-                        .splice(index, 1);
+                    const newComponents = options.components?.slice() ?? [];
+                    newComponents.splice(index, 1);
+
+                    options.components = newComponents;
                 }
 
                 if (!c.componentIsDeleted) {
@@ -492,7 +473,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
      * @param buttons The buttons to display.
      * @param users The users who can interact with the buttons.
      * @param duration The duration the collector will remain active, in seconds.
-     * @param onButtonPressedListener The function that will be run when a button is pressed.
+     * @param onButtonPressed The function that will be run when a button is pressed.
      * @param onButtonCollectorEnd The function that will be run when the collector ends.
      * This function should remove or disable necessary components.
      * @returns The message resulted from the interaction's reply.
@@ -503,7 +484,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
         buttons: ButtonBuilder[],
         users: Snowflake[],
         duration: number,
-        onButtonPressedListener: OnButtonPressed,
+        onButtonPressed: OnButtonPressed,
         onButtonCollectorEnd: OnButtonCollectorEnd,
     ): Promise<Message> {
         const components: ActionRowBuilder<ButtonBuilder>[] = [];
@@ -574,9 +555,7 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
 
         const { collector } = collectorOptions;
 
-        collector.on("collect", (i) =>
-            onButtonPressedListener(collector, i, options),
-        );
+        collector.on("collect", (i) => onButtonPressed(collector, i, options));
         collector.once("end", () =>
             onButtonCollectorEnd(collectorOptions, options),
         );
@@ -708,9 +687,10 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
                 });
 
                 if (index !== -1) {
-                    options.components = options.components
-                        ?.slice()
-                        .splice(index, 1);
+                    const newComponents = options.components?.slice() ?? [];
+                    newComponents.splice(index, 1);
+
+                    options.components = newComponents;
                 }
 
                 if (!c.componentIsDeleted) {
