@@ -573,9 +573,9 @@ export abstract class DroidHelper {
         const avatarBasePath = "/DroidData/osudroid/zip/avatar/";
         let avatarPath = `${avatarBasePath}${uid}.png`;
 
-        const avatarStats = await stat(avatarPath);
+        const avatarStats = await stat(avatarPath).catch(() => null);
 
-        if (!avatarStats.isFile()) {
+        if (!avatarStats?.isFile()) {
             avatarPath = `${avatarBasePath}0.png`;
         }
 
