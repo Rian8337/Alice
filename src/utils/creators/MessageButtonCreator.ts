@@ -273,7 +273,9 @@ export abstract class MessageButtonCreator extends InteractionCollectorCreator {
             [interaction.user.id],
             60,
             async (c, i) => {
-                await i.deferReply();
+                await i.deferReply({
+                    ephemeral: interaction.ephemeral ?? false,
+                });
 
                 switch (i.customId) {
                     case missAnalyzerButtonId: {
