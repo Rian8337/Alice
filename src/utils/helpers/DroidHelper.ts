@@ -77,7 +77,7 @@ export abstract class DroidHelper {
                 score.hash as hash,
                 score.pp as pp
                 FROM ${constructOfficialDatabaseTable(OfficialDatabaseTables.score)} score, ${constructOfficialDatabaseTable(OfficialDatabaseTables.user)} user
-                WHERE score.hash = ? AND score.score > 0 ORDER BY score.pp DESC LIMIT ? OFFSET ?;`,
+                WHERE score.hash = ? AND score.score > 0 AND user.id = score.uid ORDER BY score.pp DESC LIMIT ? OFFSET ?;`,
             [hash, scoresPerPage, (page - 1) * scoresPerPage],
         );
 
