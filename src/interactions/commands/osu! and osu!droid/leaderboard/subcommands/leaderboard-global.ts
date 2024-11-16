@@ -36,7 +36,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
         const ranks =
             leaderboardCache.get(actualPage) ??
-            (await DroidHelper.getGlobalLeaderboard(actualPage));
+            (await DroidHelper.getGlobalLeaderboard(page));
 
         if (!leaderboardCache.has(actualPage)) {
             leaderboardCache.set(actualPage, ranks);
