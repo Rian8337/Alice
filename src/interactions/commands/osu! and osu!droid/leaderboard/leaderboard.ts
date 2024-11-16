@@ -33,25 +33,6 @@ export const config: SlashCommand["config"] = {
             ],
         },
         {
-            name: "dpp",
-            type: ApplicationCommandOptionType.Subcommand,
-            description: "View the droid pp (dpp) live leaderboard.",
-            options: [
-                {
-                    name: "page",
-                    type: ApplicationCommandOptionType.Integer,
-                    description: "The page of the leaderboard. Defaults to 1.",
-                    minValue: 1,
-                },
-                {
-                    name: "clan",
-                    type: ApplicationCommandOptionType.String,
-                    description: "The clan name to view the leaderboard from.",
-                    maxLength: 20,
-                },
-            ],
-        },
-        {
             name: "global",
             type: ApplicationCommandOptionType.Subcommand,
             description: "View the global score leaderboard.",
@@ -87,29 +68,8 @@ export const config: SlashCommand["config"] = {
     ],
     example: [
         {
-            command: "leaderboard dpp",
-            description: "will view the droid pp leaderboard at page 1.",
-        },
-        {
-            command: "leaderboard ranked",
-            arguments: [
-                {
-                    name: "page",
-                    value: 3,
-                },
-            ],
-            description: "will view the ranked score leaderboard at page 3.",
-        },
-        {
-            command: "leaderboard dpp",
-            arguments: [
-                {
-                    name: "clan",
-                    value: "Sunda Empire",
-                },
-            ],
-            description:
-                'will view the ranked score leaderboard at page 1 for the "Sunda Empire" clan.',
+            command: "leaderboard global",
+            description: "will view the global game leaderboard.",
         },
     ],
     cooldown: 20,
