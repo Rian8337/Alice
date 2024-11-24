@@ -305,7 +305,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             buttons,
         );
 
-        const message = await interaction.channel!.send({
+        const message = await interaction.channel.send({
             content: MessageCreator.createWarn(
                 localization.getTranslation("guessBeatmap"),
             ),
