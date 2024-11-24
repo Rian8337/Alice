@@ -150,11 +150,17 @@ export const run: EventUtil["run"] = async (
     }
 
     // Log used command along with its subcommand group, subcommand, and options
-    let logMessage = `Slash: ${interaction.user.tag} (${
-        interaction.channel!.isDMBased()
-            ? "DM"
-            : `#${interaction.channel!.name}`
-    }): ${interaction.commandName}`;
+    let logMessage = `Slash: ${interaction.user.tag}`;
+
+    if (interaction.channel !== null) {
+        if (interaction.channel.isDMBased()) {
+            logMessage += ` (DM)`;
+        } else {
+            logMessage += ` #${interaction.channel.name}`;
+        }
+    }
+
+    logMessage += `: ${interaction.commandName}`;
 
     if (interaction.options.getSubcommandGroup(false)) {
         logMessage += ` ${interaction.options.getSubcommandGroup()}`;

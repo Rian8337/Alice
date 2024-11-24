@@ -89,13 +89,19 @@ export const run: EventUtil["run"] = async (
     }
 
     // Log used command
-    consola.info(
-        `Context Menu: ${interaction.user.tag} (${
-            interaction.channel!.isDMBased()
-                ? "DM"
-                : `#${interaction.channel!.name}`
-        }): ${interaction.commandName}`,
-    );
+    let logMessage = `Context Menu: ${interaction.user.tag}`;
+
+    if (interaction.channel !== null) {
+        if (interaction.channel.isDMBased()) {
+            logMessage += ` (DM)`;
+        } else {
+            logMessage += ` #${interaction.channel.name}`;
+        }
+    }
+
+    logMessage += `: ${interaction.commandName}`;
+
+    consola.info(logMessage);
 
     interaction.ephemeral =
         (command.config?.replyEphemeral || Config.maintenance) ?? false;
