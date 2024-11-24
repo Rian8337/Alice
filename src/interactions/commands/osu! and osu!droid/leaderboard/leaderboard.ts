@@ -35,7 +35,7 @@ export const config: SlashCommand["config"] = {
         {
             name: "global",
             type: ApplicationCommandOptionType.Subcommand,
-            description: "View the global score leaderboard.",
+            description: "View the global pp leaderboard.",
             options: [
                 {
                     name: "page",
