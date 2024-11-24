@@ -3,7 +3,7 @@ import {
     AttachmentBuilder,
     bold,
     ColorResolvable,
-    GuildEmoji,
+    formatEmoji,
     hyperlink,
     Message,
     Snowflake,
@@ -30,6 +30,7 @@ import { HelperFunctions } from "@utils/helpers/HelperFunctions";
 import { BeatmapRetrievalOptions } from "@structures/utils/BeatmapRetrievalOptions";
 import { DateTimeFormatHelper } from "@utils/helpers/DateTimeFormatHelper";
 import { BeatmapProcessorRESTManager } from "./BeatmapProcessorRESTManager";
+import { Config } from "@core/Config";
 
 /**
  * A manager for beatmaps.
@@ -419,25 +420,60 @@ export abstract class BeatmapManager extends Manager {
      * @param rank The rank.
      * @returns The emoji representing the rank.
      */
-    static getRankEmote(rank: ScoreRank): GuildEmoji {
+    static getRankEmote(rank: ScoreRank) {
+        let id: string;
+
         switch (rank) {
             case "A":
-                return this.client.emojis.resolve("611559473236148265")!;
+                id = Config.isDebug
+                    ? "1310146519638478870"
+                    : "1310145255303151636";
+                break;
+
             case "B":
-                return this.client.emojis.resolve("611559473169039413")!;
+                id = Config.isDebug
+                    ? "1310146527032774668"
+                    : "1310145245392011265";
+                break;
+
             case "C":
-                return this.client.emojis.resolve("611559473328422942")!;
+                id = Config.isDebug
+                    ? "1310146539691315222"
+                    : "1310145238077149215";
+                break;
+
             case "D":
-                return this.client.emojis.resolve("611559473122639884")!;
+                id = Config.isDebug
+                    ? "1310146547257704481"
+                    : "1310145228560273438";
+                break;
+
             case "S":
-                return this.client.emojis.resolve("611559473294606336")!;
+                id = Config.isDebug
+                    ? "1310146559509528647"
+                    : "1310145265168289814";
+                break;
+
             case "X":
-                return this.client.emojis.resolve("611559473492000769")!;
+                id = Config.isDebug
+                    ? "1310146578958389259"
+                    : "1310145283853910046";
+                break;
+
             case "SH":
-                return this.client.emojis.resolve("611559473361846274")!;
+                id = Config.isDebug
+                    ? "1310146568090947595"
+                    : "1310145274512932907";
+                break;
+
             case "XH":
-                return this.client.emojis.resolve("611559473479155713")!;
+                id = Config.isDebug
+                    ? "1310146587539935272"
+                    : "1310145297921478666";
+                break;
         }
+
+        return formatEmoji(id);
     }
 
     /**
