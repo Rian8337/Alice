@@ -2,8 +2,11 @@ import {
     ApplicationCommandOptionType,
     ApplicationCommandType,
     ApplicationIntegrationType,
+    ChatInputApplicationCommandData,
     InteractionContextType,
+    MessageApplicationCommandData,
     PermissionResolvable,
+    UserApplicationCommandData,
 } from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -36,72 +39,88 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             ApplicationCommandType.ChatInput)
     );
 
-    if (type === ApplicationCommandType.PrimaryEntryPoint) {
-        return;
-    }
+    switch (type) {
+        case ApplicationCommandType.PrimaryEntryPoint:
+            return;
 
-    if (type === ApplicationCommandType.ChatInput) {
-        const command = client.interactions.chatInput.get(commandName);
+        case ApplicationCommandType.ChatInput: {
+            const command = client.interactions.chatInput.get(commandName);
 
-        if (!command) {
-            return InteractionHelper.reply(interaction, {
-                content: MessageCreator.createReject(
-                    localization.getTranslation("commandNotFound"),
-                ),
-            });
-        }
-
-        let memberPermissions: PermissionResolvable[] | null = null;
-
-        if (
-            command.config.permissions &&
-            command.config.integrationTypes?.includes(
-                ApplicationIntegrationType.GuildInstall,
-            )
-        ) {
-            if (command.config.permissions.includes("BotOwner")) {
-                memberPermissions = ["Administrator"];
-            } else if (!command.config.permissions.includes("Special")) {
-                memberPermissions = <PermissionResolvable[]>(
-                    command.config.permissions
-                );
+            if (!command) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("commandNotFound"),
+                    ),
+                });
             }
+
+            let memberPermissions: PermissionResolvable[] | null = null;
+
+            if (
+                command.config.permissions &&
+                command.config.integrationTypes?.includes(
+                    ApplicationIntegrationType.GuildInstall,
+                )
+            ) {
+                if (command.config.permissions.includes("BotOwner")) {
+                    memberPermissions = ["Administrator"];
+                } else if (!command.config.permissions.includes("Special")) {
+                    memberPermissions = <PermissionResolvable[]>(
+                        command.config.permissions
+                    );
+                }
+            }
+
+            data = {
+                name: command.config.name,
+                description: command.config.description,
+                options: command.config.options,
+                defaultMemberPermissions: memberPermissions,
+                contexts: command.config.contexts ?? [
+                    InteractionContextType.Guild,
+                    InteractionContextType.BotDM,
+                    InteractionContextType.PrivateChannel,
+                ],
+                integrationTypes: command.config.integrationTypes ?? [
+                    ApplicationIntegrationType.GuildInstall,
+                    ApplicationIntegrationType.UserInstall,
+                ],
+            } satisfies ChatInputApplicationCommandData;
+
+            break;
         }
 
-        data = {
-            name: command.config.name,
-            description: command.config.description,
-            options: command.config.options,
-            defaultMemberPermissions: memberPermissions,
-            contexts: command.config.contexts ?? [
-                InteractionContextType.Guild,
-                InteractionContextType.BotDM,
-                InteractionContextType.PrivateChannel,
-            ],
-            integrationTypes: command.config.integrationTypes ?? [
-                ApplicationIntegrationType.GuildInstall,
-                ApplicationIntegrationType.UserInstall,
-            ],
-        };
-    } else {
-        const command = (
-            type === ApplicationCommandType.Message
-                ? client.interactions.contextMenu.message
-                : client.interactions.contextMenu.user
-        ).get(commandName);
+        default: {
+            const command = (
+                type === ApplicationCommandType.Message
+                    ? client.interactions.contextMenu.message
+                    : client.interactions.contextMenu.user
+            ).get(commandName);
 
-        if (!command) {
-            return InteractionHelper.reply(interaction, {
-                content: MessageCreator.createReject(
-                    localization.getTranslation("commandNotFound"),
-                ),
-            });
+            if (!command) {
+                return InteractionHelper.reply(interaction, {
+                    content: MessageCreator.createReject(
+                        localization.getTranslation("commandNotFound"),
+                    ),
+                });
+            }
+
+            data = {
+                name: command.config.name,
+                type: type,
+                contexts: command.config.contexts ?? [
+                    InteractionContextType.Guild,
+                    InteractionContextType.BotDM,
+                    InteractionContextType.PrivateChannel,
+                ],
+                integrationTypes: command.config.integrationTypes ?? [
+                    ApplicationIntegrationType.GuildInstall,
+                    ApplicationIntegrationType.UserInstall,
+                ],
+            } satisfies
+                | UserApplicationCommandData
+                | MessageApplicationCommandData;
         }
-
-        data = {
-            name: command.config.name,
-            type: type,
-        };
     }
 
     await (
