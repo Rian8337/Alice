@@ -204,5 +204,6 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: ["BotOwner"],
+    integrationTypes: [ApplicationIntegrationType.UserInstall],
     replyEphemeral: true,
 };
