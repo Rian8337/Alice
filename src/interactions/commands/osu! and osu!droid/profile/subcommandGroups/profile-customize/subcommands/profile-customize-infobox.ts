@@ -45,7 +45,3 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         localization.getTranslation("customizationPlaceholder"),
     );
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

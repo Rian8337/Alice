@@ -84,6 +84,4 @@ export const config: SlashCommand["config"] = {
     description: "See osu!droid's overall statistics.",
     options: [],
     example: [],
-    permissions: [],
-    scope: "ALL",
 };

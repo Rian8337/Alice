@@ -1,4 +1,7 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
@@ -120,5 +123,5 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: [],
-    scope: "GUILD_CHANNEL",
+    contexts: [InteractionContextType.Guild],
 };

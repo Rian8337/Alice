@@ -98,7 +98,3 @@ export const run: SlashSubcommand<true>["run"] = async (
         embeds: [embed],
     });
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

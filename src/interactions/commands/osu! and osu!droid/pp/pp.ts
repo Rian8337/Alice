@@ -363,6 +363,4 @@ export const config: SlashCommand["config"] = {
                 "will give a list of that uid's submitted plays in prototype pp system.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

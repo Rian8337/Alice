@@ -141,9 +141,11 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
                     `${localization.getTranslation(
                         "requiredPermissions",
                     )}: \`` +
-                    PermissionHelper.getPermissionString(
-                        cmd.config.permissions,
-                    ) +
+                    (cmd.config.permissions
+                        ? PermissionHelper.getPermissionString(
+                              cmd.config.permissions,
+                          )
+                        : "None") +
                     "`",
             )
             .addFields(
@@ -270,7 +272,5 @@ export const config: SlashCommand["config"] = {
             description: "will output the help section of `ping` command.",
         },
     ],
-    permissions: [],
     replyEphemeral: true,
-    scope: "ALL",
 };

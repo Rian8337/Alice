@@ -452,6 +452,4 @@ export const config: SlashCommand["config"] = {
                 "will calculate the linked beatmap with 10x 100 and 5x 50 gained, HDDT mod, 2x speed multiplier, and a maximum combo of 150.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

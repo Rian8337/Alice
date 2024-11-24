@@ -83,6 +83,4 @@ export const config: SlashCommand["config"] = {
             description: "will give my websocket ping to Discord.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

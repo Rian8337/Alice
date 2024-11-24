@@ -401,6 +401,4 @@ export const config: SlashCommand["config"] = {
         },
     ],
     cooldown: 30,
-    permissions: [],
-    scope: "ALL",
 };

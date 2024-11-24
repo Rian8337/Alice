@@ -30,13 +30,13 @@ export interface SlashSubcommand<FromInteraction extends boolean = boolean> {
     /**
      * Configuration for the subcommand.
      */
-    readonly config: {
+    readonly config?: {
         /**
          * The permissions this subcommand requires.
          *
          * This will only be enforced if the subcommand can only be executed in a guild channel or if the command can only be executed by bot owners.
          */
-        readonly permissions: Permission[];
+        readonly permissions?: Permission[];
 
         /**
          * The cooldown for the subcommand, in seconds.

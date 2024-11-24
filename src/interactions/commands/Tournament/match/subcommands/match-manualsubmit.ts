@@ -232,7 +232,3 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         embeds: [resultEmbed, summaryEmbed],
     });
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

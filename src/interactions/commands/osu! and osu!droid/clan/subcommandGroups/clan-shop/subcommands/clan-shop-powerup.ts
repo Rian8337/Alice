@@ -156,7 +156,3 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         ].join("\n"),
     });
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

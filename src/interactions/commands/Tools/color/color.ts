@@ -68,6 +68,4 @@ export const config: SlashCommand["config"] = {
             description: 'will show the color with hex code "#ffdd00".',
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

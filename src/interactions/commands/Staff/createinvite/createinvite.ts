@@ -3,6 +3,7 @@ import {
     EmbedBuilder,
     NewsChannel,
     TextChannel,
+    InteractionContextType,
 } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
@@ -149,5 +150,5 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: ["CreateInstantInvite"],
-    scope: "GUILD_CHANNEL",
+    contexts: [InteractionContextType.Guild],
 };

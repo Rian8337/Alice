@@ -14,7 +14,6 @@ import {
 } from "discord.js";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { CacheManager } from "../managers/CacheManager";
-import { CommandScope } from "structures/core/CommandScope";
 import { Constants } from "@core/Constants";
 import {
     ChannelCooldownKey,
@@ -307,6 +306,7 @@ export abstract class CommandHelper extends Manager {
         }
 
         if (
+            subcommand.config?.permissions &&
             !this.userFulfillsCommandPermission(
                 interaction,
                 subcommand.config.permissions,
@@ -390,18 +390,20 @@ export abstract class CommandHelper extends Manager {
         interaction: BaseInteraction,
         permissions: Permission[],
     ): boolean {
-        // Allow bot owner to override all permission requirement
-        if (permissions.some((v) => v === "BotOwner")) {
-            return this.isExecutedByBotOwner(interaction);
+        for (const p of permissions) {
+            switch (p) {
+                case "BotOwner":
+                    return this.isExecutedByBotOwner(interaction);
+
+                case "Special":
+                    return true;
+            }
         }
 
-        if (permissions.some((v) => v === "Special")) {
-            return true;
-        }
-
-        //@ts-expect-error: permissions array should only consist of `PermissionString`
-        // now, so it's safe to throw into the function
-        return this.checkPermission(interaction, ...permissions);
+        return this.checkPermission(
+            interaction,
+            ...(permissions as PermissionResolvable[]),
+        );
     }
 
     /**
@@ -428,27 +430,6 @@ export abstract class CommandHelper extends Manager {
         }
 
         return interaction.memberPermissions?.has(permissions) ?? false;
-    }
-
-    /**
-     * Checks if a command is executable based on its scope.
-     *
-     * @param interaction The interaction that triggered the command.
-     * @param scope The command's scope.
-     * @returns Whether the command can be executed in the scope.
-     */
-    static isCommandExecutableInScope(
-        interaction: BaseInteraction,
-        scope: CommandScope,
-    ): boolean {
-        switch (scope) {
-            case "DM":
-                return interaction.channel?.type === ChannelType.DM;
-            case "GUILD_CHANNEL":
-                return interaction.channel?.type !== ChannelType.DM;
-            default:
-                return true;
-        }
     }
 
     /**

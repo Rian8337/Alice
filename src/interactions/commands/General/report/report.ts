@@ -3,6 +3,7 @@ import {
     PermissionsBitField,
     roleMention,
     bold,
+    InteractionContextType,
 } from "discord.js";
 import { Config } from "@core/Config";
 import { ApplicationCommandOptionType } from "discord.js";
@@ -184,7 +185,6 @@ export const config: SlashCommand["config"] = {
                 'will report the user with that Discord ID for "Spamming".',
         },
     ],
-    permissions: [],
+    contexts: [InteractionContextType.Guild],
     replyEphemeral: true,
-    scope: "GUILD_CHANNEL",
 };

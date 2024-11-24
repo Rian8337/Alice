@@ -1,4 +1,7 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { TimeoutManager } from "@utils/managers/TimeoutManager";
@@ -112,6 +115,6 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: ["Special"],
+    contexts: [InteractionContextType.Guild],
     replyEphemeral: true,
-    scope: "GUILD_CHANNEL",
 };

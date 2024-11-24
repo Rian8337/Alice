@@ -100,6 +100,5 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: ["BotOwner"],
-    scope: "ALL",
     replyEphemeral: true,
 };

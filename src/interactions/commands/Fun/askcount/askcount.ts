@@ -50,6 +50,4 @@ export const config: SlashCommand["config"] = {
             description: "will tell you how many times you have asked me.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

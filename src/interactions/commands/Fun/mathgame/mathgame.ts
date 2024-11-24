@@ -372,6 +372,4 @@ export const config: SlashCommand["config"] = {
                 "will start a math game in the channel that others can participate.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

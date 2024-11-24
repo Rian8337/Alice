@@ -262,7 +262,5 @@ export const config: SlashCommand["config"] = {
             description: "will compare the score of Rian8337.",
         },
     ],
-    permissions: [],
     cooldown: 5,
-    scope: "ALL",
 };

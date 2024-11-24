@@ -45,7 +45,7 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     if (
         !CommandHelper.isExecutedByBotOwner(interaction) &&
-        command.config.permissions.some((v) => v === "BotOwner")
+        command.config.permissions?.some((v) => v === "BotOwner")
     ) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
@@ -142,8 +142,4 @@ export const run: SlashSubcommand<true>["run"] = async (
             cooldown.toString(),
         ),
     });
-};
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
 };

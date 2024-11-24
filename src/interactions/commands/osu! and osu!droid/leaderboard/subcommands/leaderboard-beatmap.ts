@@ -56,7 +56,3 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     ScoreDisplayHelper.showBeatmapLeaderboard(interaction, hash, page);
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

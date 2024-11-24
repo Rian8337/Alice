@@ -88,7 +88,3 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         files: [attachment],
     });
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

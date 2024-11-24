@@ -1,5 +1,9 @@
 import { DatabaseManager } from "@database/DatabaseManager";
-import { ApplicationCommandOptionType, bold } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    bold,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
@@ -187,6 +191,5 @@ export const config: SlashCommand["config"] = {
                 "will show emoji usage statistics in the server sorted by average usage per month.",
         },
     ],
-    permissions: [],
-    scope: "GUILD_CHANNEL",
+    contexts: [InteractionContextType.Guild],
 };

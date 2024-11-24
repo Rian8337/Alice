@@ -144,7 +144,3 @@ export const run: SlashSubcommand<true>["run"] = async (
 
     InteractionHelper.reply(interaction, options);
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

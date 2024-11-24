@@ -28,7 +28,6 @@ export const run: EventUtil["run"] = async (
         return;
     }
 
-    // 3 seconds should be enough to get the user's locale
     const localization = new RunCommandLocalization(
         CommandHelper.getLocale(interaction),
     );
@@ -68,23 +67,9 @@ export const run: EventUtil["run"] = async (
         });
     }
 
-    // Check if command is executable in channel
-    if (
-        !CommandHelper.isCommandExecutableInScope(
-            interaction,
-            command.config.scope,
-        )
-    ) {
-        return interaction.reply({
-            content: MessageCreator.createReject(
-                localization.getTranslation("commandNotExecutableInChannel"),
-            ),
-            ephemeral: true,
-        });
-    }
-
     // Permissions
     if (
+        command.config.permissions &&
         !CommandHelper.userFulfillsCommandPermission(
             interaction,
             command.config.permissions,
@@ -129,9 +114,9 @@ export const run: EventUtil["run"] = async (
             // Local command cooldown
             command.config.cooldown ?? 0,
             // Local subcommand cooldown
-            subcommand?.config.cooldown ?? 0,
+            subcommand?.config?.cooldown ?? 0,
             // Local subcommand group cooldown
-            subcommandGroup?.config.cooldown ?? 0,
+            subcommandGroup?.config?.cooldown ?? 0,
             // Guild command cooldown
             CommandUtilManager.guildDisabledCommands
                 .get(interaction.guildId!)
@@ -219,16 +204,16 @@ export const run: EventUtil["run"] = async (
             (command.config.replyEphemeral ||
                 Config.maintenance ||
                 !CommandHelper.isCommandEnabled(interaction) ||
-                subcommand?.config.replyEphemeral ||
-                subcommandGroup?.config.replyEphemeral)) ??
+                subcommand?.config?.replyEphemeral ||
+                subcommandGroup?.config?.replyEphemeral)) ??
         false;
 
     if (Config.isDebug) {
         // Attempt to instantly defer in debug mode (slower internet).
         const instantDefer =
             command.config.instantDeferInDebug !== false &&
-            subcommandGroup?.config.instantDeferInDebug !== false &&
-            subcommand?.config.instantDeferInDebug !== false;
+            subcommandGroup?.config?.instantDeferInDebug !== false &&
+            subcommand?.config?.instantDeferInDebug !== false;
 
         if (instantDefer) {
             await InteractionHelper.deferReply(interaction);

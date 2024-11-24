@@ -1,4 +1,4 @@
-import { GuildMember } from "discord.js";
+import { GuildMember, InteractionContextType } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
@@ -112,6 +112,6 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: ["Special"],
+    contexts: [InteractionContextType.Guild],
     replyEphemeral: true,
-    scope: "GUILD_CHANNEL",
 };

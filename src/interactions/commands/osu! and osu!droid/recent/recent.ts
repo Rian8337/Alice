@@ -336,7 +336,5 @@ export const config: SlashCommand["config"] = {
             description: "will show the most recent play of Rian8337.",
         },
     ],
-    permissions: [],
     cooldown: 5,
-    scope: "ALL",
 };

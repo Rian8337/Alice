@@ -2,7 +2,11 @@ import { CommandCategory } from "@enums/core/CommandCategory";
 import { SupportTicketStatus } from "@enums/ticket/SupportTicketStatus";
 import { SlashCommand } from "@structures/core/SlashCommand";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
-import { ApplicationCommandOptionType, ChannelType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    ChannelType,
+    InteractionContextType,
+} from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(
@@ -245,7 +249,6 @@ export const config: SlashCommand["config"] = {
         },
     ],
     example: [],
-    permissions: [],
-    scope: "GUILD_CHANNEL",
+    contexts: [InteractionContextType.Guild],
     replyEphemeral: true,
 };

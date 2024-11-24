@@ -84,7 +84,5 @@ export const config: SlashCommand["config"] = {
         },
     ],
     cooldown: 5,
-    permissions: [],
-    scope: "ALL",
     replyEphemeral: true,
 };

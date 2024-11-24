@@ -1,4 +1,7 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
@@ -158,6 +161,6 @@ export const config: SlashCommand["config"] = {
                 'will submit a new map sharing submission with the linked beatmap and summary "This map is so good".',
         },
     ],
+    contexts: [InteractionContextType.Guild],
     permissions: [],
-    scope: "GUILD_CHANNEL",
 };

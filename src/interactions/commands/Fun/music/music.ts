@@ -1,4 +1,7 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@utils/creators/MessageCreator";
@@ -301,5 +304,5 @@ export const config: SlashCommand["config"] = {
     ],
     cooldown: 10,
     permissions: ["BotOwner"],
-    scope: "GUILD_CHANNEL",
+    contexts: [InteractionContextType.Guild],
 };

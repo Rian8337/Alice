@@ -1,4 +1,7 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
@@ -493,7 +496,6 @@ export const config: SlashCommand["config"] = {
                 "will submit your 50 most recent plays towards the current ongoing daily challenge.",
         },
     ],
-    permissions: [],
+    contexts: [InteractionContextType.Guild],
     cooldown: 5,
-    scope: "GUILD_CHANNEL",
 };

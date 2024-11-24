@@ -61,7 +61,3 @@ export const run: SlashSubcommand<true>["run"] = async (
         await thread.setArchived(true, "Match ended");
     }
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

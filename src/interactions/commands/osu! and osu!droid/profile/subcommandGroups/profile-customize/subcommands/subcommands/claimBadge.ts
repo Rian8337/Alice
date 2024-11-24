@@ -275,7 +275,3 @@ export const run: SlashSubcommand<false>["run"] = async (_, interaction) => {
         ),
     });
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

@@ -1,7 +1,10 @@
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionContextType,
+} from "discord.js";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(
@@ -132,6 +135,6 @@ export const config: SlashCommand["config"] = {
     ],
     example: [],
     permissions: ["Special"],
+    contexts: [InteractionContextType.Guild],
     replyEphemeral: true,
-    scope: "GUILD_CHANNEL",
 };

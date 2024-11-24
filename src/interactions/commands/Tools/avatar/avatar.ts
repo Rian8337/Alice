@@ -84,6 +84,4 @@ export const config: SlashCommand["config"] = {
                 "will show the avatar and if available, the profile banner of the user with that Discord ID.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

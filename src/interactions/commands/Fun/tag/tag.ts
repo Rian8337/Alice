@@ -1,4 +1,7 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
@@ -240,6 +243,5 @@ export const config: SlashCommand["config"] = {
             description: 'will edit the tag "deni123"\'s content to "hi".',
         },
     ],
-    permissions: [],
-    scope: "GUILD_CHANNEL",
+    contexts: [InteractionContextType.Guild],
 };

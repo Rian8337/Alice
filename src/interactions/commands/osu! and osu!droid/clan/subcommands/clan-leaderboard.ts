@@ -100,7 +100,3 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         onPageChange,
     );
 };
-
-export const config: SlashSubcommand["config"] = {
-    permissions: [],
-};

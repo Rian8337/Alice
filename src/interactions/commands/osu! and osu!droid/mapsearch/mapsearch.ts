@@ -267,7 +267,5 @@ export const config: SlashCommand["config"] = {
         },
     ],
     example: [],
-    permissions: [],
     cooldown: 15,
-    scope: "ALL",
 };

@@ -1,4 +1,4 @@
-import { GuildMember } from "discord.js";
+import { GuildMember, InteractionContextType } from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@utils/creators/MessageCreator";
@@ -147,6 +147,5 @@ export const config: SlashCommand["config"] = {
                 "will view the amount of Mahiru coins of the Discord account with that ID.",
         },
     ],
-    permissions: [],
-    scope: "GUILD_CHANNEL",
+    contexts: [InteractionContextType.Guild],
 };

@@ -102,6 +102,4 @@ export const config: SlashCommand["config"] = {
                 'will retrieve a list of beatmaps from tournament mappool "t8gf".',
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

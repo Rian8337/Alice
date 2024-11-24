@@ -1,5 +1,8 @@
 import { Constants } from "@core/Constants";
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@utils/creators/MessageCreator";
@@ -658,6 +661,5 @@ export const config: SlashCommand["config"] = {
         },
     ],
     example: [],
-    permissions: [],
-    scope: "GUILD_CHANNEL",
+    contexts: [InteractionContextType.Guild],
 };

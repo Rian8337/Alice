@@ -98,6 +98,4 @@ export const config: SlashCommand["config"] = {
             description: "will grab the download link of the linked beatmap.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

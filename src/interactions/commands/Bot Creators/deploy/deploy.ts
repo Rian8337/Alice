@@ -1,6 +1,8 @@
 import {
     ApplicationCommandOptionType,
     ApplicationCommandType,
+    ApplicationIntegrationType,
+    InteractionContextType,
     PermissionResolvable,
 } from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
@@ -52,8 +54,10 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         let memberPermissions: PermissionResolvable[] | null = null;
 
         if (
-            command.config.permissions.length > 0 &&
-            command.config.scope === "GUILD_CHANNEL"
+            command.config.permissions &&
+            command.config.integrationTypes?.includes(
+                ApplicationIntegrationType.GuildInstall,
+            )
         ) {
             if (command.config.permissions.includes("BotOwner")) {
                 memberPermissions = ["Administrator"];
@@ -68,8 +72,16 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
             name: command.config.name,
             description: command.config.description,
             options: command.config.options,
-            dmPermission: command.config.scope !== "GUILD_CHANNEL",
             defaultMemberPermissions: memberPermissions,
+            contexts: command.config.contexts ?? [
+                InteractionContextType.Guild,
+                InteractionContextType.BotDM,
+                InteractionContextType.PrivateChannel,
+            ],
+            integrationTypes: command.config.integrationTypes ?? [
+                ApplicationIntegrationType.GuildInstall,
+                ApplicationIntegrationType.UserInstall,
+            ],
         };
     } else {
         const command = (
@@ -173,6 +185,5 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: ["BotOwner"],
-    scope: "ALL",
     replyEphemeral: true,
 };

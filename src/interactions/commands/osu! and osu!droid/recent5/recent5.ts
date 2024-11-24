@@ -244,6 +244,4 @@ export const config: SlashCommand["config"] = {
             description: "will display the 50 most recent plays of Rian8337.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

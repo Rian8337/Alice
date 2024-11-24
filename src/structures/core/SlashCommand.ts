@@ -1,10 +1,11 @@
 import {
     ApplicationCommandOptionData,
+    ApplicationIntegrationType,
     ChatInputCommandInteraction,
+    InteractionContextType,
 } from "discord.js";
 import { Bot } from "@core/Bot";
 import { CommandCategory } from "@enums/core/CommandCategory";
-import { CommandScope } from "structures/core/CommandScope";
 import { Permission } from "structures/core/Permission";
 
 /**
@@ -83,12 +84,17 @@ export interface SlashCommand {
          *
          * This will only be enforced if the command can only be executed in a guild channel or if the command can only be executed by bot owners.
          */
-        readonly permissions: Permission[];
+        readonly permissions?: Permission[];
 
         /**
-         * The scope of the command (where the command can be executed).
+         * Interaction contexts where this command can be used, only for globally-scoped commands. Defaults to all interaction context types.
          */
-        readonly scope: CommandScope;
+        readonly contexts?: InteractionContextType[];
+
+        /**
+         * Installation contexts where the command is available, only for globally-scoped commands. Defaults to all integration types.
+         */
+        readonly integrationTypes?: ApplicationIntegrationType[];
 
         /**
          * The cooldown for the command, in seconds.

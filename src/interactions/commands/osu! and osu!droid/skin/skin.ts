@@ -198,6 +198,4 @@ export const config: SlashCommand["config"] = {
             description: "will set your skin to the specified URL.",
         },
     ],
-    permissions: [],
-    scope: "ALL",
 };

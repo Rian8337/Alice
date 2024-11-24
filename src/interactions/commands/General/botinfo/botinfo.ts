@@ -133,6 +133,4 @@ export const config: SlashCommand["config"] = {
     description: "Displays technical information about the bot.",
     options: [],
     example: [],
-    permissions: [],
-    scope: "ALL",
 };
