@@ -97,6 +97,9 @@ export abstract class DroidHelper {
         page: number = 1,
         scoresPerPage: number = 100,
     ): Promise<OnlinePlayerRank[]> {
+        // Page is 1-indexed, but the API is 0-indexed.
+        --page;
+
         if (Config.isDebug) {
             const apiRequestBuilder = new DroidAPIRequestBuilder()
                 .setEndpoint("top.php")
@@ -123,7 +126,7 @@ export abstract class DroidHelper {
             `SELECT id, username, pp, playcount, accuracy FROM ${constructOfficialDatabaseTable(
                 OfficialDatabaseTables.user,
             )} WHERE banned = 0 AND restrict_mode = 0 AND archived = 0 ORDER BY pp DESC LIMIT ? OFFSET ?;`,
-            [scoresPerPage, (page - 1) * scoresPerPage],
+            [scoresPerPage, page * scoresPerPage],
         );
 
         return leaderboardQuery[0] as OnlinePlayerRank[];
