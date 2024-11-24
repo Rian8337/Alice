@@ -21,6 +21,11 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     );
 
     const commandName = interaction.options.getString("command", true);
+    const serverOnly = interaction.options.getBoolean("serveronly") ?? false;
+
+    if (serverOnly && !interaction.inCachedGuild()) {
+        return;
+    }
 
     let data: ApplicationCommandData;
 
@@ -88,10 +93,8 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
     }
 
     await (
-        interaction.options.getBoolean("serveronly")
-            ? interaction.guild!
-            : client.application!
-    ).commands.create(data);
+        serverOnly ? interaction.guild : client.application
+    )?.commands.create(data);
 
     InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(

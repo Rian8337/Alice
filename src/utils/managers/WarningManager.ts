@@ -258,7 +258,7 @@ export abstract class WarningManager extends PunishmentManager {
      * @param reason The reason for unissuing the warning.
      */
     static async unissue(
-        interaction: RepliableInteraction,
+        interaction: RepliableInteraction<"cached">,
         warning: Warning,
         reason: string,
     ): Promise<OperationResult> {
@@ -284,8 +284,8 @@ export abstract class WarningManager extends PunishmentManager {
             );
         }
 
-        const member = await interaction
-            .guild!.members.fetch(warning.discordId)
+        const member = await interaction.guild.members
+            .fetch(warning.discordId)
             .catch(() => null);
 
         if (!member) {
@@ -440,7 +440,7 @@ export abstract class WarningManager extends PunishmentManager {
      * @returns An object containing information about the operation.
      */
     static async transfer(
-        interaction: RepliableInteraction,
+        interaction: RepliableInteraction<"cached">,
         fromUserId: Snowflake,
         toUserId: Snowflake,
         reason?: string | null,
@@ -450,7 +450,7 @@ export abstract class WarningManager extends PunishmentManager {
         );
 
         const guildConfig = await this.punishmentDb.getGuildConfig(
-            interaction.guildId!,
+            interaction.guildId,
         );
 
         const punishmentManagerLocalization =
@@ -466,7 +466,7 @@ export abstract class WarningManager extends PunishmentManager {
         }
 
         const logChannel = await guildConfig.getGuildLogChannel(
-            interaction.guild!,
+            interaction.guild,
         );
 
         if (!logChannel?.isTextBased()) {

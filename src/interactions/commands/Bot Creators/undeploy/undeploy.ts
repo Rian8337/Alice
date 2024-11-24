@@ -2,30 +2,35 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@utils/creators/MessageCreator";
-import { ApplicationCommand } from "discord.js";
 import { UndeployLocalization } from "@localization/interactions/commands/Bot Creators/undeploy/UndeployLocalization";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (client, interaction) => {
-    const localization: UndeployLocalization = new UndeployLocalization(
+    const localization = new UndeployLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const commandName: string = interaction.options.getString("command", true);
-
-    const isDebug: boolean =
-        interaction.options.getBoolean("serveronly") ?? false;
+    const commandName = interaction.options.getString("command", true);
+    const isDebug = interaction.options.getBoolean("serveronly") ?? false;
 
     if (isDebug) {
-        await interaction.guild!.commands.fetch();
+        if (!interaction.inCachedGuild()) {
+            return InteractionHelper.reply(interaction, {
+                content: MessageCreator.createReject(
+                    localization.getTranslation("commandNotFound"),
+                ),
+            });
+        }
+
+        await interaction.guild.commands.fetch();
     } else {
-        await client.application!.commands.fetch();
+        await client.application.commands.fetch();
     }
 
-    const command: ApplicationCommand | undefined = (
-        isDebug ? interaction.guild! : client.application!
-    ).commands.cache.find((v) => v.name === commandName);
+    const command = (
+        isDebug ? interaction.guild : client.application
+    )?.commands.cache.find((v) => v.name === commandName);
 
     if (!command) {
         return InteractionHelper.reply(interaction, {
@@ -35,7 +40,7 @@ export const run: SlashCommand["run"] = async (client, interaction) => {
         });
     }
 
-    await (isDebug ? interaction.guild! : client.application!).commands.delete(
+    await (isDebug ? interaction.guild : client.application)?.commands.delete(
         command,
     );
 

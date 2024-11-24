@@ -1,8 +1,6 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { GuildMember } from "discord.js";
-import { OperationResult } from "structures/core/OperationResult";
 import { TimeoutManager } from "@utils/managers/TimeoutManager";
 import { MessageCreator } from "@utils/creators/MessageCreator";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
@@ -11,11 +9,15 @@ import { TimeoutLocalization } from "@localization/interactions/commands/Staff/t
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: TimeoutLocalization = new TimeoutLocalization(
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
+
+    const localization = new TimeoutLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const toTimeout: GuildMember = await interaction.guild!.members.fetch(
+    const toTimeout = await interaction.guild.members.fetch(
         interaction.options.getUser("user", true),
     );
 
@@ -27,15 +29,15 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const duration: number = CommandHelper.convertStringTimeFormat(
+    const duration = CommandHelper.convertStringTimeFormat(
         interaction.options.getString("duration", true),
     );
 
-    const reason: string = interaction.options.getString("reason", true);
+    const reason = interaction.options.getString("reason", true);
 
     await InteractionHelper.deferReply(interaction);
 
-    const result: OperationResult = await TimeoutManager.addTimeout(
+    const result = await TimeoutManager.addTimeout(
         interaction,
         toTimeout,
         reason,
@@ -43,11 +45,11 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         localization.language,
     );
 
-    if (!result.success) {
+    if (result.failed()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("timeoutFailed"),
-                result.reason!,
+                result.reason,
             ),
         });
     }

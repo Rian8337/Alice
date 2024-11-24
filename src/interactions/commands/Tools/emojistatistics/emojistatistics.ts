@@ -96,9 +96,9 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         .setAuthor({
             name: StringHelper.formatString(
                 localization.getTranslation("emojiStatisticsForServer"),
-                interaction.guild!.name,
+                interaction.guild.name,
             ),
-            iconURL: interaction.guild!.iconURL()!,
+            iconURL: interaction.guild.iconURL()!,
         })
         .setDescription(
             `${bold(

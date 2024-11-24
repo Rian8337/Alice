@@ -12,14 +12,18 @@ import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
+
     const localization = new CoinsLocalization(
         CommandHelper.getLocale(interaction),
     );
 
     const toTransfer = interaction.options.getUser("user", true);
 
-    const toTransferGuildMember = await interaction
-        .guild!.members.fetch(toTransfer)
+    const toTransferGuildMember = await interaction.guild.members
+        .fetch(toTransfer)
         .catch(() => null);
 
     if (!toTransferGuildMember) {

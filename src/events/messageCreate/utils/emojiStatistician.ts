@@ -4,7 +4,7 @@ import { EventUtil } from "structures/core/EventUtil";
 import { EmojiStatistics } from "@database/utils/aliceDb/EmojiStatistics";
 
 export const run: EventUtil["run"] = async (_, message: Message) => {
-    if (message.channel.isDMBased() || message.author.bot) {
+    if (!message.inGuild() || message.author.bot) {
         return;
     }
 
@@ -22,7 +22,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
             (<string>emojiMessage.split(":").pop()).replace(">", "")
         );
 
-        const actualEmoji = message.guild!.emojis.cache.find(
+        const actualEmoji = message.guild.emojis.cache.find(
             (e) => e.id === emojiId,
         );
 

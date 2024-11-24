@@ -2,7 +2,6 @@ import { GuildMember } from "discord.js";
 import { ApplicationCommandOptionType } from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
-import { OperationResult } from "structures/core/OperationResult";
 import { MessageCreator } from "@utils/creators/MessageCreator";
 import { TimeoutManager } from "@utils/managers/TimeoutManager";
 import { UntimeoutLocalization } from "@localization/interactions/commands/Staff/untimeout/UntimeoutLocalization";
@@ -10,11 +9,15 @@ import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
-    const localization: UntimeoutLocalization = new UntimeoutLocalization(
+    if (!interaction.inCachedGuild()) {
+        return;
+    }
+
+    const localization = new UntimeoutLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const toUntimeout: GuildMember = await interaction.guild!.members.fetch(
+    const toUntimeout = await interaction.guild.members.fetch(
         interaction.options.getUser("user", true),
     );
 
@@ -31,23 +34,22 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
-    const reason: string =
-        interaction.options.getString("reason") ?? "Not specified.";
+    const reason = interaction.options.getString("reason") ?? "Not specified.";
 
     await InteractionHelper.deferReply(interaction);
 
-    const result: OperationResult = await TimeoutManager.removeTimeout(
+    const result = await TimeoutManager.removeTimeout(
         toUntimeout,
         interaction,
         reason,
         localization.language,
     );
 
-    if (!result.success) {
+    if (result.failed()) {
         return InteractionHelper.reply(interaction, {
             content: MessageCreator.createReject(
                 localization.getTranslation("untimeoutFailed"),
-                result.reason!,
+                result.reason,
             ),
         });
     }
