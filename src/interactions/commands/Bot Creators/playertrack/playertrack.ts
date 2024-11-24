@@ -1,5 +1,9 @@
 import { Constants } from "@core/Constants";
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    ApplicationIntegrationType,
+    InteractionContextType,
+} from "discord.js";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
@@ -75,4 +79,6 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: ["BotOwner"],
+    contexts: [InteractionContextType.Guild],
+    integrationTypes: [ApplicationIntegrationType.UserInstall],
 };

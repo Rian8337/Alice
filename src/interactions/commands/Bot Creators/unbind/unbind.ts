@@ -2,7 +2,10 @@ import { DatabaseManager } from "@database/DatabaseManager";
 import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { MessageCreator } from "@utils/creators/MessageCreator";
-import { ApplicationCommandOptionType } from "discord.js";
+import {
+    ApplicationCommandOptionType,
+    ApplicationIntegrationType,
+} from "discord.js";
 import { Constants } from "@core/Constants";
 import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { UnbindLocalization } from "@localization/interactions/commands/Bot Creators/unbind/UnbindLocalization";
@@ -90,4 +93,5 @@ export const config: SlashCommand["config"] = {
         },
     ],
     permissions: ["BotOwner"],
+    integrationTypes: [ApplicationIntegrationType.UserInstall],
 };
