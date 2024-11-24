@@ -28,6 +28,8 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.deferReply(interaction);
+
     const leaderboardCache = new Collection<number, OnlinePlayerRank[]>();
 
     const onPageChange: OnButtonPageChange = async (options, page) => {
