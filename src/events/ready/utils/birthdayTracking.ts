@@ -22,7 +22,6 @@ export const run: EventUtil["run"] = async (client) => {
         }
 
         const guild = await client.guilds.fetch(Constants.mainServer);
-
         const role = guild.roles.cache.get("695201338182860860");
 
         if (!role) {
@@ -119,7 +118,6 @@ export const run: EventUtil["run"] = async (client) => {
                         ).getTranslation("happyBirthday"),
                         Symbols.cake,
                     ),
-                    stickers: ["1300388352888934421"],
                 })
                 .catch(consola.error);
 
