@@ -801,7 +801,7 @@ export abstract class BeatmapManager extends Manager {
             case 6:
                 return `${bold(
                     "Last Update",
-                )}: <t:${Math.floor(beatmapInfo.lastUpdate.getTime() / 1000)}:F> | ${bold(
+                )}: ${DateTimeFormatHelper.toDiscordTimestamp(beatmapInfo.lastUpdate)} | ${bold(
                     this.convertStatus(beatmapInfo.approved),
                 )}`;
 

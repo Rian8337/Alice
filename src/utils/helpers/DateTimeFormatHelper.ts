@@ -194,6 +194,16 @@ export abstract class DateTimeFormatHelper {
     }
 
     /**
+     * Converts a date to a Discord timestamp.
+     *
+     * @param date The date to convert.
+     * @returns The Discord timestamp.
+     */
+    static toDiscordTimestamp(date: Date): `<t:${number}:F>` {
+        return `<t:${Math.floor(date.getTime() / 1000)}:F>`;
+    }
+
+    /**
      * Gets the localization of this helper utility.
      *
      * @param language The language to localize.
