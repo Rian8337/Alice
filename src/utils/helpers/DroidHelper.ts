@@ -81,7 +81,17 @@ export abstract class DroidHelper {
             [hash, scoresPerPage, (page - 1) * scoresPerPage],
         );
 
-        return (leaderboardQuery[0] as APIScore[]).map((v) => new Score(v));
+        // The query automatically converts TIMESTAMP columns to Date objects, but API returns a seconds
+        // unix epoch timestamp. As such, we need to convert the converted Date object to its seconds counterpart.
+        return (
+            leaderboardQuery[0] as (OfficialDatabaseScore &
+                Pick<OfficialDatabaseUser, "username">)[]
+        ).map((v) => {
+            return new Score({
+                ...v,
+                date: Math.floor(v.date.getTime() / 1000),
+            });
+        });
     }
 
     /**
