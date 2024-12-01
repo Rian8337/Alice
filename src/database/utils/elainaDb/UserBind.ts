@@ -217,6 +217,78 @@ export class UserBind extends Manager implements DatabaseUserBind {
     }
 
     /**
+     * Moves the bind of a bound osu!droid account in this Discord account to another
+     * Discord account.
+     *
+     * @param uid The uid of the osu!droid account.
+     * @param to The ID of the Discord account to move to.
+     * @param language The locale of the user who attempted to move the bind. Defaults to English.
+     * @returns An object containing information about the operation.
+     */
+    async moveBind(
+        uid: number,
+        to: Snowflake,
+        language: Language = "en",
+    ): Promise<OperationResult> {
+        const localization = this.getLocalization(language);
+
+        if (this.uid !== uid) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("uidNotBindedToAccount"),
+            );
+        }
+
+        if (this.discordid === to) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("cannotRebindToSameAccount"),
+            );
+        }
+
+        const otherBindInfo = await this.bindDb.getFromUser(to, {
+            projection: {
+                _id: 0,
+                uid: 1,
+            },
+        });
+
+        if (otherBindInfo) {
+            return this.createOperationResult(
+                false,
+                localization.getTranslation("targetAccountAlreadyBound"),
+            );
+        }
+
+        this.discordid = to;
+
+        await DatabaseManager.aliceDb.collections.nameChange.updateOne(
+            { discordid: this.discordid },
+            { $set: { discordid: to } },
+        );
+
+        // Remove the new Discord account's account transfer information.
+        await DatabaseManager.aliceDb.collections.accountTransfer.deleteOne({
+            discordId: to,
+        });
+
+        await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
+            { discordId: this.discordid },
+            { $set: { discordId: to } },
+        );
+
+        await this.bindDb.updateOne(
+            { discordid: this.discordid },
+            { $set: { discordid: to } },
+        );
+
+        return DatabaseManager.aliceDb.collections.playerInfo.updateOne(
+            { uid: uid },
+            { $set: { discordid: to } },
+        );
+    }
+
+    /**
      * Binds an osu!droid account to this Discord account.
      *
      * @param uid The uid of the osu!droid account.

@@ -7,6 +7,9 @@ import { UserBindStrings } from "../UserBindLocalization";
 export class UserBindKRTranslation extends Translation<UserBindStrings> {
     override readonly translations: UserBindStrings = {
         uidNotBindedToAccount: "uid가 이 디스코드 계정에 바인딩 되어있지 않음",
+        cannotRebindToSameAccount:
+            "같은 디스코드 계정에 다시 바인드 할 수 없음",
+        targetAccountAlreadyBound: "",
         playerNotFound: "플레이어가 발견되지 않음",
         playerWithUidOrUsernameNotFound:
             "해당 uid나 유저네임의 플레이어가 발견되지 않음",

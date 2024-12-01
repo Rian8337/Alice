@@ -8,6 +8,9 @@ export class UserBindESTranslation extends Translation<UserBindStrings> {
     override readonly translations: UserBindStrings = {
         uidNotBindedToAccount:
             "Ese UID no esta enlazado a esta cuenta de discord",
+        cannotRebindToSameAccount:
+            "No puedes enlazarlo a la misma cuenta de discord",
+        targetAccountAlreadyBound: "",
         playerNotFound: "jugador no encontrado",
         playerWithUidOrUsernameNotFound:
             "jugador con ese nick / UID no puede ser encontrado",
