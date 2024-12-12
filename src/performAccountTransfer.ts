@@ -91,12 +91,20 @@ DatabaseManager.init().then(async () => {
         OfficialDatabaseTables.bannedScore,
     );
 
+    const archivedScoreTable = constructOfficialDatabaseTable(
+        OfficialDatabaseTables.archivedScore,
+    );
+
     const bestScoreTable = constructOfficialDatabaseTable(
         OfficialDatabaseTables.bestScore,
     );
 
     const bestBannedScoreTable = constructOfficialDatabaseTable(
         OfficialDatabaseTables.bestBannedScore,
+    );
+
+    const archivedBestScoreTable = constructOfficialDatabaseTable(
+        OfficialDatabaseTables.archivedBestScore,
     );
 
     console.log("Transfering", transfers.size, "accounts.");
@@ -126,7 +134,7 @@ DatabaseManager.init().then(async () => {
             const targetUidScores = await getScores(transfer.transferUid);
             const uidTransferScores = await getScores(uidToTransfer);
 
-            const scoreIdsToBan: number[] = [];
+            const scoreIdsToArchive: number[] = [];
 
             for (const [hash, transferScore] of uidTransferScores) {
                 const targetScore = targetUidScores.get(hash);
@@ -136,11 +144,11 @@ DatabaseManager.init().then(async () => {
                 }
 
                 if (targetScore.score > transferScore.score) {
-                    // The target uid's score is better, so we move the transfer score to the banned table.
-                    scoreIdsToBan.push(transferScore.id);
+                    // The target uid's score is better, so we move the transfer score to the archived table.
+                    scoreIdsToArchive.push(transferScore.id);
                 } else {
-                    // The transfer score is better, so we move the target uid's score to the banned table.
-                    scoreIdsToBan.push(targetScore.id);
+                    // The transfer score is better, so we move the target uid's score to the archived table.
+                    scoreIdsToArchive.push(targetScore.id);
                 }
             }
 
@@ -149,9 +157,9 @@ DatabaseManager.init().then(async () => {
             try {
                 await connection.beginTransaction();
 
-                for (const scoreId of scoreIdsToBan) {
+                for (const scoreId of scoreIdsToArchive) {
                     await connection.query(
-                        `INSERT INTO ${bannedScoreTable} SELECT * FROM ${scoreTable} WHERE id = ?`,
+                        `INSERT INTO ${archivedScoreTable} SELECT * FROM ${scoreTable} WHERE id = ?`,
                         [scoreId],
                     );
 
@@ -176,7 +184,7 @@ DatabaseManager.init().then(async () => {
             );
             const uidTransferBestScores = await getBestScores(uidToTransfer);
 
-            scoreIdsToBan.length = 0;
+            scoreIdsToArchive.length = 0;
 
             for (const [hash, transferScore] of uidTransferBestScores) {
                 const targetScore = targetUidBestScores.get(hash);
@@ -186,11 +194,11 @@ DatabaseManager.init().then(async () => {
                 }
 
                 if (targetScore.pp > transferScore.pp) {
-                    // The target uid's score is better, so we move the transfer score to the banned table.
-                    scoreIdsToBan.push(transferScore.id);
+                    // The target uid's score is better, so we move the transfer score to the archived table.
+                    scoreIdsToArchive.push(transferScore.id);
                 } else {
-                    // The transfer score is better, so we move the target uid's score to the banned table.
-                    scoreIdsToBan.push(targetScore.id);
+                    // The transfer score is better, so we move the target uid's score to the archived table.
+                    scoreIdsToArchive.push(targetScore.id);
                 }
             }
 
@@ -199,9 +207,9 @@ DatabaseManager.init().then(async () => {
             try {
                 await connection.beginTransaction();
 
-                for (const scoreId of scoreIdsToBan) {
+                for (const scoreId of scoreIdsToArchive) {
                     await connection.query(
-                        `INSERT INTO ${bestBannedScoreTable} SELECT * FROM ${bestScoreTable} WHERE id = ?`,
+                        `INSERT INTO ${archivedBestScoreTable} SELECT * FROM ${bestScoreTable} WHERE id = ?`,
                         [scoreId],
                     );
 
@@ -237,7 +245,17 @@ DatabaseManager.init().then(async () => {
                 );
 
                 await connection.query(
+                    `UPDATE ${archivedScoreTable} SET uid = ? WHERE uid = ?`,
+                    [transfer.transferUid, uidToTransfer],
+                );
+
+                await connection.query(
                     `UPDATE ${bestScoreTable} SET uid = ? WHERE uid = ?`,
+                    [transfer.transferUid, uidToTransfer],
+                );
+
+                await connection.query(
+                    `UPDATE ${archivedBestScoreTable} SET uid = ? WHERE uid = ?`,
                     [transfer.transferUid, uidToTransfer],
                 );
 
