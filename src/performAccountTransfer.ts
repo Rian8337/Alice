@@ -159,7 +159,7 @@ DatabaseManager.init().then(async () => {
 
                 for (const scoreId of scoreIdsToArchive) {
                     await connection.query(
-                        `INSERT INTO ${archivedScoreTable} SELECT * FROM ${scoreTable} WHERE id = ?`,
+                        `INSERT INTO ${archivedScoreTable} (SELECT * FROM ${scoreTable} WHERE id = ?) ON DUPLICATE KEY UPDATE id = VALUES(id)`,
                         [scoreId],
                     );
 
@@ -209,7 +209,7 @@ DatabaseManager.init().then(async () => {
 
                 for (const scoreId of scoreIdsToArchive) {
                     await connection.query(
-                        `INSERT INTO ${archivedBestScoreTable} SELECT * FROM ${bestScoreTable} WHERE id = ?`,
+                        `INSERT INTO ${archivedBestScoreTable} (SELECT * FROM ${bestScoreTable} WHERE id = ?) ON DUPLICATE KEY UPDATE id = VALUES(id)`,
                         [scoreId],
                     );
 
