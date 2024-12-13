@@ -267,15 +267,34 @@ export class UserBind extends Manager implements DatabaseUserBind {
             { $set: { discordid: to } },
         );
 
-        // Remove the new Discord account's account transfer information.
-        await DatabaseManager.aliceDb.collections.accountTransfer.deleteOne({
-            discordId: to,
-        });
+        // Append the Discord account's account transfer information.
+        const transferInfo =
+            await DatabaseManager.aliceDb.collections.accountTransfer.getFromDiscordId(
+                this.discordid,
+            );
 
-        await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
-            { discordId: this.discordid },
-            { $set: { discordId: to } },
-        );
+        if (transferInfo) {
+            await DatabaseManager.aliceDb.collections.accountTransfer.updateOne(
+                { discordId: to },
+                {
+                    $addToSet: {
+                        transferList: { $each: transferInfo.transferList },
+                    },
+                    $setOnInsert: {
+                        discordId: to,
+                        transferUid: transferInfo.transferUid,
+                        // Assume transfer is done.
+                        transferDone: true,
+                    },
+                },
+                { upsert: true },
+            );
+
+            // Remove the Discord account's account transfer information.
+            await DatabaseManager.aliceDb.collections.accountTransfer.deleteOne(
+                { discordId: this.discordid },
+            );
+        }
 
         await this.bindDb.updateOne(
             { discordid: this.discordid },
