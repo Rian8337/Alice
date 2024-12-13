@@ -260,8 +260,6 @@ export class UserBind extends Manager implements DatabaseUserBind {
             );
         }
 
-        this.discordid = to;
-
         await DatabaseManager.aliceDb.collections.nameChange.updateOne(
             { discordid: this.discordid },
             { $set: { discordid: to } },
@@ -300,6 +298,8 @@ export class UserBind extends Manager implements DatabaseUserBind {
             { discordid: this.discordid },
             { $set: { discordid: to } },
         );
+
+        this.discordid = to;
 
         return DatabaseManager.aliceDb.collections.playerInfo.updateOne(
             { uid: uid },
