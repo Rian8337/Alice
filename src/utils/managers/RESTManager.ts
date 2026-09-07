@@ -14,12 +14,10 @@ export abstract class RESTManager extends Manager {
         url: string | URL,
         options?: RequestInit,
     ): Promise<RequestResponse> {
-        return fetch(url, options).then(async (res) => {
-            return {
-                statusCode: res.status,
-                data: Buffer.from(await res.arrayBuffer()),
-            } satisfies RequestResponse;
-        });
+        return fetch(url, options)
+            .then(async (res) => 
+                new RequestResponse(res, Buffer.from(await res.arrayBuffer()), 0)
+            );
     }
 
     /**
