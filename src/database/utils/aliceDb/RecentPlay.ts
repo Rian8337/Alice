@@ -1,11 +1,14 @@
 import { DatabaseManager } from "@database/DatabaseManager";
+import { officialPool } from "@database/official/OfficialDatabasePool";
+import { constructOfficialDatabaseTable, OfficialDatabaseTables } from "@database/official/OfficialDatabaseTables";
+import { OfficialDatabaseBeatmapDifficulty } from "@database/official/schema/OfficialDatabaseBeatmapDifficulty";
 import {
     Accuracy,
-    DroidLegacyScoreMultiplierCalculator,
-    Modes,
+    BeatmapDifficulty,
+    DroidScoreMultiplierCalculator,
     ModMap,
     ModUtil,
-    ScoreRank,
+    ScoreRank
 } from "@rian8337/osu-base";
 import {
     DroidDifficultyAttributes,
@@ -18,6 +21,7 @@ import { DroidPerformanceAttributes } from "@structures/difficultyattributes/Dro
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
 import { SliderTickInformation } from "@structures/pp/SliderTickInformation";
 import { Manager } from "@utils/base/Manager";
+import { RowDataPacket } from "mysql2";
 
 /**
  * Represents a recent play.
@@ -117,15 +121,6 @@ export class RecentPlay extends Manager {
 
     private scoreMultiplier: number | null = null;
 
-    /**
-     * The total score of this play, which is the score after applying the score multiplier.
-     */
-    get totalScore(): number {
-        this.scoreMultiplier ??= new DroidLegacyScoreMultiplierCalculator(null).calculateFor(this.mods.values());
-
-        return Math.round(this.score * this.scoreMultiplier);
-    }
-
     constructor(
         data: DatabaseRecentPlay = DatabaseManager.aliceDb?.collections
             .recentPlays.defaultDocument ?? {},
@@ -154,5 +149,36 @@ export class RecentPlay extends Manager {
                 this.mods.delete(modType);
             }
         }
+    }
+
+    /**
+     * Obtains the total score of this play, which is the score after applying the score multiplier.
+     */
+    async getTotalScore(): Promise<number> {
+        if (this.scoreMultiplier === null) {
+            const difficultyMetadata = await officialPool.query<RowDataPacket[]>(
+                `SELECT * FROM ${constructOfficialDatabaseTable(OfficialDatabaseTables.beatmapDifficulty)} WHERE beatmap_hash = ? LIMIT 1`,
+                [this.hash],
+            ).then(rows => rows[0].at(0) as OfficialDatabaseBeatmapDifficulty | undefined);
+
+            let calculator: DroidScoreMultiplierCalculator;
+
+            if (difficultyMetadata) {
+                const difficulty = new BeatmapDifficulty();
+
+                difficulty.cs = difficultyMetadata.circle_size;
+                difficulty.ar = difficultyMetadata.approach_rate;
+                difficulty.od = difficultyMetadata.overall_difficulty;
+                difficulty.hp = difficultyMetadata.hp_drain;
+
+                calculator = new DroidScoreMultiplierCalculator(difficulty);
+            } else {
+                calculator = new DroidScoreMultiplierCalculator(null);
+            }
+
+            this.scoreMultiplier = calculator.calculateFor(this.mods.values());
+        }
+
+        return Math.round(this.score * this.scoreMultiplier);
     }
 }

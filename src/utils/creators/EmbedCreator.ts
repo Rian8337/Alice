@@ -559,7 +559,7 @@ export abstract class EmbedCreator {
             score instanceof Score
                 ? score.score
                 : score instanceof RecentPlay
-                    ? score.totalScore
+                    ? await score.getTotalScore()
                     : score.total_score;
 
         const mods =
