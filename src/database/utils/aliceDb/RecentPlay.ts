@@ -142,13 +142,6 @@ export class RecentPlay extends Manager {
         this.droidAttribs = data.droidAttribs;
         this.osuAttribs = data.osuAttribs;
         this.scoreId = data.scoreId;
-
-        // Remove non-playable mods.
-        for (const [modType, mod] of this.mods) {
-            if (!mod.userPlayable) {
-                this.mods.delete(modType);
-            }
-        }
     }
 
     /**
