@@ -44,7 +44,7 @@ export const run: EventUtil["run"] = async (
 
         const auditLog = auditLogEntries.entries.first();
 
-        if (!auditLog?.executor || auditLog.executor.id === client.user.id) {
+        if (!auditLog?.executor || auditLog.executor.id === client.user.id || auditLog.targetId !== newMember.id) {
             return;
         }
 
@@ -151,7 +151,7 @@ export const run: EventUtil["run"] = async (
 
         const auditLog = auditLogEntries.entries.first();
 
-        if (!auditLog?.executor || auditLog.executor.id === client.user.id) {
+        if (!auditLog?.executor || auditLog.executor.id === client.user.id || auditLog.targetId !== newMember.id) {
             return;
         }
 
