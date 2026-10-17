@@ -10,9 +10,8 @@ export class RecalcESTranslation extends Translation<RecalcStrings> {
             "Lo siento, no puedo encontrar al jugador que estas buscando!",
         tooManyOptions:
             "Lo siento, solo puedes especificar un uid, usuario o nick! No puedes combinarlos!",
-        reworkNameMissing: "",
-        reworkTypeNotCurrent: "",
-        reworkTypeDoesntExist: "",
+        variantNotFound: "",
+        variantUnavailable: "",
         userQueued:
             "%s añadido correctamente a la cola para realizarle un recuento (%s).",
         fullRecalcInProgress: "Recuento iniciado correctamente.",

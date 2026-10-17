@@ -103,14 +103,18 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
     }
 
     /**
-     * Clones the rework from "overall" to a new rework type.
+     * Clones the player entries of a variant to another variant.
      *
-     * @param reworkType The rework type to clone to.
+     * @param source The name of the variant to clone from.
+     * @param target The name of the variant to clone to.
      */
-    async cloneOverallToRework(reworkType: string): Promise<OperationResult> {
-        const overallEntries = await this.collection
+    async cloneToVariant(
+        source: string,
+        target: string,
+    ): Promise<OperationResult> {
+        const sourceEntries = await this.collection
             .find(
-                { reworkType: "overall" },
+                { reworkType: source },
                 {
                     projection: {
                         _id: 0,
@@ -123,11 +127,11 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
             )
             .toArray();
 
-        for (const entry of overallEntries) {
-            entry.reworkType = reworkType;
+        for (const entry of sourceEntries) {
+            entry.reworkType = target;
         }
 
-        return this.insert(...overallEntries);
+        return this.insert(...sourceEntries);
     }
 
     /**

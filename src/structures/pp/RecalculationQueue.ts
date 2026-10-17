@@ -15,7 +15,12 @@ export interface RecalculationQueue {
     readonly uid: number;
 
     /**
-     * The rework type of the prototype.
+     * The canonical name of the variant to recalculate with.
      */
-    readonly reworkType: string;
+    readonly variant: string;
+
+    /**
+     * The uid of the player that the recalculation is made on behalf of, if any.
+     */
+    readonly actingUid?: number;
 }

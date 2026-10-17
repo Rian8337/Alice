@@ -10,10 +10,9 @@ export class RecalcENTranslation extends Translation<RecalcStrings> {
             "I'm sorry, I cannot find the player that you are looking for!",
         tooManyOptions:
             "I'm sorry, you can only either specify a uid, user, or username! You cannot mix them!",
-        reworkNameMissing: "I'm sorry, you did not specify a rework name!",
-        reworkTypeNotCurrent:
-            "I'm sorry, the specified rework type is not the current rework type!",
-        reworkTypeDoesntExist: "I'm sorry, this rework type does not exist!",
+        variantNotFound: "I'm sorry, I cannot find the variant %s!",
+        variantUnavailable:
+            "I'm sorry, the variant %s is unavailable right now!",
         userQueued: "Successfully queued %s for recalculation (%s).",
         fullRecalcInProgress: "Successfully started recalculation.",
         fullRecalcSuccess: "%s, recalculation done!",

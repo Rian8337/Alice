@@ -1,12 +1,30 @@
 import { DatabaseManager } from "@database/DatabaseManager";
 import { PrototypePP } from "@database/utils/aliceDb/PrototypePP";
+import { Modes } from "@rian8337/osu-base";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { RecalcLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/recalc/RecalcLocalization";
 import { MessageCreator } from "@utils/creators/MessageCreator";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { consola } from "consola";
+import { PPVariantManager } from "@utils/managers/PPVariantManager";
 import { PrototypeRecalculationManager } from "@utils/managers/PrototypeRecalculationManager";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
+import { checkVariant } from "@utils/pp/variantChoice";
+import { inlineCode } from "discord.js";
+
+function createVariantRejection(
+    localization: RecalcLocalization,
+    check: Exclude<ReturnType<typeof checkVariant>, "ok">,
+    variantName: string,
+): string {
+    return MessageCreator.createReject(
+        localization.getTranslation(
+            check === "unavailable" ? "variantUnavailable" : "variantNotFound",
+        ),
+        inlineCode(variantName),
+    );
+}
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.channel?.isSendable()) {
@@ -14,80 +32,89 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const localization = new RecalcLocalization(
-        CommandHelper.getLocale(interaction)
+        CommandHelper.getLocale(interaction),
     );
 
+    await InteractionHelper.deferReply(interaction);
+
     const prototypeDbManager = DatabaseManager.aliceDb.collections.prototypePP;
-    const prototypeTypeDbManager =
-        DatabaseManager.aliceDb.collections.prototypePPType;
 
     let calculatedCount = 0;
 
     let player: PrototypePP | undefined;
-    const reworkType = interaction.options.getString("reworktype", true);
 
-    if (reworkType !== process.env.CURRENT_REWORK_TYPE) {
+    const actingUid = await PPVariantManager.getActingUid(interaction.user);
+    const variantName =
+        interaction.options.getString("variant") ??
+        DefaultPPVariants.droidRebalance;
+
+    const resolvedVariant = await PPVariantManager.resolve(
+        variantName,
+        actingUid,
+    );
+    const variantCheck = checkVariant(resolvedVariant, Modes.Droid);
+
+    if (variantCheck !== "ok") {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("reworkTypeNotCurrent")
+            content: createVariantRejection(
+                localization,
+                variantCheck,
+                variantName,
             ),
         });
     }
 
-    // If rework doesn't exist in the database, a name must be supplied.
-    if (!(await prototypeTypeDbManager.reworkTypeExists(reworkType))) {
-        const reworkName = interaction.options.getString("reworkname");
+    const variant = resolvedVariant!.name;
 
-        if (!reworkName) {
-            return InteractionHelper.reply(interaction, {
-                content: MessageCreator.createReject(
-                    localization.getTranslation("reworkNameMissing")
-                ),
-            });
-        }
-
-        await prototypeTypeDbManager.insert({
-            name: reworkName,
-            type: reworkType,
-        });
-
-        // New rework - clone overall reworks to this rework for now. Recalculation will be done later down the line.
-        await prototypeDbManager.cloneOverallToRework(reworkType);
+    // If the variant has no players yet, clone the players of droid-rebalance to it. Recalculation will be done later
+    // down the line.
+    if (
+        variant !== DefaultPPVariants.droidRebalance &&
+        !(await prototypeDbManager.getOne({ reworkType: variant }))
+    ) {
+        await prototypeDbManager.cloneToVariant(
+            DefaultPPVariants.droidRebalance,
+            variant,
+        );
     }
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
-            localization.getTranslation("fullRecalcInProgress")
+            localization.getTranslation("fullRecalcInProgress"),
         ),
     });
 
     if (interaction.options.getBoolean("resetprogress")) {
-        await prototypeDbManager.updateMany({}, { $set: { scanDone: false } });
+        await prototypeDbManager.updateMany(
+            { reworkType: variant },
+            { $set: { scanDone: false } },
+        );
     }
 
     while (
         (player = (
-            await prototypeDbManager.getUnscannedPlayers(1, reworkType)
+            await prototypeDbManager.getUnscannedPlayers(1, variant)
         ).first())
     ) {
         consola.info(
-            `Now calculating player ${player.uid} for rework ${reworkType}`
+            `Now calculating player ${player.uid.toString()} for variant ${variant}`,
         );
 
         await PrototypeRecalculationManager.calculatePlayer(
             player.uid,
-            reworkType
+            variant,
+            actingUid,
         );
 
         consola.info(
-            `${++calculatedCount} players recalculated for rework ${reworkType}`
+            `${(++calculatedCount).toString()} players recalculated for variant ${variant}`,
         );
     }
 
     interaction.channel.send({
         content: MessageCreator.createAccept(
             localization.getTranslation("fullRecalcSuccess"),
-            interaction.user.toString()
+            interaction.user.toString(),
         ),
     });
 };
