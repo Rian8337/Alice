@@ -7,6 +7,7 @@ import {
 } from "discord.js";
 import { ArrayHelper } from "@utils/helpers/ArrayHelper";
 import { OperationResult } from "@structures/core/OperationResult";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
 
 /**
  * A manager for the `prototypepp` collection.
@@ -25,7 +26,7 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
             pp: [],
             localPPTotal: 0,
             livePPTotal: 0,
-            reworkType: "overall",
+            reworkType: DefaultPPVariants.droidRebalance,
             uid: 0,
             username: "",
             scanDone: false,
