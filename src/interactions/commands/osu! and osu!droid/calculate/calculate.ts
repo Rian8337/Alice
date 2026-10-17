@@ -1,5 +1,4 @@
 import { CommandCategory } from "@enums/core/CommandCategory";
-import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import { CalculateLocalization } from "@localization/interactions/commands/osu! and osu!droid/calculate/CalculateLocalization";
 import {
     Accuracy,
@@ -19,11 +18,9 @@ import {
     IDroidDifficultyAttributes as IRebalanceDroidDifficultyAttributes,
     IOsuDifficultyAttributes as IRebalanceOsuDifficultyAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
-import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
 import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
 import { RebalanceDroidPerformanceAttributes } from "@structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
-import { PPProcessorCalculationResponse } from "@structures/utils/PPProcessorCalculationResponse";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { MessageCreator } from "@utils/creators/MessageCreator";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
@@ -32,7 +29,11 @@ import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { PPHelper } from "@utils/helpers/PPHelper";
 import { BeatmapManager } from "@utils/managers/BeatmapManager";
 import { PPProcessorRESTManager } from "@utils/managers/PPProcessorRESTManager";
+import { PPVariantManager } from "@utils/managers/PPVariantManager";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
 import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
+import { checkVariant, variantRejectionKey } from "@utils/pp/variantChoice";
+import { createVariantRejection } from "@utils/pp/variantRejection";
 import { ApplicationCommandOptionType, TextDisplayBuilder } from "discord.js";
 import { SlashCommand } from "structures/core/SlashCommand";
 
@@ -67,6 +68,8 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     }
 
     await InteractionHelper.deferReply(interaction);
+
+    const actingUid = await PPVariantManager.getActingUid(interaction.user);
 
     const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
         beatmapID ?? hash!,
@@ -139,72 +142,72 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     calcParams.recalculateAccuracy(beatmap.objects);
 
-    let droidCalcResult:
-        | PPProcessorCalculationResponse<
-            CompleteCalculationAttributes<
-                IDroidDifficultyAttributes,
-                DroidPerformanceAttributes
-            >,
-            true
-        >
-        | PPProcessorCalculationResponse<
-            CompleteCalculationAttributes<
-                IRebalanceDroidDifficultyAttributes,
-                RebalanceDroidPerformanceAttributes
-            >,
-            true
-        >
-        | null;
+    const droidVariantName =
+        interaction.options.getString("variant") ?? DefaultPPVariants.droidLive;
+    const osuVariantName =
+        interaction.options.getString("pcvariant") ?? DefaultPPVariants.osuLive;
 
-    let osuCalcResult: PPProcessorCalculationResponse<
-        CompleteCalculationAttributes<
-            IOsuDifficultyAttributes | IRebalanceOsuDifficultyAttributes,
-            OsuPerformanceAttributes
-        >
-    > | null = null;
+    const droidVariant = await PPVariantManager.resolve(
+        droidVariantName,
+        actingUid,
+    );
 
-    switch (interaction.options.getInteger("calculationmethod")) {
-        case PPCalculationMethod.rebalance:
-            droidCalcResult =
-                await PPProcessorRESTManager.getPerformanceAttributes(
-                    beatmap.beatmapId,
-                    Modes.Droid,
-                    PPCalculationMethod.rebalance,
-                    calcParams,
-                    true,
-                );
+    const droidVariantCheck = checkVariant(droidVariant, Modes.Droid);
 
-            if (droidCalcResult) {
-                osuCalcResult =
-                    (await PPProcessorRESTManager.getPerformanceAttributes(
-                        beatmap.beatmapId,
-                        Modes.Osu,
-                        PPCalculationMethod.rebalance,
-                        calcParams,
-                    )) ?? null;
-            }
-            break;
+    const droidRejection = variantRejectionKey(droidVariantCheck);
 
-        default:
-            droidCalcResult =
-                await PPProcessorRESTManager.getPerformanceAttributes(
-                    beatmap.beatmapId,
-                    Modes.Droid,
-                    PPCalculationMethod.live,
-                    calcParams,
-                    true,
-                );
-
-            if (droidCalcResult) {
-                osuCalcResult =
-                    (await PPProcessorRESTManager.getPerformanceAttributes(
-                        beatmap.beatmapId,
-                        Modes.Osu,
-                        PPCalculationMethod.live,
-                        calcParams,
-                    )) ?? null;
-            }
+    if (droidRejection) {
+        return InteractionHelper.reply(interaction, {
+            content: createVariantRejection(
+                localization,
+                droidRejection,
+                droidVariantName,
+                "droid",
+            ),
+        });
     }
+
+    const osuVariant = await PPVariantManager.resolve(
+        osuVariantName,
+        actingUid,
+    );
+
+    const osuVariantCheck = checkVariant(osuVariant, Modes.Osu);
+
+    const osuRejection = variantRejectionKey(osuVariantCheck);
+
+    if (osuRejection) {
+        return InteractionHelper.reply(interaction, {
+            content: createVariantRejection(
+                localization,
+                osuRejection,
+                osuVariantName,
+                "PC",
+            ),
+        });
+    }
+
+    const isDroidRebalance = droidVariant?.algorithm === "rebalance";
+    const isOsuRebalance = osuVariant?.algorithm === "rebalance";
+
+    const droidCalcResult =
+        await PPProcessorRESTManager.getPerformanceAttributesForVariant(
+            beatmap.beatmapId,
+            droidVariant!.name,
+            calcParams,
+            true,
+            actingUid,
+        );
+
+    const osuCalcResult = droidCalcResult
+        ? await PPProcessorRESTManager.getPerformanceAttributesForVariant(
+            beatmap.beatmapId,
+            osuVariant!.name,
+            calcParams,
+            false,
+            actingUid,
+        )
+        : null;
 
     if (!droidCalcResult || !osuCalcResult) {
         return InteractionHelper.reply(interaction, {
@@ -214,14 +217,25 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
         });
     }
 
+    const droidDifficulty = droidCalcResult.attributes.difficulty;
+    const droidPerformance = droidCalcResult.attributes.performance;
+    const osuDifficulty = osuCalcResult.attributes.difficulty;
+    const osuPerformance = osuCalcResult.attributes
+        .performance as OsuPerformanceAttributes;
+
     const options = EmbedCreator.createCalculationEmbed(
         beatmap,
         calcParams,
-        //@ts-ignore: Should be fixed in next module release
-        droidCalcResult.attributes.difficulty,
-        osuCalcResult.attributes.difficulty,
-        droidCalcResult.attributes.performance,
-        osuCalcResult.attributes.performance,
+        droidDifficulty as CacheableDifficultyAttributes<
+            IDroidDifficultyAttributes | IRebalanceDroidDifficultyAttributes
+        >,
+        osuDifficulty as CacheableDifficultyAttributes<
+            IOsuDifficultyAttributes | IRebalanceOsuDifficultyAttributes
+        >,
+        droidPerformance as
+        | DroidPerformanceAttributes
+        | RebalanceDroidPerformanceAttributes,
+        osuPerformance,
         localization.language,
         Buffer.from(droidCalcResult.strainChart),
     );
@@ -229,45 +243,35 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
     let string = "";
 
     if (interaction.options.getBoolean("showdroiddetail")) {
-        string += `${localization.getTranslation("rawDroidSr")}: ${interaction.options.getInteger("calculationmethod") ===
-                PPCalculationMethod.rebalance
+        string += `${localization.getTranslation("rawDroidSr")}: ${isDroidRebalance
                 ? PPHelper.getRebalanceDroidDifficultyAttributesInfo(
-                    droidCalcResult.attributes
-                        .difficulty as CacheableDifficultyAttributes<IRebalanceDroidDifficultyAttributes>,
+                    droidDifficulty as CacheableDifficultyAttributes<IRebalanceDroidDifficultyAttributes>,
                 )
                 : PPHelper.getDroidDifficultyAttributesInfo(
-                    droidCalcResult.attributes
-                        .difficulty as CacheableDifficultyAttributes<IDroidDifficultyAttributes>,
+                    droidDifficulty as CacheableDifficultyAttributes<IDroidDifficultyAttributes>,
                 )
             }`;
-        string += `\n${localization.getTranslation("rawDroidPp")}: ${interaction.options.getInteger("calculationmethod") ===
-                PPCalculationMethod.rebalance
+        string += `\n${localization.getTranslation("rawDroidPp")}: ${isDroidRebalance
                 ? PPHelper.getRebalanceDroidPerformanceAttributesInfo(
-                    droidCalcResult.attributes
-                        .performance as RebalanceDroidPerformanceAttributes,
+                    droidPerformance as RebalanceDroidPerformanceAttributes,
                 )
                 : PPHelper.getDroidPerformanceAttributesInfo(
-                    droidCalcResult.attributes
-                        .performance as DroidPerformanceAttributes,
+                    droidPerformance as DroidPerformanceAttributes,
                 )
             }\n`;
     }
 
     if (interaction.options.getBoolean("showosudetail")) {
-        string += `${localization.getTranslation("rawPcSr")}: ${interaction.options.getInteger("calculationmethod") ===
-                PPCalculationMethod.rebalance
+        string += `${localization.getTranslation("rawPcSr")}: ${isOsuRebalance
                 ? PPHelper.getRebalanceOsuDifficultyAttributesInfo(
-                    osuCalcResult.attributes
-                        .difficulty as CacheableDifficultyAttributes<IRebalanceOsuDifficultyAttributes>,
+                    osuDifficulty as CacheableDifficultyAttributes<IRebalanceOsuDifficultyAttributes>,
                 )
                 : PPHelper.getOsuDifficultyAttributesInfo(
-                    osuCalcResult.attributes.difficulty,
+                    osuDifficulty as CacheableDifficultyAttributes<IOsuDifficultyAttributes>,
                 )
             }\n${localization.getTranslation(
                 "rawPcPp",
-            )}: ${PPHelper.getOsuPerformanceAttributesInfo(
-                osuCalcResult.attributes.performance,
-            )}`;
+            )}: ${PPHelper.getOsuPerformanceAttributesInfo(osuPerformance)}`;
     }
 
     if (string) {
@@ -397,19 +401,20 @@ export const config: SlashCommand["config"] = {
             description: "Whether to show detailed response for PC pp.",
         },
         {
-            name: "calculationmethod",
-            type: ApplicationCommandOptionType.Integer,
-            description: "The calculation method to use. Defaults to Live.",
-            choices: [
-                {
-                    name: "Live",
-                    value: PPCalculationMethod.live,
-                },
-                {
-                    name: "Rebalance",
-                    value: PPCalculationMethod.rebalance,
-                },
-            ],
+            name: "variant",
+            type: ApplicationCommandOptionType.String,
+            description:
+                "The droid variant to calculate with. Defaults to droid-live.",
+            autocomplete: true,
+            maxLength: 100,
+        },
+        {
+            name: "pcvariant",
+            type: ApplicationCommandOptionType.String,
+            description:
+                "The PC variant to calculate with. Defaults to osu-live.",
+            autocomplete: true,
+            maxLength: 100,
         },
     ],
     example: [
@@ -514,6 +519,25 @@ export const config: SlashCommand["config"] = {
             ],
             description:
                 "will calculate the linked beatmap with 10x 100 and 5x 50 gained, HDDT mod, 2x speed multiplier, and a maximum combo of 150.",
+        },
+        {
+            command: "calculate",
+            arguments: [
+                {
+                    name: "beatmap",
+                    value: 1884658,
+                },
+                {
+                    name: "variant",
+                    value: "droid-rebalance",
+                },
+                {
+                    name: "pcvariant",
+                    value: "osu-rebalance",
+                },
+            ],
+            description:
+                "will calculate the beatmap with ID 1884658 using the droid-rebalance droid variant and the osu-rebalance PC variant.",
         },
     ],
 };

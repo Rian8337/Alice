@@ -1,6 +1,6 @@
-import { DatabaseManager } from "@database/DatabaseManager";
 import { AutocompleteHandler } from "@structures/core/AutocompleteHandler";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { PPVariantManager } from "@utils/managers/PPVariantManager";
 
 export const run: AutocompleteHandler["run"] = async (_, interaction) => {
     const focused = interaction.options.getFocused(true);
@@ -8,14 +8,17 @@ export const run: AutocompleteHandler["run"] = async (_, interaction) => {
     switch (focused.name) {
         case "username":
             interaction.respond(
-                await DroidHelper.searchPlayersForAutocomplete(focused.value)
+                await DroidHelper.searchPlayersForAutocomplete(focused.value),
             );
             break;
-        case "reworktype":
+        case "variant":
             interaction.respond(
-                await DatabaseManager.aliceDb.collections.prototypePPType.searchReworkTypesForAutocomplete(
-                    focused.value
-                )
+                await PPVariantManager.searchForAutocomplete(focused.value, {
+                    prototypeOnly: true,
+                    actingUid: await PPVariantManager.getActingUid(
+                        interaction.user,
+                    ),
+                }),
             );
             break;
     }

@@ -24,7 +24,10 @@ export interface PPStrings {
     readonly ppProfile: string;
     readonly lastUpdate: string;
     readonly commandNotAllowed: string;
-    readonly reworkTypeDoesntExist: string;
+    readonly variantNotFound: string;
+    readonly variantWrongMode: string;
+    readonly variantListUnavailable: string;
+    readonly variantDescription: string;
     readonly uidIsBanned: string;
     readonly beatmapNotFound: string;
     readonly beatmapIsBlacklisted: string;

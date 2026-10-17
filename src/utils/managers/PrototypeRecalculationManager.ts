@@ -13,13 +13,20 @@ import { DroidHelper } from "@utils/helpers/DroidHelper";
 import { Collection, CommandInteraction, hyperlink } from "discord.js";
 import { BeatmapManager } from "./BeatmapManager";
 import { PPProcessorRESTManager } from "./PPProcessorRESTManager";
-import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
 import {
     Modes,
     Accuracy,
     BeatmapDifficulty,
     ModUtil,
 } from "@rian8337/osu-base";
+import { DroidDifficultyAttributes } from "@rian8337/osu-difficulty-calculator";
+import { DroidDifficultyAttributes as RebalanceDroidDifficultyAttributes } from "@rian8337/osu-rebalance-difficulty-calculator";
+import { CompleteCalculationAttributes } from "@structures/difficultyattributes/CompleteCalculationAttributes";
+import { DroidPerformanceAttributes } from "@structures/difficultyattributes/DroidPerformanceAttributes";
+import { RebalanceDroidPerformanceAttributes } from "@structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
+import { PPProcessorCalculationResponse } from "@structures/utils/PPProcessorCalculationResponse";
+import { prototypeVariants } from "@utils/pp/prototypeVariants";
+import { getProfileCalculationFailure } from "@utils/pp/profileCalculation";
 import { PPHelper } from "@utils/helpers/PPHelper";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { MessageCreator } from "@utils/creators/MessageCreator";
@@ -31,18 +38,31 @@ import consola from "consola";
  */
 export abstract class PrototypeRecalculationManager extends Manager {
     /**
-     * Recalculation queue for per-player prototype recalculation, mapped by user ID.
+     * Recalculation queue for per-player prototype recalculation, mapped by user ID and variant name
+     * (`${uid}:${variant}`), so that the same player can be queued for multiple variants.
      */
     private static readonly _recalculationQueue = new Collection<
-        number,
+        string,
         RecalculationQueue
     >();
 
     /**
-     * Recalculation queue for per-player prototype recalculation, mapped by user ID.
+     * Recalculation queue for per-player prototype recalculation, mapped by user ID and variant name
+     * (`${uid}:${variant}`).
      */
-    static get recalculationQueue(): ReadonlyMap<number, RecalculationQueue> {
+    static get recalculationQueue(): ReadonlyMap<string, RecalculationQueue> {
         return this._recalculationQueue;
+    }
+
+    /**
+     * Gets the key of a recalculation queue entry.
+     *
+     * @param uid The uid of the queued player.
+     * @param variant The canonical name of the variant to recalculate with.
+     * @returns The key.
+     */
+    private static getQueueKey(uid: number, variant: string): string {
+        return `${uid.toString()}:${variant}`;
     }
 
     private static readonly calculationSuccessResponse: keyof PrototypeRecalculationManagerStrings =
@@ -55,18 +75,22 @@ export abstract class PrototypeRecalculationManager extends Manager {
     /**
      * Queues a user for prototype recalculation.
      *
-     * @param userId The ID of the queued user.
-     * @param reworkType The rework type of the prototype.
+     * @param interaction The interaction that triggered the recalculation.
+     * @param uid The uid of the queued player.
+     * @param variant The canonical name of the variant to recalculate with.
+     * @param actingUid The uid of the player that the recalculation is made on behalf of, if any.
      */
     static queue(
         interaction: CommandInteraction,
         uid: number,
-        reworkType: string,
+        variant: string,
+        actingUid?: number,
     ): void {
-        this._recalculationQueue.set(uid, {
+        this._recalculationQueue.set(this.getQueueKey(uid, variant), {
             interaction: interaction,
             uid: uid,
-            reworkType: reworkType,
+            variant: variant,
+            actingUid: actingUid,
         });
 
         void this.beginPrototypeRecalculation();
@@ -76,12 +100,14 @@ export abstract class PrototypeRecalculationManager extends Manager {
      * Calculates a player's dpp into the prototype dpp database.
      *
      * @param uid The uid of the player.
-     * @param reworkType The rework type of the prototype.
+     * @param variant The canonical name of the variant to recalculate with.
+     * @param actingUid The uid of the player that the recalculation is made on behalf of, if any.
      * @returns The operation result.
      */
     static async calculatePlayer(
         uid: number,
-        reworkType: string,
+        variant: string,
+        actingUid?: number,
     ): Promise<OperationResult> {
         const player = await DroidHelper.getPlayer(uid, ["id", "username"]);
 
@@ -91,7 +117,7 @@ export abstract class PrototypeRecalculationManager extends Manager {
 
         const entries: PrototypePPEntry[] = [];
         const topScores = await DroidHelper.getTopScores(uid);
-        const hasMaster = reworkType !== "overall";
+        const variants = prototypeVariants(variant);
 
         if (topScores.length === 0) {
             return this.createOperationResult(
@@ -110,26 +136,40 @@ export abstract class PrototypeRecalculationManager extends Manager {
             }
 
             const liveAttribs =
-                await PPProcessorRESTManager.getOnlineScoreAttributes(
+                (await PPProcessorRESTManager.getOnlineScoreAttributesForVariant(
                     score.uid,
                     score.hash,
-                    Modes.Droid,
-                    PPCalculationMethod.live,
+                    variants.live,
                     true,
-                );
+                    false,
+                    actingUid,
+                )) as PPProcessorCalculationResponse<
+                    CompleteCalculationAttributes<
+                        DroidDifficultyAttributes,
+                        DroidPerformanceAttributes
+                    >,
+                    false
+                > | null;
 
             if (!liveAttribs) {
                 continue;
             }
 
             const localAttribs =
-                await PPProcessorRESTManager.getOnlineScoreAttributes(
+                (await PPProcessorRESTManager.getOnlineScoreAttributesForVariant(
                     score.uid,
                     score.hash,
-                    Modes.Droid,
-                    PPCalculationMethod.rebalance,
+                    variants.local,
                     true,
-                );
+                    false,
+                    actingUid,
+                )) as PPProcessorCalculationResponse<
+                    CompleteCalculationAttributes<
+                        RebalanceDroidDifficultyAttributes,
+                        RebalanceDroidPerformanceAttributes
+                    >,
+                    false
+                > | null;
 
             if (!localAttribs) {
                 continue;
@@ -225,17 +265,22 @@ export abstract class PrototypeRecalculationManager extends Manager {
                 },
             };
 
-            if (hasMaster) {
+            if (variants.master !== undefined) {
                 const masterAttribs =
-                    await PPProcessorRESTManager.getOnlineScoreAttributes(
+                    (await PPProcessorRESTManager.getOnlineScoreAttributesForVariant(
                         score.uid,
                         score.hash,
-                        Modes.Droid,
-                        PPCalculationMethod.rebalance,
+                        variants.master,
                         true,
                         false,
-                        true,
-                    );
+                        actingUid,
+                    )) as PPProcessorCalculationResponse<
+                        CompleteCalculationAttributes<
+                            RebalanceDroidDifficultyAttributes,
+                            RebalanceDroidPerformanceAttributes
+                        >,
+                        false
+                    > | null;
 
                 if (!masterAttribs) {
                     continue;
@@ -280,6 +325,13 @@ export abstract class PrototypeRecalculationManager extends Manager {
             entries.push(entry);
         }
 
+        // Do not overwrite a stored profile with an empty one when nothing could be calculated.
+        const failure = getProfileCalculationFailure(entries.length);
+
+        if (failure !== null) {
+            return this.createOperationResult(false, failure);
+        }
+
         entries.sort(
             (a, b) => b.local.performance.total - a.local.performance.total,
         );
@@ -292,7 +344,8 @@ export abstract class PrototypeRecalculationManager extends Manager {
             entries.map((e) => e.local.performance.total),
         );
 
-        const masterTotal = hasMaster
+        const masterTotal =
+            variants.master !== undefined
             ? PPHelper.calculateFinalPerformancePoints(
                 entries.map((e) => (e.master ?? e.live).performance.total),
             )
@@ -307,7 +360,7 @@ export abstract class PrototypeRecalculationManager extends Manager {
         return DatabaseManager.aliceDb.collections.prototypePP.updateOne(
             {
                 uid: uid,
-                reworkType: reworkType,
+                reworkType: variant,
             },
             {
                 $set: {
@@ -366,16 +419,20 @@ export abstract class PrototypeRecalculationManager extends Manager {
         this.calculationIsProgressing = true;
 
         while (this._recalculationQueue.size > 0) {
-            const uid = this._recalculationQueue.firstKey()!;
+            const queueKey = this._recalculationQueue.firstKey()!;
             const queue = this._recalculationQueue.first()!;
-            const { interaction, reworkType } = queue;
+            const { interaction, uid, variant, actingUid } = queue;
 
             const localization = this.getLocalization(
                 CommandHelper.getUserPreferredLocale(interaction),
             );
 
             try {
-                const result = await this.calculatePlayer(uid, reworkType);
+                const result = await this.calculatePlayer(
+                    uid,
+                    variant,
+                    actingUid,
+                );
 
                 if (interaction.channel?.isSendable()) {
                     if (result.isSuccessful()) {
@@ -385,7 +442,7 @@ export abstract class PrototypeRecalculationManager extends Manager {
                                     this.calculationSuccessResponse,
                                 ),
                                 interaction.user.toString(),
-                                `uid ${hyperlink(uid.toString(), `https://droidpp.osudroid.moe/prototype/profile/${uid.toString()}/${reworkType}`)}`,
+                                `uid ${hyperlink(uid.toString(), `https://droidpp.osudroid.moe/prototype/profile/${uid.toString()}/${variant}`)}`,
                             ),
                         });
                     } else if (result.failed()) {
@@ -417,7 +474,7 @@ export abstract class PrototypeRecalculationManager extends Manager {
                     });
                 }
             } finally {
-                this._recalculationQueue.delete(uid);
+                this._recalculationQueue.delete(queueKey);
             }
         }
 

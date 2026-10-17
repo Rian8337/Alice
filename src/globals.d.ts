@@ -116,10 +116,5 @@ namespace NodeJS {
          * The prefix of database names in the official server's database.
          */
         readonly OFFICIAL_DB_PREFIX?: string;
-
-        /**
-         * The rework type that is being hosted.
-         */
-        readonly CURRENT_REWORK_TYPE?: string;
     }
 }

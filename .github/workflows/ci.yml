@@ -1,9 +1,12 @@
 name: Continuous Integration
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
 
 concurrency:
-  group: ci
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -30,3 +33,27 @@ jobs:
       - name: Type Check
         shell: bash
         run: pnpm type-check
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node.js v24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install main dependencies
+        shell: bash
+        run: pnpm i
+
+      - name: Test
+        shell: bash
+        run: pnpm test

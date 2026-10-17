@@ -3,6 +3,7 @@ import { CommandCategory } from "@enums/core/CommandCategory";
 import { SlashCommand } from "structures/core/SlashCommand";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { Constants } from "@core/Constants";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     CommandHelper.runSlashSubcommandFromInteraction(interaction);
@@ -19,7 +20,7 @@ export const config: SlashCommand["config"] = {
             name: "calculate",
             type: ApplicationCommandOptionType.Subcommand,
             description:
-                "Recalculates a user as prototype droid performance points (dpp) with the configured rework.",
+                "Recalculates a user as prototype droid performance points (dpp) with a variant.",
             options: [
                 {
                     name: "user",
@@ -40,6 +41,13 @@ export const config: SlashCommand["config"] = {
                     maxLength: 20,
                     autocomplete: true,
                 },
+                {
+                    name: "variant",
+                    type: ApplicationCommandOptionType.String,
+                    description: `The variant to recalculate with. Defaults to ${DefaultPPVariants.droidRebalance}.`,
+                    autocomplete: true,
+                    maxLength: 100,
+                },
             ],
         },
         {
@@ -49,17 +57,11 @@ export const config: SlashCommand["config"] = {
                 "Recalculates all players in the current prototype droid performance points (dpp) system.",
             options: [
                 {
-                    name: "reworktype",
+                    name: "variant",
                     type: ApplicationCommandOptionType.String,
-                    description: "The rework type of the prototype.",
-                    required: true,
+                    description: `The variant to recalculate with. Defaults to ${DefaultPPVariants.droidRebalance}.`,
                     autocomplete: true,
-                },
-                {
-                    name: "reworkname",
-                    type: ApplicationCommandOptionType.String,
-                    description:
-                        "The name of the rework. Required for new reworks.",
+                    maxLength: 100,
                 },
                 {
                     name: "resetprogress",

@@ -31,7 +31,10 @@ export class PPESTranslation extends Translation<PPStrings> {
         lastUpdate: "Ultima actualización",
         commandNotAllowed:
             "Lo siento, este comando no esta disponible en este canal.",
-        reworkTypeDoesntExist: "I'm sorry, this rework type does not exist!",
+        variantNotFound: "",
+        variantWrongMode: "",
+        variantListUnavailable: "",
+        variantDescription: "",
         uidIsBanned:
             "Lo siento, tu cuenta de osu!droid enlazada ha sido restringida de poder obtener dpp.",
         beatmapNotFound:

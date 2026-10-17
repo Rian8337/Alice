@@ -4,7 +4,7 @@ import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { PrototypeRecalculationManager } from "@utils/managers/PrototypeRecalculationManager";
-import { GuildMember } from "discord.js";
+import { GuildMember, inlineCode } from "discord.js";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new RecalcLocalization(
@@ -21,7 +21,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             })
                 .setTitle(localization.getTranslation("userQueueList"))
                 .setDescription(
-                    queue.size > 0 ? [...queue.keys()].join(", ") : "None",
+                    queue.size > 0
+                        ? [...queue.values()]
+                              .map(
+                                  ({ uid, variant }) =>
+                                      `${uid.toString()} (${inlineCode(variant)})`,
+                              )
+                              .join(", ")
+                        : "None",
                 ),
         ],
     });

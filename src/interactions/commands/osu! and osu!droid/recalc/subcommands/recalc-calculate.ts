@@ -13,6 +13,11 @@ import { DatabaseUserBind } from "structures/database/elainaDb/DatabaseUserBind"
 import { DroidHelper } from "@utils/helpers/DroidHelper";
 import { OfficialDatabaseUser } from "@database/official/schema/OfficialDatabaseUser";
 import { inlineCode } from "discord.js";
+import { Modes } from "@rian8337/osu-base";
+import { PPVariantManager } from "@utils/managers/PPVariantManager";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
+import { checkVariant, variantRejectionKey } from "@utils/pp/variantChoice";
+import { createVariantRejection } from "@utils/pp/variantRejection";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new RecalcLocalization(
@@ -33,18 +38,26 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    const dbManager = DatabaseManager.elainaDb.collections.userBind;
-    const reworkType = process.env.CURRENT_REWORK_TYPE;
+    await InteractionHelper.deferReply(interaction);
 
-    if (
-        !reworkType ||
-        !(await DatabaseManager.aliceDb.collections.prototypePPType.reworkTypeExists(
-            reworkType,
-        ))
-    ) {
+    const dbManager = DatabaseManager.elainaDb.collections.userBind;
+    const actingUid = await PPVariantManager.getActingUid(interaction.user);
+    const variantName =
+        interaction.options.getString("variant") ??
+        DefaultPPVariants.droidRebalance;
+
+    const variant = await PPVariantManager.resolve(variantName, actingUid);
+    const variantCheck = checkVariant(variant, Modes.Droid);
+
+    const rejection = variantRejectionKey(variantCheck);
+
+    if (rejection) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("reworkTypeDoesntExist"),
+            content: createVariantRejection(
+                localization,
+                rejection,
+                variantName,
+                "droid",
             ),
         });
     }
@@ -110,13 +123,18 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
-    PrototypeRecalculationManager.queue(interaction, uid, reworkType);
+    PrototypeRecalculationManager.queue(
+        interaction,
+        uid,
+        variant!.name,
+        actingUid,
+    );
 
     await InteractionHelper.reply(interaction, {
         content: MessageCreator.createAccept(
             localization.getTranslation("userQueued"),
             `uid ${uid.toString()}`,
-            inlineCode(reworkType),
+            inlineCode(variant!.name),
         ),
     });
 };

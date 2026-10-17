@@ -164,11 +164,12 @@ export const config: SlashCommand["config"] = {
                             maxValue: 15,
                         },
                         {
-                            name: "rework",
+                            name: "variant",
                             type: ApplicationCommandOptionType.String,
                             description:
-                                "The rework to check. If unspecified, defaults to the currently configured rework.",
+                                "The variant to check. Defaults to droid-rebalance.",
                             autocomplete: true,
+                            maxLength: 100,
                         },
                     ],
                 },
@@ -198,11 +199,12 @@ export const config: SlashCommand["config"] = {
                             autocomplete: true,
                         },
                         {
-                            name: "rework",
+                            name: "variant",
                             type: ApplicationCommandOptionType.String,
                             description:
-                                "The rework to export. If unspecified, defaults to the currently configured rework.",
+                                "The variant to export. Defaults to droid-rebalance.",
                             autocomplete: true,
+                            maxLength: 100,
                         },
                     ],
                 },

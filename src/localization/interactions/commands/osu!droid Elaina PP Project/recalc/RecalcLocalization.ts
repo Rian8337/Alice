@@ -7,9 +7,10 @@ import { RecalcKRTranslation } from "./translations/RecalcKRTranslation";
 export interface RecalcStrings {
     readonly playerNotFound: string;
     readonly tooManyOptions: string;
-    readonly reworkNameMissing: string;
-    readonly reworkTypeNotCurrent: string;
-    readonly reworkTypeDoesntExist: string;
+    readonly variantNotFound: string;
+    readonly variantWrongMode: string;
+    readonly variantListUnavailable: string;
+    readonly variantUnavailable: string;
     readonly userQueued: string;
     readonly fullRecalcInProgress: string;
     readonly fullRecalcSuccess: string;

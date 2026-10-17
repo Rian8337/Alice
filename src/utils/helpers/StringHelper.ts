@@ -167,4 +167,17 @@ export abstract class StringHelper {
     static isUsernameValid(username: string): boolean {
         return /^[a-zA-Z0-9_]+$/g.test(username);
     }
+
+    /**
+     * Truncates a string to a maximum length.
+     *
+     * @param text The string to truncate.
+     * @param maxLength The maximum length of the resulting string, including the ellipsis.
+     * @returns The string unchanged if it fits, otherwise its first `maxLength - 1` characters followed by `…`.
+     */
+    static truncate(text: string, maxLength: number): string {
+        return text.length <= maxLength
+            ? text
+            : `${text.slice(0, maxLength - 1)}…`;
+    }
 }

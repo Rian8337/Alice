@@ -3,7 +3,7 @@ import { DatabaseManager } from "@database/DatabaseManager";
 import { PrototypePP } from "@database/utils/aliceDb/PrototypePP";
 import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 import { PPLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
-import { ModUtil } from "@rian8337/osu-base";
+import { ModUtil, Modes } from "@rian8337/osu-base";
 import { OnButtonPageChange } from "@structures/utils/OnButtonPageChange";
 import { EmbedCreator } from "@utils/creators/EmbedCreator";
 import { MessageButtonCreator } from "@utils/creators/MessageButtonCreator";
@@ -14,8 +14,12 @@ import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { LocaleHelper } from "@utils/helpers/LocaleHelper";
 import { StringHelper } from "@utils/helpers/StringHelper";
 import { ProfileManager } from "@utils/managers/ProfileManager";
-import { bold, GuildMember, hyperlink, time } from "discord.js";
+import { bold, GuildMember, hyperlink, inlineCode, time } from "discord.js";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
+import { PPVariantManager } from "@utils/managers/PPVariantManager";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
+import { checkVariant, variantRejectionKey } from "@utils/pp/variantChoice";
+import { createVariantRejection } from "@utils/pp/variantRejection";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new PPLocalization(
@@ -38,23 +42,32 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     await InteractionHelper.deferReply(interaction);
 
-    const reworkType =
-        interaction.options.getString("rework") ??
-        process.env.CURRENT_REWORK_TYPE!;
+    const variantName =
+        interaction.options.getString("variant") ??
+        DefaultPPVariants.droidRebalance;
 
-    const reworkInfo =
-        await DatabaseManager.aliceDb.collections.prototypePPType.getFromType(
-            reworkType,
-            { projection: { _id: 0, name: 1, type: 1 } },
-        );
+    const variant = await PPVariantManager.resolve(
+        variantName,
+        await PPVariantManager.getActingUid(interaction.user),
+    );
+    const variantCheck = checkVariant(variant, Modes.Droid);
 
-    if (!reworkInfo) {
+    // Stored data needs no processor, so an unavailable variant is still readable.
+    const rejection = variantRejectionKey(variantCheck, true);
+
+    if (rejection || !variant) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("reworkTypeDoesntExist"),
+            content: createVariantRejection(
+                localization,
+                rejection ?? "variantNotFound",
+                variantName,
+                "droid",
             ),
         });
     }
+
+    const reworkType = variant.name;
+    const variantDescription = variant.description?.trim();
 
     const dbManager = DatabaseManager.aliceDb.collections.prototypePP;
     let ppInfo: PrototypePP | null;
@@ -121,7 +134,7 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
                 ),
             ),
         )}\n` +
-            `${localization.getTranslation("reworkTypeEmbedDescription")}: ${bold(reworkInfo.name)}\n` +
+            `${localization.getTranslation("reworkTypeEmbedDescription")}: ${bold(variant.title ?? variant.name)}\n` +
             `${localization.getTranslation("totalPP")}: ${bold(
                 `${ppInfo.localPPTotal.toFixed(2)} pp (#${(
                     await dbManager.getUserDPPRank(
@@ -151,6 +164,14 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const entries = [...ppInfo.pp.values()];
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
+        // Fields are cleared on every page change, so the description is added each time.
+        if (variantDescription) {
+            embed.addFields({
+                name: localization.getTranslation("variantDescription"),
+                value: StringHelper.truncate(variantDescription, 1024),
+            });
+        }
+
         for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
             const entry = entries.at(i);
 
