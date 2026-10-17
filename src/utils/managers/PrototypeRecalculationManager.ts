@@ -26,6 +26,7 @@ import { DroidPerformanceAttributes } from "@structures/difficultyattributes/Dro
 import { RebalanceDroidPerformanceAttributes } from "@structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
 import { PPProcessorCalculationResponse } from "@structures/utils/PPProcessorCalculationResponse";
 import { prototypeVariants } from "@utils/pp/prototypeVariants";
+import { getProfileCalculationFailure } from "@utils/pp/profileCalculation";
 import { PPHelper } from "@utils/helpers/PPHelper";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { MessageCreator } from "@utils/creators/MessageCreator";
@@ -37,18 +38,31 @@ import consola from "consola";
  */
 export abstract class PrototypeRecalculationManager extends Manager {
     /**
-     * Recalculation queue for per-player prototype recalculation, mapped by user ID.
+     * Recalculation queue for per-player prototype recalculation, mapped by user ID and variant name
+     * (`${uid}:${variant}`), so that the same player can be queued for multiple variants.
      */
     private static readonly _recalculationQueue = new Collection<
-        number,
+        string,
         RecalculationQueue
     >();
 
     /**
-     * Recalculation queue for per-player prototype recalculation, mapped by user ID.
+     * Recalculation queue for per-player prototype recalculation, mapped by user ID and variant name
+     * (`${uid}:${variant}`).
      */
-    static get recalculationQueue(): ReadonlyMap<number, RecalculationQueue> {
+    static get recalculationQueue(): ReadonlyMap<string, RecalculationQueue> {
         return this._recalculationQueue;
+    }
+
+    /**
+     * Gets the key of a recalculation queue entry.
+     *
+     * @param uid The uid of the queued player.
+     * @param variant The canonical name of the variant to recalculate with.
+     * @returns The key.
+     */
+    private static getQueueKey(uid: number, variant: string): string {
+        return `${uid.toString()}:${variant}`;
     }
 
     private static readonly calculationSuccessResponse: keyof PrototypeRecalculationManagerStrings =
@@ -72,7 +86,7 @@ export abstract class PrototypeRecalculationManager extends Manager {
         variant: string,
         actingUid?: number,
     ): void {
-        this._recalculationQueue.set(uid, {
+        this._recalculationQueue.set(this.getQueueKey(uid, variant), {
             interaction: interaction,
             uid: uid,
             variant: variant,
@@ -311,6 +325,13 @@ export abstract class PrototypeRecalculationManager extends Manager {
             entries.push(entry);
         }
 
+        // Do not overwrite a stored profile with an empty one when nothing could be calculated.
+        const failure = getProfileCalculationFailure(entries.length);
+
+        if (failure !== null) {
+            return this.createOperationResult(false, failure);
+        }
+
         entries.sort(
             (a, b) => b.local.performance.total - a.local.performance.total,
         );
@@ -398,9 +419,9 @@ export abstract class PrototypeRecalculationManager extends Manager {
         this.calculationIsProgressing = true;
 
         while (this._recalculationQueue.size > 0) {
-            const uid = this._recalculationQueue.firstKey()!;
+            const queueKey = this._recalculationQueue.firstKey()!;
             const queue = this._recalculationQueue.first()!;
-            const { interaction, variant, actingUid } = queue;
+            const { interaction, uid, variant, actingUid } = queue;
 
             const localization = this.getLocalization(
                 CommandHelper.getUserPreferredLocale(interaction),
@@ -453,7 +474,7 @@ export abstract class PrototypeRecalculationManager extends Manager {
                     });
                 }
             } finally {
-                this._recalculationQueue.delete(uid);
+                this._recalculationQueue.delete(queueKey);
             }
         }
 

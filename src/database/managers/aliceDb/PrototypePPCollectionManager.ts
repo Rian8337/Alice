@@ -128,6 +128,10 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
             )
             .toArray();
 
+        if (sourceEntries.length === 0) {
+            return this.createOperationResult(true);
+        }
+
         for (const entry of sourceEntries) {
             entry.reworkType = target;
         }

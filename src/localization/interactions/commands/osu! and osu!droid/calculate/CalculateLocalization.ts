@@ -10,6 +10,7 @@ export interface CalculateStrings {
     readonly beatmapProvidedIsInvalid: string;
     readonly beatmapNotFound: string;
     readonly variantNotFound: string;
+    readonly variantListUnavailable: string;
     readonly variantUnavailable: string;
     readonly variantWrongMode: string;
     readonly rawDroidSr: string;

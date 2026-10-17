@@ -12,6 +12,7 @@ export class CalculateESTranslation extends Translation<CalculateStrings> {
         beatmapNotFound:
             "Lo siento, no puedo encontrar el mapa que estas buscando!",
         variantNotFound: "",
+        variantListUnavailable: "",
         variantUnavailable: "",
         variantWrongMode: "",
         rawDroidSr: "Raw droid stars",

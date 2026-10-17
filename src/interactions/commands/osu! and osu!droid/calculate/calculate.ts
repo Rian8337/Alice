@@ -32,35 +32,10 @@ import { PPProcessorRESTManager } from "@utils/managers/PPProcessorRESTManager";
 import { PPVariantManager } from "@utils/managers/PPVariantManager";
 import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
 import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
-import { checkVariant } from "@utils/pp/variantChoice";
+import { checkVariant, variantRejectionKey } from "@utils/pp/variantChoice";
+import { createVariantRejection } from "@utils/pp/variantRejection";
 import { ApplicationCommandOptionType, TextDisplayBuilder } from "discord.js";
 import { SlashCommand } from "structures/core/SlashCommand";
-
-function createVariantRejection(
-    localization: CalculateLocalization,
-    check: Exclude<ReturnType<typeof checkVariant>, "ok">,
-    variantName: string,
-    modeName: "droid" | "PC",
-): string {
-    switch (check) {
-        case "notFound":
-            return MessageCreator.createReject(
-                localization.getTranslation("variantNotFound"),
-                variantName,
-            );
-        case "unavailable":
-            return MessageCreator.createReject(
-                localization.getTranslation("variantUnavailable"),
-                variantName,
-            );
-        case "wrongMode":
-            return MessageCreator.createReject(
-                localization.getTranslation("variantWrongMode"),
-                variantName,
-                modeName,
-            );
-    }
-}
 
 export const run: SlashCommand["run"] = async (_, interaction) => {
     const localization = new CalculateLocalization(
@@ -179,11 +154,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const droidVariantCheck = checkVariant(droidVariant, Modes.Droid);
 
-    if (droidVariantCheck !== "ok") {
+    const droidRejection = variantRejectionKey(droidVariantCheck);
+
+    if (droidRejection) {
         return InteractionHelper.reply(interaction, {
             content: createVariantRejection(
                 localization,
-                droidVariantCheck,
+                droidRejection,
                 droidVariantName,
                 "droid",
             ),
@@ -197,11 +174,13 @@ export const run: SlashCommand["run"] = async (_, interaction) => {
 
     const osuVariantCheck = checkVariant(osuVariant, Modes.Osu);
 
-    if (osuVariantCheck !== "ok") {
+    const osuRejection = variantRejectionKey(osuVariantCheck);
+
+    if (osuRejection) {
         return InteractionHelper.reply(interaction, {
             content: createVariantRejection(
                 localization,
-                osuVariantCheck,
+                osuRejection,
                 osuVariantName,
                 "PC",
             ),
@@ -427,6 +406,7 @@ export const config: SlashCommand["config"] = {
             description:
                 "The droid variant to calculate with. Defaults to droid-live.",
             autocomplete: true,
+            maxLength: 100,
         },
         {
             name: "pcvariant",
@@ -434,6 +414,7 @@ export const config: SlashCommand["config"] = {
             description:
                 "The PC variant to calculate with. Defaults to osu-live.",
             autocomplete: true,
+            maxLength: 100,
         },
     ],
     example: [

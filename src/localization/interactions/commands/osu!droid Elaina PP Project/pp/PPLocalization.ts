@@ -25,6 +25,8 @@ export interface PPStrings {
     readonly lastUpdate: string;
     readonly commandNotAllowed: string;
     readonly variantNotFound: string;
+    readonly variantWrongMode: string;
+    readonly variantListUnavailable: string;
     readonly variantDescription: string;
     readonly uidIsBanned: string;
     readonly beatmapNotFound: string;

@@ -12,6 +12,7 @@ export class CalculateIDTranslation extends Translation<CalculateStrings> {
         beatmapNotFound:
             "Maaf, aku tidak dapat menemukan beatmap yang kamu berikan!",
         variantNotFound: "",
+        variantListUnavailable: "",
         variantUnavailable: "",
         variantWrongMode: "",
         rawDroidSr: "Raw droid star",

@@ -18,7 +18,8 @@ import { bold, GuildMember, hyperlink, inlineCode, time } from "discord.js";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { PPVariantManager } from "@utils/managers/PPVariantManager";
 import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
-import { checkVariant } from "@utils/pp/variantChoice";
+import { checkVariant, variantRejectionKey } from "@utils/pp/variantChoice";
+import { createVariantRejection } from "@utils/pp/variantRejection";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new PPLocalization(
@@ -52,16 +53,21 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const variantCheck = checkVariant(variant, Modes.Droid);
 
     // Stored data needs no processor, so an unavailable variant is still readable.
-    if (!variant || (variantCheck !== "ok" && variantCheck !== "unavailable")) {
+    const rejection = variantRejectionKey(variantCheck, true);
+
+    if (rejection || !variant) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("variantNotFound"),
-                inlineCode(variantName),
+            content: createVariantRejection(
+                localization,
+                rejection ?? "variantNotFound",
+                variantName,
+                "droid",
             ),
         });
     }
 
     const reworkType = variant.name;
+    const variantDescription = variant.description?.trim();
 
     const dbManager = DatabaseManager.aliceDb.collections.prototypePP;
     let ppInfo: PrototypePP | null;
@@ -159,10 +165,10 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
         // Fields are cleared on every page change, so the description is added each time.
-        if (variant.description) {
+        if (variantDescription) {
             embed.addFields({
                 name: localization.getTranslation("variantDescription"),
-                value: StringHelper.truncate(variant.description, 1024),
+                value: StringHelper.truncate(variantDescription, 1024),
             });
         }
 

@@ -11,6 +11,8 @@ export class RecalcESTranslation extends Translation<RecalcStrings> {
         tooManyOptions:
             "Lo siento, solo puedes especificar un uid, usuario o nick! No puedes combinarlos!",
         variantNotFound: "",
+        variantWrongMode: "",
+        variantListUnavailable: "",
         variantUnavailable: "",
         userQueued:
             "%s añadido correctamente a la cola para realizarle un recuento (%s).",

@@ -169,6 +169,7 @@ export const config: SlashCommand["config"] = {
                             description:
                                 "The variant to check. Defaults to droid-rebalance.",
                             autocomplete: true,
+                            maxLength: 100,
                         },
                     ],
                 },
@@ -203,6 +204,7 @@ export const config: SlashCommand["config"] = {
                             description:
                                 "The variant to export. Defaults to droid-rebalance.",
                             autocomplete: true,
+                            maxLength: 100,
                         },
                     ],
                 },

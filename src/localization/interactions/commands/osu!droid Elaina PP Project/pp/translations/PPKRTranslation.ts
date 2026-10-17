@@ -31,6 +31,8 @@ export class PPKRTranslation extends Translation<PPStrings> {
         commandNotAllowed:
             "죄송해요, 이 명령어는 이 채널에서 사용할 수 없어요.",
         variantNotFound: "",
+        variantWrongMode: "",
+        variantListUnavailable: "",
         variantDescription: "",
         uidIsBanned:
             "죄송해요, 현재 당신이 바인딩된 osu!droid 계정은 dpp-ban을 당했어요.",

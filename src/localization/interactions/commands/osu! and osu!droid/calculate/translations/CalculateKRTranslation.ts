@@ -11,6 +11,7 @@ export class CalculateKRTranslation extends Translation<CalculateStrings> {
         beatmapProvidedIsInvalid: "저기, 유효한 비트맵을 제공해 주세요!",
         beatmapNotFound: "죄송해요, 찾으시려는 비트맵을 찾을 수 없었어요!",
         variantNotFound: "",
+        variantListUnavailable: "",
         variantUnavailable: "",
         variantWrongMode: "",
         rawDroidSr: "Raw droid stars",

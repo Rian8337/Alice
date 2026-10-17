@@ -79,6 +79,7 @@ export const config: SlashCommand["config"] = {
                     description:
                         "The variant to view the leaderboard from. Defaults to droid-rebalance.",
                     autocomplete: true,
+                    maxLength: 100,
                 },
             ],
         },

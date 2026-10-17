@@ -8,6 +8,8 @@ export interface RecalcStrings {
     readonly playerNotFound: string;
     readonly tooManyOptions: string;
     readonly variantNotFound: string;
+    readonly variantWrongMode: string;
+    readonly variantListUnavailable: string;
     readonly variantUnavailable: string;
     readonly userQueued: string;
     readonly fullRecalcInProgress: string;

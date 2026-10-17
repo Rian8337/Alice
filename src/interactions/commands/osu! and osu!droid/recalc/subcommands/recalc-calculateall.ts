@@ -10,21 +10,8 @@ import { consola } from "consola";
 import { PPVariantManager } from "@utils/managers/PPVariantManager";
 import { PrototypeRecalculationManager } from "@utils/managers/PrototypeRecalculationManager";
 import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
-import { checkVariant } from "@utils/pp/variantChoice";
-import { inlineCode } from "discord.js";
-
-function createVariantRejection(
-    localization: RecalcLocalization,
-    check: Exclude<ReturnType<typeof checkVariant>, "ok">,
-    variantName: string,
-): string {
-    return MessageCreator.createReject(
-        localization.getTranslation(
-            check === "unavailable" ? "variantUnavailable" : "variantNotFound",
-        ),
-        inlineCode(variantName),
-    );
-}
+import { checkVariant, variantRejectionKey } from "@utils/pp/variantChoice";
+import { createVariantRejection } from "@utils/pp/variantRejection";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     if (!interaction.channel?.isSendable()) {
@@ -54,12 +41,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     );
     const variantCheck = checkVariant(resolvedVariant, Modes.Droid);
 
-    if (variantCheck !== "ok") {
+    const rejection = variantRejectionKey(variantCheck);
+
+    if (rejection) {
         return InteractionHelper.reply(interaction, {
             content: createVariantRejection(
                 localization,
-                variantCheck,
+                rejection,
                 variantName,
+                "droid",
             ),
         });
     }
@@ -100,11 +90,23 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
             `Now calculating player ${player.uid.toString()} for variant ${variant}`,
         );
 
-        await PrototypeRecalculationManager.calculatePlayer(
+        const result = await PrototypeRecalculationManager.calculatePlayer(
             player.uid,
             variant,
             actingUid,
         );
+
+        if (result.failed()) {
+            consola.warn(
+                `Failed to calculate player ${player.uid.toString()} for variant ${variant}: ${result.reason}`,
+            );
+
+            // Mark the player as scanned, otherwise the same player would be picked again forever.
+            await prototypeDbManager.updateOne(
+                { uid: player.uid, reworkType: variant },
+                { $set: { scanDone: true } },
+            );
+        }
 
         consola.info(
             `${(++calculatedCount).toString()} players recalculated for variant ${variant}`,

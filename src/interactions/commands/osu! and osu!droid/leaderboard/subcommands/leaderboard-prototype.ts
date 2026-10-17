@@ -12,7 +12,8 @@ import { Modes } from "@rian8337/osu-base";
 import { inlineCode } from "discord.js";
 import { PPVariantManager } from "@utils/managers/PPVariantManager";
 import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
-import { checkVariant } from "@utils/pp/variantChoice";
+import { checkVariant, variantRejectionKey } from "@utils/pp/variantChoice";
+import { createVariantRejection } from "@utils/pp/variantRejection";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new LeaderboardLocalization(
@@ -32,11 +33,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const variantCheck = checkVariant(variant, Modes.Droid);
 
     // Stored data needs no processor, so an unavailable variant is still readable.
-    if (!variant || (variantCheck !== "ok" && variantCheck !== "unavailable")) {
+    const rejection = variantRejectionKey(variantCheck, true);
+
+    if (rejection || !variant) {
         return InteractionHelper.reply(interaction, {
-            content: MessageCreator.createReject(
-                localization.getTranslation("variantNotFound"),
-                inlineCode(variantName),
+            content: createVariantRejection(
+                localization,
+                rejection ?? "variantNotFound",
+                variantName,
+                "droid",
             ),
         });
     }

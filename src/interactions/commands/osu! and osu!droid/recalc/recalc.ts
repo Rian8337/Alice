@@ -46,6 +46,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     description: `The variant to recalculate with. Defaults to ${DefaultPPVariants.droidRebalance}.`,
                     autocomplete: true,
+                    maxLength: 100,
                 },
             ],
         },
@@ -60,6 +61,7 @@ export const config: SlashCommand["config"] = {
                     type: ApplicationCommandOptionType.String,
                     description: `The variant to recalculate with. Defaults to ${DefaultPPVariants.droidRebalance}.`,
                     autocomplete: true,
+                    maxLength: 100,
                 },
                 {
                     name: "resetprogress",

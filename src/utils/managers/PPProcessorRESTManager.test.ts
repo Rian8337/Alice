@@ -18,6 +18,8 @@ describe("PPProcessorRESTManager", () => {
     beforeEach(() => {
         process.env.DPP_BROKER_URL = "http://broker.test";
         process.env.DPP_BROKER_KEY = "broker-key";
+        process.env.DPP_SCORE_SERVICE_URL = "http://scores.test";
+        process.env.DPP_SCORE_SERVICE_KEY = "score-key";
 
         request = vi.spyOn(RESTManager, "request");
         vi.spyOn(consola, "error").mockImplementation(() => undefined);
@@ -70,5 +72,29 @@ describe("PPProcessorRESTManager", () => {
             );
 
         expect(result).toBeNull();
+    });
+
+    it("asks the score service for a variant on behalf of a person", async () => {
+        request.mockResolvedValue(response(404, { error: "not found" }));
+
+        await PPProcessorRESTManager.getOnlineScoreAttributesForVariant(
+            1,
+            "ABC",
+            "droid-rebalance",
+            true,
+            false,
+            42,
+        );
+
+        const [url, options] = request.mock.calls[0];
+        const headers = options?.headers as Record<string, string>;
+
+        expect(url.toString()).toMatch(
+            /^http:\/\/scores\.test\/online-scores\?/,
+        );
+        expect(url.searchParams.get("variant")).toBe("droid-rebalance");
+        expect(url.searchParams.get("hash")).toBe("abc");
+        expect(headers["X-Api-Key"]).toBe("score-key");
+        expect(headers["X-Acting-Uid"]).toBe("42");
     });
 });

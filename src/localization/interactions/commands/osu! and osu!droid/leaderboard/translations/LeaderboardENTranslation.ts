@@ -12,6 +12,9 @@ export class LeaderboardENTranslation extends Translation<LeaderboardStrings> {
             "I'm sorry, there are no scores in the prototype dpp database as of now!",
         noBeatmapFound: "Hey, please enter a valid beatmap link or ID!",
         variantNotFound: "I'm sorry, I cannot find the variant %s!",
+        variantWrongMode: "I'm sorry, %s is not a %s variant!",
+        variantListUnavailable:
+            "I'm sorry, I can't reach the variant list right now. Please try again later!",
         username: "Username",
         uid: "UID",
         playCount: "Play",

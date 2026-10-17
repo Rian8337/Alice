@@ -16,20 +16,8 @@ import { inlineCode } from "discord.js";
 import { Modes } from "@rian8337/osu-base";
 import { PPVariantManager } from "@utils/managers/PPVariantManager";
 import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
-import { checkVariant } from "@utils/pp/variantChoice";
-
-function createVariantRejection(
-    localization: RecalcLocalization,
-    check: Exclude<ReturnType<typeof checkVariant>, "ok">,
-    variantName: string,
-): string {
-    return MessageCreator.createReject(
-        localization.getTranslation(
-            check === "unavailable" ? "variantUnavailable" : "variantNotFound",
-        ),
-        inlineCode(variantName),
-    );
-}
+import { checkVariant, variantRejectionKey } from "@utils/pp/variantChoice";
+import { createVariantRejection } from "@utils/pp/variantRejection";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new RecalcLocalization(
@@ -61,12 +49,15 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const variant = await PPVariantManager.resolve(variantName, actingUid);
     const variantCheck = checkVariant(variant, Modes.Droid);
 
-    if (variantCheck !== "ok") {
+    const rejection = variantRejectionKey(variantCheck);
+
+    if (rejection) {
         return InteractionHelper.reply(interaction, {
             content: createVariantRejection(
                 localization,
-                variantCheck,
+                rejection,
                 variantName,
+                "droid",
             ),
         });
     }
