@@ -4,6 +4,7 @@ import {
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
     ExtendedDroidDifficultyAttributes,
+    IDroidPerformanceAttributes,
 } from "@rian8337/osu-difficulty-calculator";
 import {
     ReplayAnalyzer,
@@ -15,6 +16,7 @@ import {
     DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
     ExtendedDroidDifficultyAttributes as RebalanceExtendedDroidDifficultyAttributes,
+    IDroidPerformanceAttributes as IRebalanceDroidPerformanceAttributes,
 } from "@rian8337/osu-rebalance-difficulty-calculator";
 import { CacheManager } from "@utils/managers/CacheManager";
 import { PerformanceCalculationResult } from "@utils/pp/PerformanceCalculationResult";
@@ -28,8 +30,8 @@ import { ReplayHelper } from "./ReplayHelper";
 export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
     DroidDifficultyAttributes,
     RebalanceDroidDifficultyAttributes,
-    DroidPerformanceCalculator,
-    RebalanceDroidPerformanceCalculator
+    IDroidPerformanceAttributes,
+    IRebalanceDroidPerformanceAttributes
 > {
     protected override readonly difficultyAttributes =
         DroidDifficultyAttributes;
@@ -61,11 +63,11 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         score: Score,
         beatmap: Beatmap,
         calcResult:
-            | PerformanceCalculationResult<DroidPerformanceCalculator>
-            | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>,
+            | PerformanceCalculationResult<IDroidPerformanceAttributes>
+            | RebalancePerformanceCalculationResult<IRebalanceDroidPerformanceAttributes>,
         replay?: ReplayAnalyzer
     ): Promise<void> {
-        const difficultyAttributes = calcResult.result.difficultyAttributes as | ExtendedDroidDifficultyAttributes
+        const difficultyAttributes = calcResult.difficultyAttributes as | ExtendedDroidDifficultyAttributes
             | RebalanceExtendedDroidDifficultyAttributes;
 
         if (!ThreeFingerChecker.isEligibleToDetect(difficultyAttributes)) {
@@ -85,7 +87,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             calcResult.params.tapPenalty = replay.tapPenalty;
         }
 
-        calcResult.result.calculate(calcResult.params);
+        calcResult.recalculate();
     }
 
     /**
@@ -106,7 +108,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         tapPenalty?: number,
         sliderCheesePenalty?: number,
         replay?: ReplayAnalyzer
-    ): Promise<PerformanceCalculationResult<DroidPerformanceCalculator>>;
+    ): Promise<PerformanceCalculationResult<IDroidPerformanceAttributes>>;
 
     /**
      * Applies aim penalty to a score.
@@ -127,7 +129,7 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         sliderCheesePenalty?: number,
         replay?: ReplayAnalyzer
     ): Promise<
-        RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>
+        RebalancePerformanceCalculationResult<IRebalanceDroidPerformanceAttributes>
     >;
 
     static async applyAimPenalty(
@@ -140,8 +142,8 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         sliderCheesePenalty?: number,
         replay?: ReplayAnalyzer
     ): Promise<
-        | PerformanceCalculationResult<DroidPerformanceCalculator>
-        | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>
+        | PerformanceCalculationResult<IDroidPerformanceAttributes>
+        | RebalancePerformanceCalculationResult<IRebalanceDroidPerformanceAttributes>
     > {
         replay ??= await ReplayHelper.analyzeReplay(score);
 
@@ -181,8 +183,8 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
         score: Score,
         beatmap: Beatmap,
         calcResult:
-            | PerformanceCalculationResult<DroidPerformanceCalculator>
-            | RebalancePerformanceCalculationResult<RebalanceDroidPerformanceCalculator>,
+            | PerformanceCalculationResult<IDroidPerformanceAttributes>
+            | RebalancePerformanceCalculationResult<IRebalanceDroidPerformanceAttributes>,
         replay?: ReplayAnalyzer
     ): Promise<void> {
         if (beatmap.hitObjects.sliders === 0) {
@@ -201,6 +203,6 @@ export class DroidBeatmapDifficultyHelper extends BeatmapDifficultyHelper<
             calcResult.params.sliderCheesePenalty = replay.sliderCheesePenalty;
         }
 
-        calcResult.result.calculate(calcResult.params);
+        calcResult.recalculate();
     }
 }

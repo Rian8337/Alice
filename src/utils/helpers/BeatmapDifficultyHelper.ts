@@ -15,11 +15,13 @@ import {
     DifficultyCalculator,
     DifficultyHitObject,
     IDifficultyAttributes,
+    IPerformanceAttributes,
     PerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { Score } from "@rian8337/osu-droid-utilities";
 import {
     IDifficultyAttributes as IRebalanceDifficultyAttributes,
+    IPerformanceAttributes as IRebalancePerformanceAttributes,
     DifficultyAttributes as RebalanceDifficultyAttributes,
     DifficultyCalculator as RebalanceDifficultyCalculator,
     DifficultyHitObject as RebalanceDifficultyHitObject,
@@ -41,8 +43,8 @@ import { NumberHelper } from "./NumberHelper";
 export abstract class BeatmapDifficultyHelper<
     DA extends DifficultyAttributes,
     RDA extends RebalanceDifficultyAttributes,
-    PC extends PerformanceCalculator<IDifficultyAttributes>,
-    RPC extends RebalancePerformanceCalculator<IRebalanceDifficultyAttributes>,
+    PA extends IPerformanceAttributes,
+    RPA extends IRebalancePerformanceAttributes,
 > {
     /**
      * The type of the difficulty attributes.
@@ -74,14 +76,17 @@ export abstract class BeatmapDifficultyHelper<
      */
     protected abstract readonly performanceCalculator: new (
         difficultyAttributes: DA | CacheableDifficultyAttributes<DA>
-    ) => PC;
+    ) => PerformanceCalculator<IDifficultyAttributes, PA>;
 
     /**
      * The rebalance performance calculator to use.
      */
     protected abstract readonly rebalancePerformanceCalculator: new (
         difficultyAttributes: RDA | CacheableDifficultyAttributes<RDA>
-    ) => RPC;
+    ) => RebalancePerformanceCalculator<
+        IRebalanceDifficultyAttributes,
+        RPA
+    >;
 
     /**
      * The cache manager responsible for storing live calculation difficulty attributes.
@@ -294,7 +299,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateScorePerformance(
         score: Score,
         calcParams?: PerformanceCalculationParameters
-    ): Promise<PerformanceCalculationResult<PC> | null> {
+    ): Promise<PerformanceCalculationResult<PA> | null> {
         const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
             score.hash,
             { checkFile: false }
@@ -338,7 +343,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateScoreRebalancePerformance(
         score: Score,
         calcParams?: PerformanceCalculationParameters
-    ): Promise<RebalancePerformanceCalculationResult<RPC> | null> {
+    ): Promise<RebalancePerformanceCalculationResult<RPA> | null> {
         const beatmap: MapInfo | null = await BeatmapManager.getBeatmap(
             score.hash,
             { checkFile: false }
@@ -385,7 +390,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapPerformance(
         beatmap: MapInfo,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<PerformanceCalculationResult<PC> | null>;
+    ): Promise<PerformanceCalculationResult<PA> | null>;
 
     /**
      * Calculates the difficulty and/or performance value of a beatmap.
@@ -397,7 +402,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapPerformance(
         attributes: DA | CacheableDifficultyAttributes<DA>,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<PerformanceCalculationResult<PC>>;
+    ): Promise<PerformanceCalculationResult<PA>>;
 
     /**
      * Calculates the difficulty and/or performance value of a beatmap.
@@ -409,7 +414,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapPerformance(
         beatmapIdOrHash: number | string,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<PerformanceCalculationResult<PC> | null>;
+    ): Promise<PerformanceCalculationResult<PA> | null>;
 
     async calculateBeatmapPerformance(
         beatmapOrHashOrDA:
@@ -419,7 +424,7 @@ export abstract class BeatmapDifficultyHelper<
             | DA
             | CacheableDifficultyAttributes<DA>,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<PerformanceCalculationResult<PC> | null> {
+    ): Promise<PerformanceCalculationResult<PA> | null> {
         let beatmap: MapInfo | null;
 
         if (beatmapOrHashOrDA instanceof MapInfo) {
@@ -494,7 +499,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapRebalancePerformance(
         beatmap: MapInfo,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<RebalancePerformanceCalculationResult<RPC> | null>;
+    ): Promise<RebalancePerformanceCalculationResult<RPA> | null>;
 
     /**
      * Calculates the rebalance difficulty and/or performance value of a beatmap.
@@ -506,7 +511,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapRebalancePerformance(
         attributes: RDA | CacheableDifficultyAttributes<RDA>,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<RebalancePerformanceCalculationResult<RPC>>;
+    ): Promise<RebalancePerformanceCalculationResult<RPA>>;
 
     /**
      * Calculates the rebalance difficulty and/or performance value of a beatmap.
@@ -518,7 +523,7 @@ export abstract class BeatmapDifficultyHelper<
     async calculateBeatmapRebalancePerformance(
         beatmapIDorHash: number | string,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<RebalancePerformanceCalculationResult<RPC> | null>;
+    ): Promise<RebalancePerformanceCalculationResult<RPA> | null>;
 
     async calculateBeatmapRebalancePerformance(
         beatmapOrHashOrDA:
@@ -528,7 +533,7 @@ export abstract class BeatmapDifficultyHelper<
             | RDA
             | CacheableDifficultyAttributes<RDA>,
         calculationParams?: PerformanceCalculationParameters
-    ): Promise<RebalancePerformanceCalculationResult<RPC> | null> {
+    ): Promise<RebalancePerformanceCalculationResult<RPA> | null> {
         let beatmap: MapInfo | null;
 
         if (beatmapOrHashOrDA instanceof MapInfo) {
@@ -792,14 +797,19 @@ export abstract class BeatmapDifficultyHelper<
     private calculatePerformance(
         difficultyAttributes: DA | CacheableDifficultyAttributes<DA>,
         calculationParams: PerformanceCalculationParameters
-    ): PerformanceCalculationResult<PC> | null {
+    ): PerformanceCalculationResult<PA> | null {
         calculationParams.applyFromAttributes(difficultyAttributes);
 
-        const pp = new this.performanceCalculator(
-            difficultyAttributes
-        ).calculate(calculationParams.toPerformanceCalculationOptions());
+        const calculator = new this.performanceCalculator(difficultyAttributes);
+        const pp = calculator.calculate(
+            calculationParams.toPerformanceCalculationOptions()
+        );
 
-        return new PerformanceCalculationResult(calculationParams, pp);
+        return new PerformanceCalculationResult(
+            calculationParams,
+            calculator,
+            pp
+        );
     }
 
     /**
@@ -813,14 +823,21 @@ export abstract class BeatmapDifficultyHelper<
     private calculateRebalancePerformance(
         difficultyAttributes: RDA | CacheableDifficultyAttributes<RDA>,
         calculationParams: PerformanceCalculationParameters
-    ): RebalancePerformanceCalculationResult<RPC> | null {
+    ): RebalancePerformanceCalculationResult<RPA> | null {
         calculationParams.applyFromAttributes(difficultyAttributes);
 
-        const pp = new this.rebalancePerformanceCalculator(
+        const calculator = new this.rebalancePerformanceCalculator(
             difficultyAttributes
-        ).calculate(calculationParams.toPerformanceCalculationOptions());
+        );
+        const pp = calculator.calculate(
+            calculationParams.toPerformanceCalculationOptions()
+        );
 
-        return new RebalancePerformanceCalculationResult(calculationParams, pp);
+        return new RebalancePerformanceCalculationResult(
+            calculationParams,
+            calculator,
+            pp
+        );
     }
 
     /**

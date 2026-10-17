@@ -2,6 +2,7 @@ import {
     IDifficultyAttributes,
     IDroidDifficultyAttributes,
     IOsuDifficultyAttributes,
+    IPerformanceAttributes,
     PerformanceCalculator,
 } from "@rian8337/osu-difficulty-calculator";
 import { IPerformanceCalculationResult } from "@structures/utils/IPerformanceCalculationResult";
@@ -10,15 +11,23 @@ import { PerformanceCalculationParameters } from "./PerformanceCalculationParame
 /**
  * Represents a beatmap's performance calculation result.
  */
-export class PerformanceCalculationResult<
-    P extends PerformanceCalculator<IDifficultyAttributes>,
-> implements IPerformanceCalculationResult<P>
+export class PerformanceCalculationResult<P extends IPerformanceAttributes>
+    implements IPerformanceCalculationResult<P>
 {
     readonly params: PerformanceCalculationParameters;
-    readonly result: P;
+    result: P;
+
+    private readonly calculator: PerformanceCalculator<
+        IDifficultyAttributes,
+        P
+    >;
+
+    get difficultyAttributes() {
+        return this.calculator.difficultyAttributes;
+    }
 
     get starRatingInfo(): string {
-        const { difficultyAttributes } = this.result;
+        const { difficultyAttributes } = this;
         let string = `${difficultyAttributes.starRating.toFixed(2)} stars (`;
         const starRatingDetails: string[] = [];
 
@@ -56,8 +65,19 @@ export class PerformanceCalculationResult<
         return string;
     }
 
-    constructor(params: PerformanceCalculationParameters, result: P) {
+    constructor(
+        params: PerformanceCalculationParameters,
+        calculator: PerformanceCalculator<IDifficultyAttributes, P>,
+        result: P
+    ) {
         this.params = params;
+        this.calculator = calculator;
         this.result = result;
+    }
+
+    recalculate(): void {
+        this.result = this.calculator.calculate(
+            this.params.toPerformanceCalculationOptions()
+        );
     }
 }

@@ -5,6 +5,8 @@ import {
     DroidDifficultyCalculator,
     DroidPerformanceCalculator,
     ExtendedDroidDifficultyAttributes,
+    IDroidPerformanceAttributes,
+    IOsuPerformanceAttributes,
     OsuDifficultyAttributes,
     OsuDifficultyCalculator,
     OsuPerformanceCalculator,
@@ -15,6 +17,8 @@ import {
     DroidDifficultyCalculator as RebalanceDroidDifficultyCalculator,
     DroidPerformanceCalculator as RebalanceDroidPerformanceCalculator,
     ExtendedDroidDifficultyAttributes as RebalanceExtendedDroidDifficultyAttributes,
+    IDroidPerformanceAttributes as IRebalanceDroidPerformanceAttributes,
+    IOsuPerformanceAttributes as IRebalanceOsuPerformanceAttributes,
     OsuDifficultyAttributes as RebalanceOsuDifficultyAttributes,
     OsuDifficultyCalculator as RebalanceOsuDifficultyCalculator,
     OsuPerformanceCalculator as RebalanceOsuPerformanceCalculator,
@@ -136,48 +140,48 @@ export abstract class LocalBeatmapDifficultyHelper {
      *
      * @param attributes The difficulty attributes of the beatmap.
      * @param calculationParams The calculation parameters.
-     * @returns The performance calculator instance.
+     * @returns The performance attributes.
      */
     static calculatePerformance(
         attributes: DroidDifficultyAttributes,
         calculationParams: PerformanceCalculationParameters
-    ): DroidPerformanceCalculator;
+    ): IDroidPerformanceAttributes;
 
     /**
      * Calculates the performance of a beatmap.
      *
      * @param attributes The difficulty attributes of the beatmap.
      * @param calculationParams The calculation parameters.
-     * @returns The performance calculator instance.
+     * @returns The performance attributes.
      */
     static calculatePerformance(
         attributes: RebalanceDroidDifficultyAttributes,
         calculationParams: PerformanceCalculationParameters
-    ): RebalanceDroidPerformanceCalculator;
+    ): IRebalanceDroidPerformanceAttributes;
 
     /**
      * Calculates the performance of a beatmap.
      *
      * @param attributes The difficulty attributes of the beatmap.
      * @param calculationParams The calculation parameters.
-     * @returns The performance calculator instance.
+     * @returns The performance attributes.
      */
     static calculatePerformance(
         attributes: OsuDifficultyAttributes,
         calculationParams: PerformanceCalculationParameters
-    ): OsuPerformanceCalculator;
+    ): IOsuPerformanceAttributes;
 
     /**
      * Calculates the performance of a beatmap.
      *
      * @param attributes The difficulty attributes of the beatmap.
      * @param calculationParams The calculation parameters.
-     * @returns The performance calculator instance.
+     * @returns The performance attributes.
      */
     static calculatePerformance(
         attributes: RebalanceOsuDifficultyAttributes,
         calculationParams: PerformanceCalculationParameters
-    ): RebalanceOsuPerformanceCalculator;
+    ): IRebalanceOsuPerformanceAttributes;
 
     static calculatePerformance(
         attributes:
@@ -187,10 +191,10 @@ export abstract class LocalBeatmapDifficultyHelper {
             | RebalanceOsuDifficultyAttributes,
         calculationParams: PerformanceCalculationParameters
     ):
-        | DroidPerformanceCalculator
-        | RebalanceDroidPerformanceCalculator
-        | OsuPerformanceCalculator
-        | RebalanceOsuPerformanceCalculator {
+        | IDroidPerformanceAttributes
+        | IOsuPerformanceAttributes
+        | IRebalanceDroidPerformanceAttributes
+        | IRebalanceOsuPerformanceAttributes {
         calculationParams.applyFromAttributes(attributes);
 
         const calculationOptions: PerformanceCalculationOptions = {
