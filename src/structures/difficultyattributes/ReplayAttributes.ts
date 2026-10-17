@@ -13,10 +13,10 @@ export interface ReplayAttributes {
     /**
      * Information about slider tick hits.
      */
-    readonly sliderTickInformation: SliderTickInformation;
+    readonly sliderTickInformation?: SliderTickInformation;
 
     /**
      * Information about slider end hits.
      */
-    readonly sliderEndInformation: SliderTickInformation;
+    readonly sliderEndInformation?: SliderTickInformation;
 }

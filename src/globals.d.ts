@@ -68,6 +68,26 @@ namespace NodeJS {
         readonly DROID_SERVER_INTERNAL_KEY?: string;
 
         /**
+         * The URL of the broker that routes difficulty and performance calculations to the processors.
+         */
+        readonly DPP_BROKER_URL?: string;
+
+        /**
+         * The API key for the broker.
+         */
+        readonly DPP_BROKER_KEY?: string;
+
+        /**
+         * The URL of the score service, which calculates online scores.
+         */
+        readonly DPP_SCORE_SERVICE_URL?: string;
+
+        /**
+         * The API key for the score service.
+         */
+        readonly DPP_SCORE_SERVICE_KEY?: string;
+
+        /**
          * The API key for the Discord OAuth2 backend.
          */
         readonly DISCORD_OAUTH_BACKEND_INTERNAL_KEY?: string;

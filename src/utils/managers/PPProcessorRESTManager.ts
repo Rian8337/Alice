@@ -1,6 +1,5 @@
-import { Config } from "@core/Config";
 import { PPCalculationMethod } from "@enums/utils/PPCalculationMethod";
-import { Modes, RequestResponse } from "@rian8337/osu-base";
+import { Modes, RequestResponse, SerializedMod } from "@rian8337/osu-base";
 import {
     CacheableDifficultyAttributes,
     DroidDifficultyAttributes,
@@ -15,7 +14,13 @@ import { DroidPerformanceAttributes } from "@structures/difficultyattributes/Dro
 import { OsuPerformanceAttributes } from "@structures/difficultyattributes/OsuPerformanceAttributes";
 import { PerformanceAttributes } from "@structures/difficultyattributes/PerformanceAttributes";
 import { RawDifficultyAttributes } from "@structures/difficultyattributes/RawDifficultyAttributes";
+import { CloneablePerformanceCalculationParameters } from "@structures/pp/CloneablePerformanceCalculationParameters";
 import { RebalanceDroidPerformanceAttributes } from "@structures/difficultyattributes/RebalanceDroidPerformanceAttributes";
+import {
+    PPBrokerDifficultyResponse,
+    PPBrokerPerformanceResponse,
+    PPOnlineScoreResponse,
+} from "@structures/utils/PPBrokerResponse";
 import { PPProcessorCalculationResponse } from "@structures/utils/PPProcessorCalculationResponse";
 import { DifficultyCalculationParameters } from "@utils/pp/DifficultyCalculationParameters";
 import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
@@ -23,12 +28,122 @@ import { consola } from "consola";
 import { RESTManager } from "./RESTManager";
 
 /**
- * A REST manager for the performance points processor backend.
+ * A REST manager for the performance points processors.
+ *
+ * Difficulty and performance calculations go through the broker, which routes them to the
+ * processor of a variant (`droid-live`, `droid-rebalance`, `osu-live`, or `osu-rebalance`).
+ * Online score calculations go through the score service.
  */
 export abstract class PPProcessorRESTManager extends RESTManager {
-    private static readonly endpoint = Config.isDebug
-        ? "https://droidpp.osudroid.moe/api/dpp/processor/"
-        : "http://localhost:3006/api/dpp/processor/";
+    /**
+     * The broker's URL, from `DPP_BROKER_URL`.
+     */
+    private static get brokerUrl(): string {
+        return this.requireEnv("DPP_BROKER_URL");
+    }
+
+    /**
+     * The score service's URL, from `DPP_SCORE_SERVICE_URL`.
+     */
+    private static get scoreServiceUrl(): string {
+        return this.requireEnv("DPP_SCORE_SERVICE_URL");
+    }
+
+    private static requireEnv(name: string): string {
+        const value = process.env[name];
+
+        if (!value) {
+            throw new Error(`${name} is not set`);
+        }
+
+        return value;
+    }
+
+    /**
+     * Gets the name of the variant that calculates a gamemode with a calculation method.
+     *
+     * @param mode The gamemode.
+     * @param calculationMethod The calculation method.
+     * @returns The variant name.
+     */
+    private static getVariant(
+        mode: Modes,
+        calculationMethod: PPCalculationMethod,
+    ): string {
+        return `${mode}-${PPCalculationMethod[calculationMethod]}`;
+    }
+
+    /**
+     * Converts a strain chart from the broker (a base64 PNG) to the form callers use.
+     *
+     * @param strainChart The base64-encoded strain chart, if any.
+     * @returns The strain chart in binary data, `null` if there is none.
+     */
+    private static decodeStrainChart(strainChart?: string): number[] | null {
+        return strainChart
+            ? Array.from(Buffer.from(strainChart, "base64"))
+            : null;
+    }
+
+    /**
+     * The processor reports only the difficulty-adjusting mods in difficulty attributes, whereas
+     * callers expect all of the mods that were calculated.
+     */
+    private static withMods(
+        difficulty: CacheableDifficultyAttributes<RawDifficultyAttributes>,
+        mods: SerializedMod[],
+    ): CacheableDifficultyAttributes<RawDifficultyAttributes> {
+        return { ...difficulty, mods };
+    }
+
+    private static getBeatmapReference(beatmapIdOrHash: string | number) {
+        return typeof beatmapIdOrHash === "number"
+            ? { id: beatmapIdOrHash }
+            : { hash: beatmapIdOrHash.toLowerCase() };
+    }
+
+    private static getMods(
+        calculationParams?: DifficultyCalculationParameters,
+    ): SerializedMod[] {
+        return calculationParams?.mods && !calculationParams.mods.isEmpty
+            ? calculationParams.mods.serializeMods()
+            : [];
+    }
+
+    /**
+     * Sends a JSON request to the broker.
+     *
+     * @param variant The variant to send the request to.
+     * @param route The processor's route.
+     * @param body The request body.
+     * @returns The parsed response body, `null` if the request failed.
+     */
+    private static async requestBroker<T>(
+        variant: string,
+        route: "difficulty" | "performance",
+        body: object,
+    ): Promise<T | null> {
+        const url = new URL(
+            `${this.brokerUrl.replace(/\/+$/, "")}/variants/${variant}/${route}`,
+        );
+
+        const result = await this.request(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Api-Key": process.env.DPP_BROKER_KEY!,
+            },
+            body: JSON.stringify(body),
+        }).catch(() => null);
+
+        if (result?.statusCode !== 200) {
+            this.logError(url, result);
+
+            return null;
+        }
+
+        return JSON.parse(result.data.toString("utf-8")) as T;
+    }
 
     /**
      * Retrieves a difficulty attributes from the backend.
@@ -134,40 +249,29 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         CacheableDifficultyAttributes<RawDifficultyAttributes>,
         THasStrainChart
     > | null> {
-        const url = new URL(`${this.endpoint}difficulty-attributes`);
-        const formData = new FormData();
+        const mods = this.getMods(calculationParams);
 
-        formData.append("key", process.env.DROID_SERVER_INTERNAL_KEY!);
-        formData.append("gamemode", mode);
-        formData.append("calculationmethod", calculationMethod.toString());
-        formData.append(
-            typeof beatmapIdOrHash === "number" ? "beatmapid" : "beatmaphash",
-            beatmapIdOrHash.toString(),
+        const response = await this.requestBroker<PPBrokerDifficultyResponse>(
+            this.getVariant(mode, calculationMethod),
+            "difficulty",
+            {
+                beatmap: this.getBeatmapReference(beatmapIdOrHash),
+                mods: mods,
+                strainChart: !!generateStrainChart,
+            },
         );
 
-        if (calculationParams?.mods && !calculationParams.mods.isEmpty) {
-            formData.append(
-                "mods",
-                JSON.stringify(calculationParams.mods.serializeMods()),
-            );
-        }
-
-        if (generateStrainChart) {
-            formData.append("generatestrainchart", "1");
-        }
-
-        const result = await this.request(url, {
-            method: "POST",
-            body: formData,
-        }).catch(() => null);
-
-        if (result?.statusCode !== 200) {
-            this.logError(url, result);
-
+        if (!response) {
             return null;
         }
 
-        return JSON.parse(result.data.toString("utf-8"));
+        return {
+            attributes: this.withMods(response.difficulty, mods),
+            strainChart: this.decodeStrainChart(response.strainChart),
+        } as PPProcessorCalculationResponse<
+            CacheableDifficultyAttributes<RawDifficultyAttributes>,
+            THasStrainChart
+        >;
     }
 
     /**
@@ -279,76 +383,33 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         >,
         THasStrainChart
     > | null> {
-        const url = new URL(`${this.endpoint}performance-attributes`);
-        const formData = new FormData();
+        const mods = this.getMods(calculationParams);
 
-        formData.append("key", process.env.DROID_SERVER_INTERNAL_KEY!);
-        formData.append("gamemode", mode);
-        formData.append("calculationmethod", calculationMethod.toString());
-        formData.append(
-            typeof beatmapIdOrHash === "number" ? "beatmapid" : "beatmaphash",
-            beatmapIdOrHash.toString(),
+        const response = await this.requestBroker<PPBrokerPerformanceResponse>(
+            this.getVariant(mode, calculationMethod),
+            "performance",
+            {
+                beatmap: this.getBeatmapReference(beatmapIdOrHash),
+                mods: mods,
+                score: this.getScoreParameters(calculationParams),
+                strainChart: !!generateStrainChart,
+            },
         );
 
-        if (calculationParams) {
-            if (!calculationParams.mods.isEmpty) {
-                formData.append(
-                    "mods",
-                    JSON.stringify(calculationParams.mods.serializeMods()),
-                );
-            }
-
-            formData.append("n300", calculationParams.accuracy.n300.toString());
-            formData.append("n100", calculationParams.accuracy.n100.toString());
-            formData.append("n50", calculationParams.accuracy.n50.toString());
-
-            formData.append(
-                "nmiss",
-                calculationParams.accuracy.nmiss.toString(),
-            );
-
-            if (calculationParams.combo !== undefined) {
-                formData.append("maxcombo", calculationParams.combo.toString());
-            }
-
-            if (calculationParams.sliderTicksMissed !== undefined) {
-                formData.append(
-                    "sliderticksmissed",
-                    calculationParams.sliderTicksMissed.toString(),
-                );
-            }
-
-            if (calculationParams.sliderEndsDropped !== undefined) {
-                formData.append(
-                    "sliderendsdropped",
-                    calculationParams.sliderEndsDropped.toString(),
-                );
-            }
-
-            if (calculationParams.totalScore !== undefined) {
-                formData.append(
-                    "totalscore",
-                    calculationParams.totalScore.toString(),
-                );
-            }
-        }
-
-        if (generateStrainChart) {
-            formData.append("generatestrainchart", "1");
-        }
-
-        const result = await this.request(url, {
-            method: "POST",
-            body: formData,
-        }).catch(() => null);
-
-        if (result?.statusCode !== 200) {
-            this.logError(url, result);
-
+        if (!response) {
             return null;
         }
 
-        return JSON.parse(result.data.toString("utf-8"));
+        return {
+            attributes: this.createCalculationAttributes(response, mods),
+            strainChart: this.decodeStrainChart(response.strainChart),
+        } as PPProcessorCalculationResponse<
+            CompleteCalculationAttributes<
+                RawDifficultyAttributes,
+                PerformanceAttributes
+            >,
+            THasStrainChart
+        >;
     }
 
     /**
@@ -386,7 +447,7 @@ export abstract class PPProcessorRESTManager extends RESTManager {
      * @param calculationMethod The calculation method to use.
      * @param calculateBestPPScore Whether to calculate the score with the best PP instead of the best score. Defaults to `false`.
      * @param generateStrainChart Whether to generate a strain chart.
-     * @param useMaster Whether to use the master system to calculate the score. Defaults to `false`.
+     * @param useMaster Unused. Online scores are always calculated by the score service.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
@@ -440,7 +501,7 @@ export abstract class PPProcessorRESTManager extends RESTManager {
      * @param calculationMethod The calculation method to use.
      * @param calculateBestPPScore Whether to calculate the score with the best PP instead of the best score. Defaults to `false`.
      * @param generateStrainChart Whether to generate a strain chart.
-     * @param useMaster Whether to use the master system to calculate the score. Defaults to `false`.
+     * @param useMaster Unused. Online scores are always calculated by the score service.
      * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
      */
     static async getOnlineScoreAttributes<THasStrainChart extends boolean>(
@@ -466,7 +527,7 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         calculationMethod: PPCalculationMethod,
         calculateBestPPScore?: boolean,
         generateStrainChart?: THasStrainChart,
-        useMaster?: boolean,
+        _useMaster?: boolean,
     ): Promise<PPProcessorCalculationResponse<
         CompleteCalculationAttributes<
             RawDifficultyAttributes,
@@ -475,26 +536,27 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         THasStrainChart
     > | null> {
         const url = new URL(
-            useMaster
-                ? `${this.endpoint}get-online-score-attributes`
-                : "http://localhost:3006/api/dpp/processor/get-online-score-attributes",
+            `${this.scoreServiceUrl.replace(/\/+$/, "")}/online-scores`,
         );
 
-        url.searchParams.set("key", process.env.DROID_SERVER_INTERNAL_KEY!);
         url.searchParams.set("uid", uid.toString());
-        url.searchParams.set("hash", hash);
-        url.searchParams.set("gamemode", mode);
-        url.searchParams.set("calculationmethod", calculationMethod.toString());
+        url.searchParams.set("hash", hash.toLowerCase());
+        url.searchParams.set(
+            "variant",
+            this.getVariant(mode, calculationMethod),
+        );
 
         if (calculateBestPPScore) {
-            url.searchParams.set("usebestpp", "1");
+            url.searchParams.set("best", "true");
         }
 
         if (generateStrainChart) {
-            url.searchParams.set("generatestrainchart", "1");
+            url.searchParams.set("strainChart", "true");
         }
 
-        const result = await this.request(url).catch(() => null);
+        const result = await this.request(url, {
+            headers: { "X-Api-Key": process.env.DPP_SCORE_SERVICE_KEY! },
+        }).catch(() => null);
 
         if (result?.statusCode !== 200) {
             this.logError(url, result);
@@ -502,7 +564,98 @@ export abstract class PPProcessorRESTManager extends RESTManager {
             return null;
         }
 
-        return JSON.parse(result.data.toString("utf-8"));
+        const { score, calculation } = JSON.parse(
+            result.data.toString("utf-8"),
+        ) as PPOnlineScoreResponse;
+
+        return {
+            attributes: this.createCalculationAttributes(
+                calculation,
+                score.mods,
+            ),
+            strainChart: this.decodeStrainChart(calculation.strainChart),
+        } as PPProcessorCalculationResponse<
+            CompleteCalculationAttributes<
+                RawDifficultyAttributes,
+                PerformanceAttributes
+            >,
+            THasStrainChart
+        >;
+    }
+
+    /**
+     * Converts performance calculation parameters to the `score` of a performance request.
+     *
+     * @param calculationParams The performance calculation parameters.
+     * @returns The `score`, which is empty if there are no parameters (a perfect play).
+     */
+    private static getScoreParameters(
+        calculationParams?: PerformanceCalculationParameters,
+    ) {
+        if (!calculationParams) {
+            return {};
+        }
+
+        const { accuracy } = calculationParams;
+
+        return {
+            // A negative `n300` means that it has not been decided, so the processor derives it.
+            ...(accuracy.n300 >= 0 && { n300: accuracy.n300 }),
+            n100: accuracy.n100,
+            n50: accuracy.n50,
+            nmiss: accuracy.nmiss,
+            combo: calculationParams.combo,
+            sliderTicksMissed: calculationParams.sliderTicksMissed,
+            sliderEndsDropped: calculationParams.sliderEndsDropped,
+            totalScore: calculationParams.totalScore,
+        };
+    }
+
+    /**
+     * Converts a performance response to the attributes callers use.
+     *
+     * @param response The performance response.
+     * @param mods All of the mods that were calculated.
+     * @returns The complete calculation attributes.
+     */
+    private static createCalculationAttributes(
+        response: PPBrokerPerformanceResponse,
+        mods: SerializedMod[],
+    ): CompleteCalculationAttributes<
+        RawDifficultyAttributes,
+        PerformanceAttributes
+    > {
+        const { score, replay } = response;
+
+        return {
+            params: {
+                mods: mods,
+                combo: score.combo,
+                accuracy: {
+                    n300: score.n300,
+                    n100: score.n100,
+                    n50: score.n50,
+                    nmiss: score.nmiss,
+                },
+                tapPenalty: score.tapPenalty,
+                sliderCheesePenalty: score.sliderCheesePenalty,
+                sliderTicksMissed: score.sliderTicksMissed,
+                sliderEndsDropped: score.sliderEndsDropped,
+                totalScore: score.totalScore,
+                // Values that the score does not record stay undefined, as they always have.
+            } as CloneablePerformanceCalculationParameters<true>,
+            difficulty: this.withMods(response.difficulty, mods),
+            performance: response.performance,
+            ...(replay && {
+                replay: {
+                    hitError: replay.hitError ?? undefined,
+                    sliderTickInformation:
+                        replay.sliderTickInformation ?? undefined,
+                    sliderEndInformation:
+                        replay.sliderEndInformation ?? undefined,
+                },
+            }),
+        };
     }
 
     /**
@@ -515,17 +668,13 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         if (result) {
             consola.error(
                 "Request to %s failed with error: %s",
-                url
-                    .toString()
-                    .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
+                url.toString(),
                 result.data.toString("utf-8"),
             );
         } else {
             consola.error(
                 "Request to %s failed with unknown error",
-                url
-                    .toString()
-                    .replace(process.env.DROID_SERVER_INTERNAL_KEY!, ""),
+                url.toString(),
             );
         }
     }
