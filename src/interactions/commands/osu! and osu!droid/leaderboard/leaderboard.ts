@@ -74,10 +74,10 @@ export const config: SlashCommand["config"] = {
                     minValue: 1,
                 },
                 {
-                    name: "rework",
+                    name: "variant",
                     type: ApplicationCommandOptionType.String,
                     description:
-                        "The name of the rework to view the leaderboard from. Defaults to overall.",
+                        "The variant to view the leaderboard from. Defaults to droid-rebalance.",
                     autocomplete: true,
                 },
             ],

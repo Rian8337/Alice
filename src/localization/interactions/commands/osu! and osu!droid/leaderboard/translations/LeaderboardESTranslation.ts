@@ -11,6 +11,7 @@ export class LeaderboardESTranslation extends Translation<LeaderboardStrings> {
         noPrototypeEntriesFound:
             "Lo siento, no hay ningún puntaje en la base de prueba de dpp de momento!",
         noBeatmapFound: "Hey, por favor ingresa un link o ID válido del mapa!",
+        variantNotFound: "",
         username: "Nick",
         uid: "UID",
         playCount: "Play",

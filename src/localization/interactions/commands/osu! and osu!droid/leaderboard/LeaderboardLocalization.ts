@@ -10,6 +10,7 @@ export interface LeaderboardStrings {
     readonly dppLeaderboardClanNotFound: string;
     readonly noPrototypeEntriesFound: string;
     readonly noBeatmapFound: string;
+    readonly variantNotFound: string;
     readonly username: string;
     readonly uid: string;
     readonly playCount: string;

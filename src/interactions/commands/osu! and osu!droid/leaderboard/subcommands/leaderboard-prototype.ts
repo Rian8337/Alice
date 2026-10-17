@@ -8,17 +8,42 @@ import { NumberHelper } from "@utils/helpers/NumberHelper";
 import { LeaderboardLocalization } from "@localization/interactions/commands/osu! and osu!droid/leaderboard/LeaderboardLocalization";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
+import { Modes } from "@rian8337/osu-base";
+import { inlineCode } from "discord.js";
+import { PPVariantManager } from "@utils/managers/PPVariantManager";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
+import { checkVariant } from "@utils/pp/variantChoice";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new LeaderboardLocalization(
         CommandHelper.getLocale(interaction),
     );
 
-    const reworkType = interaction.options.getString("rework") ?? "overall";
+    await InteractionHelper.deferReply(interaction);
+
+    const variantName =
+        interaction.options.getString("variant") ??
+        DefaultPPVariants.droidRebalance;
+
+    const variant = await PPVariantManager.resolve(
+        variantName,
+        await PPVariantManager.getActingUid(interaction.user),
+    );
+    const variantCheck = checkVariant(variant, Modes.Droid);
+
+    // Stored data needs no processor, so an unavailable variant is still readable.
+    if (!variant || (variantCheck !== "ok" && variantCheck !== "unavailable")) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("variantNotFound"),
+                inlineCode(variantName),
+            ),
+        });
+    }
 
     const res =
         await DatabaseManager.aliceDb.collections.prototypePP.getLeaderboard(
-            reworkType,
+            variant.name,
         );
 
     if (res.size === 0) {

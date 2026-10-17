@@ -1,6 +1,7 @@
 import { DatabaseManager } from "@database/DatabaseManager";
 import { AutocompleteHandler } from "@structures/core/AutocompleteHandler";
 import { DroidHelper } from "@utils/helpers/DroidHelper";
+import { PPVariantManager } from "@utils/managers/PPVariantManager";
 
 export const run: AutocompleteHandler["run"] = async (_, interaction) => {
     // Lots of autocomplete options for this command, but they're all usernames.
@@ -10,7 +11,7 @@ export const run: AutocompleteHandler["run"] = async (_, interaction) => {
     const focused = interaction.options.getFocused(true);
 
     if (interaction.options.getSubcommandGroup(false) === "prototype") {
-        // There are two possible options for prototype: name and type of rework.
+        // There are two possible options for prototype: username and variant.
         switch (focused.name) {
             case "username":
                 interaction.respond(
@@ -19,10 +20,16 @@ export const run: AutocompleteHandler["run"] = async (_, interaction) => {
                     ),
                 );
                 break;
-            case "rework":
+            case "variant":
                 interaction.respond(
-                    await DatabaseManager.aliceDb.collections.prototypePPType.searchReworkTypesForAutocomplete(
+                    await PPVariantManager.searchForAutocomplete(
                         focused.value,
+                        {
+                            prototypeOnly: true,
+                            actingUid: await PPVariantManager.getActingUid(
+                                interaction.user,
+                            ),
+                        },
                     ),
                 );
                 break;

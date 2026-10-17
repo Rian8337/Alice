@@ -12,6 +12,7 @@ export class LeaderboardIDTranslation extends Translation<LeaderboardStrings> {
         noPrototypeEntriesFound:
             "Maaf, tidak ada skor prototipe yang tersedia untuk sekarang!",
         noBeatmapFound: "Hei, mohon berikan tautan atau ID beatmap yang benar!",
+        variantNotFound: "",
         username: "Username",
         uid: "UID",
         playCount: "Jumlah Main",

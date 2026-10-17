@@ -1,14 +1,17 @@
 import { DatabaseManager } from "@database/DatabaseManager";
 import { PrototypePP } from "@database/utils/aliceDb/PrototypePP";
 import { MessageCreator } from "@utils/creators/MessageCreator";
-import { AttachmentBuilder } from "discord.js";
+import { AttachmentBuilder, inlineCode } from "discord.js";
 import { CommandHelper } from "@utils/helpers/CommandHelper";
 import { SlashSubcommand } from "structures/core/SlashSubcommand";
 import { InteractionHelper } from "@utils/helpers/InteractionHelper";
 import { PPLocalization } from "@localization/interactions/commands/osu!droid Elaina PP Project/pp/PPLocalization";
 import { ConstantsLocalization } from "@localization/core/constants/ConstantsLocalization";
 import { Constants } from "@core/Constants";
-import { ModUtil } from "@rian8337/osu-base";
+import { ModUtil, Modes } from "@rian8337/osu-base";
+import { PPVariantManager } from "@utils/managers/PPVariantManager";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
+import { checkVariant } from "@utils/pp/variantChoice";
 
 export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const localization = new PPLocalization(
@@ -29,10 +32,30 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
         });
     }
 
+    await InteractionHelper.deferReply(interaction);
+
+    const variantName =
+        interaction.options.getString("variant") ??
+        DefaultPPVariants.droidRebalance;
+
+    const variant = await PPVariantManager.resolve(
+        variantName,
+        await PPVariantManager.getActingUid(interaction.user),
+    );
+    const variantCheck = checkVariant(variant, Modes.Droid);
+
+    // Stored data needs no processor, so an unavailable variant is still readable.
+    if (!variant || (variantCheck !== "ok" && variantCheck !== "unavailable")) {
+        return InteractionHelper.reply(interaction, {
+            content: MessageCreator.createReject(
+                localization.getTranslation("variantNotFound"),
+                inlineCode(variantName),
+            ),
+        });
+    }
+
     const dbManager = DatabaseManager.aliceDb.collections.prototypePP;
-    const reworkType =
-        interaction.options.getString("rework") ??
-        process.env.CURRENT_REWORK_TYPE!;
+    const reworkType = variant.name;
 
     let ppInfo: PrototypePP | null;
 

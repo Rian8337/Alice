@@ -11,6 +11,7 @@ export class LeaderboardKRTranslation extends Translation<LeaderboardStrings> {
         noPrototypeEntriesFound:
             "죄송해요, 현재 프로토타입 dpp 데이터베이스에 기록이 없네요!",
         noBeatmapFound: "저기, 유효한 비트맵 ID나 링크를 입력해 주세요!",
+        variantNotFound: "",
         username: "유저네임",
         uid: "UID",
         playCount: "플레이",
