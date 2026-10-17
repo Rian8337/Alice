@@ -22,6 +22,8 @@ import {
     PPOnlineScoreResponse,
 } from "@structures/utils/PPBrokerResponse";
 import { PPProcessorCalculationResponse } from "@structures/utils/PPProcessorCalculationResponse";
+import { PPVariantSummary } from "@structures/utils/PPVariantSummary";
+import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
 import { DifficultyCalculationParameters } from "@utils/pp/DifficultyCalculationParameters";
 import { PerformanceCalculationParameters } from "@utils/pp/PerformanceCalculationParameters";
 import { consola } from "consola";
@@ -70,7 +72,15 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         mode: Modes,
         calculationMethod: PPCalculationMethod,
     ): string {
-        return `${mode}-${PPCalculationMethod[calculationMethod]}`;
+        if (mode === Modes.Droid) {
+            return calculationMethod === PPCalculationMethod.live
+                ? DefaultPPVariants.droidLive
+                : DefaultPPVariants.droidRebalance;
+        }
+
+        return calculationMethod === PPCalculationMethod.live
+            ? DefaultPPVariants.osuLive
+            : DefaultPPVariants.osuRebalance;
     }
 
     /**
@@ -111,29 +121,45 @@ export abstract class PPProcessorRESTManager extends RESTManager {
     }
 
     /**
-     * Sends a JSON request to the broker.
+     * Gets the headers that identify the bot to the broker or the score service.
      *
-     * @param variant The variant to send the request to.
-     * @param route The processor's route.
-     * @param body The request body.
+     * @param apiKey The API key.
+     * @param actingUid The uid of the player that the request is made on behalf of, if any.
+     * @returns The headers.
+     */
+    private static getHeaders(
+        apiKey: string | undefined,
+        actingUid?: number,
+    ): Record<string, string> {
+        return {
+            "X-Api-Key": apiKey!,
+            ...(actingUid !== undefined && {
+                "X-Acting-Uid": actingUid.toString(),
+            }),
+        };
+    }
+
+    /**
+     * Sends a request to the broker.
+     *
+     * @param path The path to request, relative to the broker's URL.
+     * @param options The options of the request.
+     * @param actingUid The uid of the player that the request is made on behalf of, if any.
      * @returns The parsed response body, `null` if the request failed.
      */
     private static async requestBroker<T>(
-        variant: string,
-        route: "difficulty" | "performance",
-        body: object,
+        path: string,
+        options: RequestInit,
+        actingUid?: number,
     ): Promise<T | null> {
-        const url = new URL(
-            `${this.brokerUrl.replace(/\/+$/, "")}/variants/${variant}/${route}`,
-        );
+        const url = new URL(`${this.brokerUrl.replace(/\/+$/, "")}${path}`);
 
         const result = await this.request(url, {
-            method: "POST",
+            ...options,
             headers: {
-                "Content-Type": "application/json",
-                "X-Api-Key": process.env.DPP_BROKER_KEY!,
+                ...options.headers,
+                ...this.getHeaders(process.env.DPP_BROKER_KEY, actingUid),
             },
-            body: JSON.stringify(body),
         }).catch(() => null);
 
         if (result?.statusCode !== 200) {
@@ -143,6 +169,46 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         }
 
         return JSON.parse(result.data.toString("utf-8")) as T;
+    }
+
+    /**
+     * Sends a JSON request to a variant's processor through the broker.
+     *
+     * @param variant The variant to send the request to.
+     * @param route The processor's route.
+     * @param body The request body.
+     * @param actingUid The uid of the player that the request is made on behalf of, if any.
+     * @returns The parsed response body, `null` if the request failed.
+     */
+    private static requestVariant<T>(
+        variant: string,
+        route: "difficulty" | "performance",
+        body: object,
+        actingUid?: number,
+    ): Promise<T | null> {
+        return this.requestBroker<T>(
+            `/variants/${encodeURIComponent(variant)}/${route}`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            },
+            actingUid,
+        );
+    }
+
+    /**
+     * Gets the variants that are visible to a player.
+     *
+     * @param actingUid The uid of the player to get the variants for. Without it, only public variants are returned.
+     * @returns The variants, `null` if the variants cannot be retrieved.
+     */
+    static getVariants(actingUid?: number): Promise<PPVariantSummary[] | null> {
+        return this.requestBroker<PPVariantSummary[]>(
+            "/variants",
+            {},
+            actingUid,
+        );
     }
 
     /**
@@ -251,7 +317,7 @@ export abstract class PPProcessorRESTManager extends RESTManager {
     > | null> {
         const mods = this.getMods(calculationParams);
 
-        const response = await this.requestBroker<PPBrokerDifficultyResponse>(
+        const response = await this.requestVariant<PPBrokerDifficultyResponse>(
             this.getVariant(mode, calculationMethod),
             "difficulty",
             {
@@ -383,10 +449,43 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         >,
         THasStrainChart
     > | null> {
+        return this.getPerformanceAttributesForVariant(
+            beatmapIdOrHash,
+            this.getVariant(mode, calculationMethod),
+            calculationParams,
+            generateStrainChart,
+        );
+    }
+
+    /**
+     * Retrieves a difficulty and performance attributes from the backend by variant name.
+     *
+     * @param beatmapIdOrHash The MD5 hash or ID of the beatmap.
+     * @param variant The name (or alias) of the variant to calculate with.
+     * @param calculationParams The performance calculation parameters to use.
+     * @param generateStrainChart Whether to generate a strain chart.
+     * @param actingUid The uid of the player that the calculation is made on behalf of, if any.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
+     */
+    static async getPerformanceAttributesForVariant<
+        THasStrainChart extends boolean,
+    >(
+        beatmapIdOrHash: string | number,
+        variant: string,
+        calculationParams?: PerformanceCalculationParameters,
+        generateStrainChart?: THasStrainChart,
+        actingUid?: number,
+    ): Promise<PPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RawDifficultyAttributes,
+            PerformanceAttributes
+        >,
+        THasStrainChart
+    > | null> {
         const mods = this.getMods(calculationParams);
 
-        const response = await this.requestBroker<PPBrokerPerformanceResponse>(
-            this.getVariant(mode, calculationMethod),
+        const response = await this.requestVariant<PPBrokerPerformanceResponse>(
+            variant,
             "performance",
             {
                 beatmap: this.getBeatmapReference(beatmapIdOrHash),
@@ -394,6 +493,7 @@ export abstract class PPProcessorRESTManager extends RESTManager {
                 score: this.getScoreParameters(calculationParams),
                 strainChart: !!generateStrainChart,
             },
+            actingUid,
         );
 
         if (!response) {
@@ -535,16 +635,49 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         >,
         THasStrainChart
     > | null> {
+        return this.getOnlineScoreAttributesForVariant(
+            uid,
+            hash,
+            this.getVariant(mode, calculationMethod),
+            calculateBestPPScore,
+            generateStrainChart,
+        );
+    }
+
+    /**
+     * Gets the difficulty and performance attributes of a score by variant name.
+     *
+     * @param uid The uid of the player in the score.
+     * @param hash The MD5 hash of the beatmap in the score.
+     * @param variant The name (or alias) of the variant to calculate with.
+     * @param calculateBestPPScore Whether to calculate the score with the best PP instead of the best score. Defaults to `false`.
+     * @param generateStrainChart Whether to generate a strain chart.
+     * @param actingUid The uid of the player that the calculation is made on behalf of, if any.
+     * @returns The difficulty and performance attributes, `null` if the attributes cannot be retrieved.
+     */
+    static async getOnlineScoreAttributesForVariant<
+        THasStrainChart extends boolean,
+    >(
+        uid: number,
+        hash: string,
+        variant: string,
+        calculateBestPPScore?: boolean,
+        generateStrainChart?: THasStrainChart,
+        actingUid?: number,
+    ): Promise<PPProcessorCalculationResponse<
+        CompleteCalculationAttributes<
+            RawDifficultyAttributes,
+            PerformanceAttributes
+        >,
+        THasStrainChart
+    > | null> {
         const url = new URL(
             `${this.scoreServiceUrl.replace(/\/+$/, "")}/online-scores`,
         );
 
         url.searchParams.set("uid", uid.toString());
         url.searchParams.set("hash", hash.toLowerCase());
-        url.searchParams.set(
-            "variant",
-            this.getVariant(mode, calculationMethod),
-        );
+        url.searchParams.set("variant", variant);
 
         if (calculateBestPPScore) {
             url.searchParams.set("best", "true");
@@ -555,7 +688,10 @@ export abstract class PPProcessorRESTManager extends RESTManager {
         }
 
         const result = await this.request(url, {
-            headers: { "X-Api-Key": process.env.DPP_SCORE_SERVICE_KEY! },
+            headers: this.getHeaders(
+                process.env.DPP_SCORE_SERVICE_KEY,
+                actingUid,
+            ),
         }).catch(() => null);
 
         if (result?.statusCode !== 200) {

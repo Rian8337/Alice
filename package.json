@@ -12,6 +12,7 @@
     "start": "node --trace-warnings .",
     "startDebug": "node --trace-warnings --inspect .",
     "startRecalculation": "node --trace-warnings dist/recalculation.js",
+    "test": "vitest run",
     "type-check": "tsc --noEmit",
     "update-osu-libraries-beta": "pnpm i @rian8337/osu-base@beta @rian8337/osu-difficulty-calculator@beta @rian8337/osu-droid-replay-analyzer@beta @rian8337/osu-droid-utilities@beta @rian8337/osu-rebalance-difficulty-calculator@beta @rian8337/osu-strain-graph-generator@beta",
     "update-osu-libraries-release": "pnpm i @rian8337/osu-base @rian8337/osu-difficulty-calculator @rian8337/osu-droid-replay-analyzer @rian8337/osu-droid-utilities @rian8337/osu-rebalance-difficulty-calculator @rian8337/osu-strain-graph-generator",
@@ -44,7 +45,8 @@
     "eslint": "^9.39.4",
     "prettier": "^3.8.3",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.60.1"
+    "typescript-eslint": "^8.60.1",
+    "vitest": "5.0.3"
   },
   "dependencies": {
     "@discordjs/opus": "^0.10.0",
