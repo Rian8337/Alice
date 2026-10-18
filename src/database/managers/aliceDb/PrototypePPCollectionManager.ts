@@ -6,7 +6,6 @@ import {
     Collection as DiscordCollection,
 } from "discord.js";
 import { ArrayHelper } from "@utils/helpers/ArrayHelper";
-import { OperationResult } from "@structures/core/OperationResult";
 import { DefaultPPVariants } from "@utils/pp/DefaultPPVariants";
 
 /**
@@ -95,71 +94,6 @@ export class PrototypePPCollectionManager extends DatabaseCollectionManager<
                 },
             )
             .sort({ pptotal: -1 })
-            .toArray();
-
-        return ArrayHelper.arrayToCollection(
-            prototypeEntries.map((v) => new PrototypePP(v)),
-            "uid",
-        );
-    }
-
-    /**
-     * Clones the player entries of a variant to another variant.
-     *
-     * @param source The name of the variant to clone from.
-     * @param target The name of the variant to clone to.
-     */
-    async cloneToVariant(
-        source: string,
-        target: string,
-    ): Promise<OperationResult> {
-        const sourceEntries = await this.collection
-            .find(
-                { reworkType: source },
-                {
-                    projection: {
-                        _id: 0,
-                        discordid: 1,
-                        uid: 1,
-                        previous_bind: 1,
-                        username: 1,
-                    },
-                },
-            )
-            .toArray();
-
-        if (sourceEntries.length === 0) {
-            return this.createOperationResult(true);
-        }
-
-        for (const entry of sourceEntries) {
-            entry.reworkType = target;
-        }
-
-        return this.insert(...sourceEntries);
-    }
-
-    /**
-     * Gets unscanned players based on the given amount.
-     *
-     * The data returned will only consist of `uid` and `pptotal`. You should
-     * then retrieve player data from bind database to perform recalculation.
-     *
-     * @param amount The amount of unscanned players to retrieve.
-     * @param reworkType The rework type to filter the players.
-     * @returns The players.
-     */
-    async getUnscannedPlayers(
-        amount: number,
-        reworkType: string,
-    ): Promise<DiscordCollection<number, PrototypePP>> {
-        const prototypeEntries = await this.collection
-            .find(
-                { scanDone: { $ne: true }, reworkType: reworkType },
-                { projection: { _id: 0, uid: 1, pptotal: 1 } },
-            )
-            .sort({ pptotal: -1 })
-            .limit(amount)
             .toArray();
 
         return ArrayHelper.arrayToCollection(
