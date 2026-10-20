@@ -35,7 +35,6 @@ export class PPENTranslation extends Translation<PPStrings> {
         variantWrongMode: "I'm sorry, %s is not a %s variant!",
         variantListUnavailable:
             "I'm sorry, I can't reach the variant list right now. Please try again later!",
-        variantDescription: "Description",
         uidIsBanned:
             "I'm sorry, your currently bound osu!droid account has been disallowed from submitting dpp.",
         beatmapNotFound: "Hey, please give me a valid beatmap to submit!",

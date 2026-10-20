@@ -33,7 +33,6 @@ export class PPKRTranslation extends Translation<PPStrings> {
         variantNotFound: "",
         variantWrongMode: "",
         variantListUnavailable: "",
-        variantDescription: "",
         uidIsBanned:
             "죄송해요, 현재 당신이 바인딩된 osu!droid 계정은 dpp-ban을 당했어요.",
         beatmapNotFound: "저기, 제출할 유효한 비트맵을 주세요!",

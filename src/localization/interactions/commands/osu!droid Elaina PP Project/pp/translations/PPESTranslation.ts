@@ -34,7 +34,6 @@ export class PPESTranslation extends Translation<PPStrings> {
         variantNotFound: "",
         variantWrongMode: "",
         variantListUnavailable: "",
-        variantDescription: "",
         uidIsBanned:
             "Lo siento, tu cuenta de osu!droid enlazada ha sido restringida de poder obtener dpp.",
         beatmapNotFound:

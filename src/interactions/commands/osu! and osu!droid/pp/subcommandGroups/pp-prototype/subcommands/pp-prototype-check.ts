@@ -67,7 +67,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     }
 
     const reworkType = variant.name;
-    const variantDescription = variant.description?.trim();
 
     const dbManager = DatabaseManager.aliceDb.collections.prototypePP;
     let ppInfo: PrototypePP | null;
@@ -164,14 +163,6 @@ export const run: SlashSubcommand<true>["run"] = async (_, interaction) => {
     const entries = [...ppInfo.pp.values()];
 
     const onPageChange: OnButtonPageChange = async (_, page) => {
-        // Fields are cleared on every page change, so the description is added each time.
-        if (variantDescription) {
-            embed.addFields({
-                name: localization.getTranslation("variantDescription"),
-                value: StringHelper.truncate(variantDescription, 1024),
-            });
-        }
-
         for (let i = 5 * (page - 1); i < 5 + 5 * (page - 1); ++i) {
             const entry = entries.at(i);
 
