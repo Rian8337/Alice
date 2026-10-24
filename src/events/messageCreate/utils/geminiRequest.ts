@@ -23,7 +23,7 @@ export const run: EventUtil["run"] = async (_, message: Message) => {
     void message.channel.sendTyping();
 
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3.8-flash",
         contents: content,
         config: {
             systemInstruction:
